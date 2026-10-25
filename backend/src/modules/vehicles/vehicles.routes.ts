@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { authenticate } from '../../middleware/authenticate';
+import { requireAdmin } from '../../middleware/requireAdmin';
 import { createVehiclesController } from './vehicles.controller';
 import type { VehiclesService } from './vehicles.service';
 
@@ -9,6 +10,6 @@ export function createVehiclesRouter(service: VehiclesService): Router {
   const router = Router();
   router.use(authenticate);
   router.get('/', controller.list);
-  router.post('/', controller.create);
+  router.post('/', requireAdmin, controller.create);
   return router;
 }
