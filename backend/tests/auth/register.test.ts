@@ -109,4 +109,28 @@ describe('POST /api/auth/register', () => {
       expect(res.body.error.details).toEqual([{ field: 'email', message: expect.any(String) }]);
     });
   });
+
+  describe('password rule: at least 8 characters, at most 72 bytes', () => {
+    it.each([
+      ['missing', undefined],
+      ['7 characters', 'a'.repeat(7)],
+      ['73 ASCII characters', 'a'.repeat(73)],
+      // Passes a 72-character check (19 emoji) but is 76 bytes; bcrypt would ignore the tail.
+      ['19 emoji (76 bytes)', '😀'.repeat(19)],
+    ])('rejects a password that is %s with 400', async (_case, password) => {
+      const res = await register({ password });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field: 'password', message: expect.any(String) }]);
+    });
+
+    it.each([
+      ['exactly 8 characters', 'a'.repeat(8)],
+      ['exactly 72 bytes', 'a'.repeat(72)],
+    ])('accepts a password of %s', async (_case, password) => {
+      const res = await register({ password });
+
+      expect(res.status).toBe(201);
+    });
+  });
 });
