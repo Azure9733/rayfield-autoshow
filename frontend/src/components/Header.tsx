@@ -1,5 +1,5 @@
 import { useId, useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import logo from '../assets/rayfield-logo.png';
 import { useAuth } from '../context/AuthContext';
 
@@ -33,9 +33,6 @@ export function Header() {
             <span className="hidden px-4 font-mono text-sm text-cp-muted xl:inline">
               {user.name}
             </span>
-            <NavLink to="/" end className="cyber-nav-link">
-              Inventory
-            </NavLink>
             <button type="button" className="cyber-nav-link cursor-pointer" onClick={handleLogout}>
               Logout
             </button>
@@ -59,9 +56,6 @@ export function Header() {
               className="cyber-panel absolute top-full right-0 w-full sm:w-72 lg:hidden"
             >
               <p className="px-5 py-3 font-mono text-sm text-cp-muted">{user.name}</p>
-              <NavLink to="/" end className="cyber-list-item" onClick={() => setMenuOpen(false)}>
-                Inventory
-              </NavLink>
               <button
                 type="button"
                 className="cyber-list-item cursor-pointer"

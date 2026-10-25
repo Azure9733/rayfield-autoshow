@@ -16,7 +16,7 @@ Product/data decisions that affect the backend live in `PLAN.md` → "Product Sp
 ### Header & Logo
 - Black header bar, full width, sticky.
 - **Left:** brand lockup `[logo] | RAYFIELD AUTOSHOW`: Rayfield logo (white PNG, used as-is), thin vertical divider, name in white Rajdhani with wide tracking. Below `sm` the text shortens to `AUTOSHOW` (the logo already says RAYFIELD). Links to `/`.
-- **Right:** nav links (INVENTORY · LOGOUT) + signed-in user's name (from `xl`); hamburger below `lg`, since the longer name needs the room. On `/login` and `/register` only the brand shows.
+- **Right:** the signed-in user's name and LOGOUT (no INVENTORY link: the logo goes to `/`); hamburger below `lg`. On `/login` and `/register` only the brand shows.
 - Logo file: `Thumbnails-144.png` → `frontend/src/assets/rayfield-logo.png` (resized from 2314×611 to 424×112, 2x the largest display size), `alt="Rayfield"`, ~36px tall on mobile, ~56px on desktop.
 - Footer disclaimer: "Rayfield is a fictional brand from Cyberpunk 2077 © CD PROJEKT RED. Fan project, not affiliated." The README credits the logo as well.
 - Favicon: the shield "R" emblem cropped from the logo, white on a black square (`frontend/src/assets/rayfield-icon.png`).
@@ -36,7 +36,7 @@ Guests are redirected to `/login`. There is no `/admin` route: admin controls re
 
 ```
 ┌───────────────────────────────────────────────┐
-│ [R] | RAYFIELD AUTOSHOW       INVENTORY LOGOUT│  ← black header, [R] = logo (hamburger < lg)
+│ [R] | RAYFIELD AUTOSHOW            VIK  LOGOUT│  ← black header, [R] = logo (hamburger < lg)
 ├───────────────────────────────────────────────┤
 │ [ make or model…            ] [FILTERS] [CLEAR]│  ← search bar: results update as you type
 │  category ▾ │ min price │ max price │ [x] in stock  ← shown by FILTERS
@@ -140,7 +140,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 
 **Header**
 - [x] Below lg, the Menu button opens and closes the nav
-- [ ] No INVENTORY link in the header (nav or menu); the logo links to `/`
+- [x] No INVENTORY link in the header (nav or menu); the logo links to `/`
 
 **Not found**
 - [x] Unknown routes show `///SIGNAL.LOST` with a link home
