@@ -102,4 +102,17 @@ describe('GET /api/vehicles/search', () => {
 
     expect(idsOf(res)).toEqual([below.id, atMax.id].sort());
   });
+
+  it.each([
+    ['make + maxPrice', { make: 'Toyota', maxPrice: '30000' }],
+    ['minPrice + maxPrice', { minPrice: '25000', maxPrice: '30000' }],
+  ])('combines filters with AND (%s)', async (_case, query) => {
+    const match = await createVehicle({ make: 'Toyota', price: 27000 });
+    await createVehicle({ make: 'Toyota', price: 45000 }); // fails the price filter
+    await createVehicle({ make: 'Ford', price: 20000 }); // fails make / minPrice
+
+    const res = await search(query);
+
+    expect(idsOf(res)).toEqual([match.id]);
+  });
 });
