@@ -13,6 +13,7 @@ import { SearchPanel } from '../components/SearchPanel';
 import { SkeletonCard } from '../components/SkeletonCard';
 import { Toast } from '../components/Toast';
 import { VehicleCard } from '../components/VehicleCard';
+import { VehicleFormModal } from '../components/VehicleFormModal';
 import { useAuth } from '../context/AuthContext';
 
 /** All vehicles, or the search results when any filter is filled. */
@@ -33,6 +34,7 @@ export function InventoryPage() {
   const [query, setQuery] = useState<SearchFilters>({});
   const [inStockOnly, setInStockOnly] = useState(false);
   const isAdmin = useAuth().user?.role === 'admin';
+  const [adding, setAdding] = useState(false);
   // Bumped by Retry to run the load effect again.
   const [attempt, setAttempt] = useState(0);
   const loading = vehicles === null && !error;
@@ -112,7 +114,12 @@ export function InventoryPage() {
         <div className="mt-8 lg:mt-0">
           {isAdmin && (
             <div className="mb-6 flex justify-end">
-              <button type="button" className="btn-cyber" data-text="Add vehicle">
+              <button
+                type="button"
+                className="btn-cyber"
+                data-text="Add vehicle"
+                onClick={() => setAdding(true)}
+              >
                 Add vehicle
               </button>
             </div>
@@ -151,6 +158,9 @@ export function InventoryPage() {
           </div>
         </div>
       </main>
+      {adding && (
+        <VehicleFormModal title="Add vehicle" withQuantity onClose={() => setAdding(false)} />
+      )}
       {notice && <Toast tone={notice.tone} message={notice.message} />}
       {error && <Toast tone="error" message={error} action={{ label: 'Retry', onClick: retry }} />}
     </>
