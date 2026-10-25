@@ -1,4 +1,4 @@
-import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { badge, inStock, loginAs, makeVehicle, serveVehicles, soldOut } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';

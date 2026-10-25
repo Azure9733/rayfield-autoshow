@@ -36,7 +36,7 @@ describe('purchase dialog', () => {
     const calls = servePurchase();
     const { user } = renderApp('/');
 
-    let { dialog } = await openPurchase(user);
+    const { dialog } = await openPurchase(user);
     for (const text of ['2024', '$125,000.00']) {
       expect(within(dialog).getByText(text)).toBeInTheDocument();
     }
@@ -44,7 +44,7 @@ describe('purchase dialog', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
-    ({ dialog } = await openPurchase(user));
+    await openPurchase(user);
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 

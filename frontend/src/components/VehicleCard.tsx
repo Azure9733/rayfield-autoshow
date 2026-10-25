@@ -15,8 +15,8 @@ export function VehicleCard({
   admin,
 }: {
   vehicle: Vehicle;
-  /** Resolves when the purchase is done; the button stays disabled until then. */
-  onPurchase: (vehicle: Vehicle) => Promise<void>;
+  /** Starts a purchase (the page asks for confirmation first). */
+  onPurchase: (vehicle: Vehicle) => void;
   /** Admin actions; when absent (regular users) the admin buttons aren't rendered. */
   admin?: {
     onEdit: (vehicle: Vehicle) => void;
@@ -27,21 +27,10 @@ export function VehicleCard({
 }) {
   const { make, model, year, category, price, quantity, imageUrl } = vehicle;
   const id = useId();
-  // Which admin panel replaces the admin buttons, if any.
-  const [purchasing, setPurchasing] = useState(false);
   // The URL that failed to load; keyed by URL so an edited image gets a fresh try.
   const [failedImage, setFailedImage] = useState<string | null>(null);
+  // Which admin panel replaces the admin buttons, if any.
   const [panel, setPanel] = useState<'none' | 'delete' | 'restock'>('none');
-
-  // Disabled while in flight, so a double-click can't buy two units.
-  async function handlePurchase() {
-    setPurchasing(true);
-    try {
-      await onPurchase(vehicle);
-    } finally {
-      setPurchasing(false);
-    }
-  }
 
   return (
     // Named "<make> <model>" so tests and screen readers can tell cards apart.
@@ -93,8 +82,8 @@ export function VehicleCard({
           type="button"
           className="btn-cyber mt-auto self-start"
           data-text="Purchase"
-          disabled={quantity === 0 || purchasing}
-          onClick={handlePurchase}
+          disabled={quantity === 0}
+          onClick={() => onPurchase(vehicle)}
         >
           Purchase
         </button>

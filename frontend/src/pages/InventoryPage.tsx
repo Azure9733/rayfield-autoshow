@@ -15,6 +15,7 @@ import {
   type SearchFilters,
   type Vehicle,
 } from '../api/vehicles';
+import { PurchaseDialog } from '../components/PurchaseDialog';
 import { SearchPanel } from '../components/SearchPanel';
 import { SkeletonCard } from '../components/SkeletonCard';
 import { Toast } from '../components/Toast';
@@ -60,6 +61,8 @@ export function InventoryPage() {
   const isAdmin = useAuth().user?.role === 'admin';
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<Vehicle | null>(null);
+  // The vehicle whose purchase dialog is open.
+  const [buying, setBuying] = useState<Vehicle | null>(null);
   // Bumped by Retry to run the load effect again.
   const [attempt, setAttempt] = useState(0);
   const loading = vehicles === null && !error;
@@ -228,7 +231,7 @@ export function InventoryPage() {
                   <VehicleCard
                     key={vehicle.id}
                     vehicle={vehicle}
-                    onPurchase={purchase}
+                    onPurchase={setBuying}
                     admin={
                       isAdmin
                         ? { onEdit: setEditing, onDelete: remove, onRestock: restock }
@@ -262,6 +265,16 @@ export function InventoryPage() {
             setEditing(null);
           }}
           onClose={() => setEditing(null)}
+        />
+      )}
+      {buying && (
+        <PurchaseDialog
+          vehicle={buying}
+          onConfirm={async () => {
+            await purchase(buying);
+            setBuying(null);
+          }}
+          onClose={() => setBuying(null)}
         />
       )}
       {notice && (
