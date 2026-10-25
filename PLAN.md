@@ -200,7 +200,7 @@ How to read this list:
 - [x] `unit:` `jwt.sign` then `jwt.verify` keeps `sub` and `role`; the token has an `exp`
 - [x] Correct credentials → 200 with `{ token, user }`
 - [x] **(guard)** Token is a valid JWT containing `sub` (user id), `role` and `exp`
-- [ ] **(guard)** `user` in the response never contains the password hash
+- [x] **(guard)** `user` in the response never contains the password hash
 - [ ] Wrong password → 401 (generic message)
 - [ ] Unknown email → 401 (same message — don't leak which emails exist)
 - [ ] Email is case-insensitive (register `a@x.com`, log in as `A@X.com` → 200)

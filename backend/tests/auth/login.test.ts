@@ -41,4 +41,14 @@ describe('POST /api/auth/login', () => {
       exp: expect.any(Number),
     });
   });
+
+  it('never returns the password or its hash in user', async () => {
+    await registerAnn();
+
+    const res = await login();
+
+    expect(res.body.user).not.toHaveProperty('passwordHash');
+    expect(res.body.user).not.toHaveProperty('password_hash');
+    expect(JSON.stringify(res.body)).not.toMatch(/supersecret|\$2[aby]\$/);
+  });
 });
