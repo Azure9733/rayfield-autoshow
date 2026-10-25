@@ -51,6 +51,13 @@ export function filledFilters(filters: SearchFilters): SearchFilters {
   );
 }
 
+/** The search filters in a URL query string (unknown params ignored, missing ones blank). */
+export function filtersFromParams(params: URLSearchParams): Required<SearchFilters> {
+  return Object.fromEntries(
+    Object.keys(EMPTY_FILTERS).map((key) => [key, params.get(key) ?? '']),
+  ) as Required<SearchFilters>;
+}
+
 /** GET /api/vehicles/search with only the filled filters as query params. */
 export function searchVehicles(filters: SearchFilters) {
   const params = new URLSearchParams(filledFilters(filters) as Record<string, string>);

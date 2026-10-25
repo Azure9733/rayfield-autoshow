@@ -159,7 +159,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Typing in the search bar loads matching vehicles live (`?q=`, make or model), debounced to one request
 - [x] Requests carry only the filled filters
 - [x] The Filters button shows and hides the other filters (category, price range, in stock only)
-- [ ] Filters live in the URL: a link restores them, changes update it
+- [x] Filters live in the URL: a link restores them, changes update it
 - [x] "In stock only" hides sold-out vehicles (client-side)
 - [x] Clear resets the filters and the list
 - [x] No search results show `///NO.MATCH` with a clear-filters button (§7)

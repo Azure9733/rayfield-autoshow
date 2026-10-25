@@ -24,7 +24,10 @@ export function SearchPanel({
   inStockOnly,
   onInStockOnlyChange,
 }: Props) {
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  // Start open when a hidden filter is already active (e.g. restored from the URL).
+  const [filtersOpen, setFiltersOpen] = useState(() =>
+    Boolean(values.category || values.minPrice || values.maxPrice || inStockOnly),
+  );
   const filtersId = useId();
   const set = (name: keyof SearchFilters) => (value: string) =>
     onChange({ ...values, [name]: value });

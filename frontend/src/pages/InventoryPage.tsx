@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { ApiError } from '../api/client';
 import {
   createVehicle,
   deleteVehicle,
   EMPTY_FILTERS,
   filledFilters,
+  filtersFromParams,
   listVehicles,
   purchaseVehicle,
   restockVehicle,
@@ -40,10 +42,18 @@ export function InventoryPage() {
   const [notice, setNotice] = useState<{ tone: 'success' | 'error'; message: string } | null>(null);
   // What's typed in the search panel. The list follows it live: once typing pauses, the filled
   // filters become the query, and a new query reloads the list.
-  const [form, setForm] = useState(EMPTY_FILTERS);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [form, setForm] = useState(() => filtersFromParams(searchParams));
+  const [inStockOnly, setInStockOnly] = useState(() => searchParams.get('inStock') === '1');
   const debouncedForm = useDebouncedValue(form, SEARCH_DEBOUNCE_MS);
-  const query = useMemo(() => filledFilters(debouncedForm), [debouncedForm]);
-  const [inStockOnly, setInStockOnly] = useState(false);
+  // The URL is the source of truth for the query, so a link or reload restores the search.
+  const queryString = new URLSearchParams(
+    filledFilters(filtersFromParams(searchParams)) as Record<string, string>,
+  ).toString();
+  const query = useMemo(
+    () => Object.fromEntries(new URLSearchParams(queryString)) as SearchFilters,
+    [queryString],
+  );
   const isAdmin = useAuth().user?.role === 'admin';
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<Vehicle | null>(null);
@@ -72,6 +82,15 @@ export function InventoryPage() {
       active = false;
     };
   }, [attempt, query]);
+
+  // Settled form changes go into the URL (replacing the entry, so typing doesn't flood the
+  // history). "In stock only" is client-side but kept there too, so links restore it.
+  useEffect(() => {
+    const next = new URLSearchParams(filledFilters(debouncedForm) as Record<string, string>);
+    if (inStockOnly) next.set('inStock', '1');
+    // Only navigate on a real change; setSearchParams itself changes with every navigation.
+    if (next.toString() !== searchParams.toString()) setSearchParams(next, { replace: true });
+  }, [debouncedForm, inStockOnly, searchParams, setSearchParams]);
 
   // Success toasts clear themselves; error toasts stay until the next action replaces them.
   useEffect(() => {

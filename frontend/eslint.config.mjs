@@ -21,6 +21,11 @@ export default defineConfig(
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
+  {
+    // Fast refresh only matters for app modules; test helpers mix components and functions.
+    files: ['src/test/**', '**/*.test.{ts,tsx}'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
   // Last, so Prettier owns formatting and ESLint only reports real problems.
   prettier,
 );
