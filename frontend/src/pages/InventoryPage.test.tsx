@@ -281,4 +281,32 @@ describe('inventory page', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(screen.queryByTestId('skeleton-card')).not.toBeInTheDocument();
   });
+
+  it('a failed refresh after a 409 shows its error as the red toast', async () => {
+    let loads = 0;
+    server.use(
+      http.get('/api/vehicles', () =>
+        ++loads === 1
+          ? HttpResponse.json([inStock])
+          : HttpResponse.json(
+              { error: { code: 'INTERNAL_ERROR', message: 'Something went wrong' } },
+              { status: 500 },
+            ),
+      ),
+      http.post('/api/vehicles/a1/purchase', () =>
+        HttpResponse.json(
+          { error: { code: 'OUT_OF_STOCK', message: 'Out of stock' } },
+          { status: 409 },
+        ),
+      ),
+    );
+    const { user } = renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+
+    await user.click(within(card).getByRole('button', { name: 'Purchase' }));
+
+    await waitFor(() =>
+      expect(screen.getByRole('alert')).toHaveTextContent('Something went wrong'),
+    );
+  });
 });
