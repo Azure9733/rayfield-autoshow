@@ -1,0 +1,26 @@
+import request from 'supertest';
+import { createApp } from '../../src/app';
+import { pool } from '../../src/db/client';
+import { authHeader } from '../helpers/auth';
+import { createVehicle } from '../helpers/vehicles';
+
+function deleteVehicle(id: string, role: 'admin' | 'user' = 'admin') {
+  return request(createApp()).delete(`/api/vehicles/${id}`).set('Authorization', authHeader(role));
+}
+
+async function vehicleExists(id: string): Promise<boolean> {
+  const { rowCount } = await pool.query('select 1 from vehicles where id = $1', [id]);
+  return rowCount === 1;
+}
+
+describe('DELETE /api/vehicles/:id', () => {
+  it('deletes the vehicle for an admin and returns 204 with no body', async () => {
+    const { id } = await createVehicle();
+
+    const res = await deleteVehicle(id);
+
+    expect(res.status).toBe(204);
+    expect(res.text).toBe('');
+    expect(await vehicleExists(id)).toBe(false);
+  });
+});
