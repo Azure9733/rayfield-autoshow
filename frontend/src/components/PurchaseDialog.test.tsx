@@ -55,6 +55,31 @@ describe('purchase dialog', () => {
     expect(calls.count).toBe(0);
   });
 
+  it('Confirm shows PROCESSING... and is disabled in flight; a double-click buys once', async () => {
+    serveVehicles(inStock);
+    let respond = () => {};
+    const responded = new Promise<void>((resolve) => (respond = resolve));
+    let calls = 0;
+    server.use(
+      http.post('/api/vehicles/a1/purchase', async () => {
+        calls++;
+        await responded;
+        return HttpResponse.json({ ...inStock, quantity: 1 });
+      }),
+    );
+    const { user } = renderApp('/');
+    const { card, dialog } = await openPurchase(user);
+    const confirm = confirmButton(dialog);
+
+    await user.dblClick(confirm);
+
+    expect(confirm).toBeDisabled();
+    expect(confirm).toHaveTextContent('Processing...');
+    respond();
+    await waitFor(() => expect(badge(card, 'Stock')).toHaveTextContent('1'));
+    expect(calls).toBe(1);
+  });
+
   // The tests below predate the dialog; they now confirm in it first.
 
   it('Purchase calls the API and updates the stock shown', async () => {
