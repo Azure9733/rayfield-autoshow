@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import type { NewVehicle, VehicleFilters } from './vehicles.repository';
+import type { NewVehicle, VehicleFilters, VehicleUpdate } from './vehicles.repository';
 import type { VehiclesService } from './vehicles.service';
 
 /** Translates HTTP requests into vehicles service calls and back; no business rules here. */
@@ -18,10 +18,7 @@ export function createVehiclesController(service: VehiclesService) {
     },
 
     async update(req: Request<{ id: string }>, res: Response) {
-      const { make, model, year, category, price, imageUrl } = req.body;
-      res.json(
-        await service.update(req.params.id, { make, model, year, category, price, imageUrl }),
-      );
+      res.json(await service.update(req.params.id, res.locals.body as VehicleUpdate));
     },
   };
 }

@@ -46,3 +46,9 @@ export const createVehicleSchema = z.object({
   quantity: z.number().int().min(0).max(10_000).optional(),
   imageUrl: z.url({ protocol: /^https$/ }).optional(),
 });
+
+/**
+ * Request body for PUT /api/vehicles/:id: a full replacement with the same rules as create,
+ * minus quantity (stock only changes through purchase / restock; a sent quantity is stripped).
+ */
+export const updateVehicleSchema = createVehicleSchema.omit({ quantity: true });
