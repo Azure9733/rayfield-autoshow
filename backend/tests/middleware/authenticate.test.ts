@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import request from 'supertest';
 import { createApp } from '../../src/app';
 import { authHeader } from '../helpers/auth';
@@ -22,6 +23,15 @@ describe('authenticate middleware (via GET /api/vehicles)', () => {
     ['a bare token without "Bearer"', () => authHeader().replace('Bearer ', '')],
   ])('returns 401 for %s', async (_case, header) => {
     const res = await getProtected(header());
+
+    expect(res.status).toBe(401);
+    expect(res.body.error.code).toBe('UNAUTHENTICATED');
+  });
+
+  it('returns 401 for a token signed with a different secret', async () => {
+    const forged = jwt.sign({ sub: 'u', role: 'admin' }, 'some-other-secret-that-is-long-enough');
+
+    const res = await getProtected(`Bearer ${forged}`);
 
     expect(res.status).toBe(401);
     expect(res.body.error.code).toBe('UNAUTHENTICATED');
