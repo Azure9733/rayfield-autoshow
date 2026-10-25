@@ -243,4 +243,42 @@ describe('inventory page', () => {
     if (label) expect(within(card).getByText(label)).toBeInTheDocument();
     else expect(within(card).queryByText(/only \d+ left/i)).not.toBeInTheDocument();
   });
+
+  it('a purchase error toast closes with its close button', async () => {
+    serveVehicles(inStock);
+    server.use(
+      http.post('/api/vehicles/a1/purchase', () =>
+        HttpResponse.json(
+          { error: { code: 'NOT_FOUND', message: 'Vehicle not found' } },
+          { status: 404 },
+        ),
+      ),
+    );
+    const { user } = renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+    await user.click(within(card).getByRole('button', { name: 'Purchase' }));
+    const toast = await screen.findByRole('alert');
+
+    await user.click(within(toast).getByRole('button', { name: 'Dismiss' }));
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('the load-error toast closes too, without going back to loading', async () => {
+    server.use(
+      http.get('/api/vehicles', () =>
+        HttpResponse.json(
+          { error: { code: 'INTERNAL_ERROR', message: 'Something went wrong' } },
+          { status: 500 },
+        ),
+      ),
+    );
+    const { user } = renderApp('/');
+    const toast = await screen.findByRole('alert');
+
+    await user.click(within(toast).getByRole('button', { name: 'Dismiss' }));
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('skeleton-card')).not.toBeInTheDocument();
+  });
 });
