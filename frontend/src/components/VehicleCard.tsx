@@ -36,6 +36,14 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           </div>
         </dl>
         <p className="font-mono text-xl">{formatPrice(price)}</p>
+        <button
+          type="button"
+          className="btn-cyber mt-auto self-start"
+          data-text="Purchase"
+          disabled={quantity === 0}
+        >
+          Purchase
+        </button>
       </div>
     </article>
   );
