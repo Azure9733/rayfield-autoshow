@@ -9,16 +9,16 @@ Product/data decisions that affect the backend live in `PLAN.md` → "Product Sp
 
 - **Palette:** black background, yellow `#f5d800` primary, red `#fd3649` actions/danger, cyan `#00e6f6` accents/focus.
 - **Fonts:** Rajdhani (headings, buttons, labels), Share Tech Mono (prices, stock, IDs).
-- **Motifs:** chamfered corners, `///MODULE` strips, glitch headings, scanline "screens", label│value badges.
-- **Rules:** neon for accents only; body text ≥ 4.5:1 contrast; disabled states obvious; animations off under `prefers-reduced-motion`.
+- **Motifs:** chamfered corners, `///MODULE` strips, glitch headings (effects adapted from CodePen — credited in README), scanline "screens", label│value badges.
+- **Rules:** neon for accents only; body text ≥ 4.5:1 contrast; black text on red and yellow fills (black on `#fd3649` is 5.8:1, white only 3.6:1); disabled states obvious; animations off under `prefers-reduced-motion`.
 - **App name:** Rayfield Autoshow. Prices in USD.
 
 ### Header & Logo
 - Black header bar, full width, sticky. The yellow module strip directly below doubles as its divider.
 - **Top right:** brand lockup `[logo] | RAYFIELD AUTOSHOW`: Rayfield logo (white PNG, used as-is), thin vertical divider, name in white Rajdhani with wide tracking. Below `sm` the text shortens to `AUTOSHOW` (the logo already says RAYFIELD). Links to `/`.
-- **Left:** nav links (INVENTORY · ADMIN for admins only · LOGOUT) + signed-in user's name (from `xl`); hamburger below `lg`, since the longer name needs the room. On `/login` and `/register` only the brand shows.
+- **Left:** nav links (INVENTORY · LOGOUT) + signed-in user's name (from `xl`); hamburger below `lg`, since the longer name needs the room. On `/login` and `/register` only the brand shows.
 - Logo file: `Thumbnails-144.png` → `frontend/src/assets/rayfield-logo.png` (2314×611), `alt="Rayfield"`, ~36px tall on mobile, ~56px on desktop.
-- Footer disclaimer: "Rayfield is a fictional brand from Cyberpunk 2077 © CD PROJEKT RED. Fan project, not affiliated."
+- Footer disclaimer: "Rayfield is a fictional brand from Cyberpunk 2077 © CD PROJEKT RED. Fan project, not affiliated." The README credits the logo as well.
 - Optional: crop the shield "R" emblem as the favicon.
 
 ## 2. Pages & Routes
@@ -26,18 +26,17 @@ Product/data decisions that affect the backend live in `PLAN.md` → "Product Sp
 | Route | Who | Content |
 |---|---|---|
 | `/login` | guest | Login form, link to register |
-| `/register` | guest | Name, email, password, confirm password |
-| `/` | logged in | Inventory: search panel + vehicle grid |
-| `/admin` | admin | Same grid + "Add vehicle" button, edit/delete/restock on each card |
+| `/register` | guest | Name, email, password, confirm password; logs in automatically on success |
+| `/` | logged in | Inventory: search panel + vehicle grid. Admins also get an "Add vehicle" button and edit/delete/restock on each card |
 | `*` | all | 404 `///SIGNAL.LOST` |
 
-Guests are redirected to `/login`; non-admins hitting `/admin` are redirected to `/`.
+Guests are redirected to `/login`. There is no `/admin` route: admin controls render on `/` by role.
 
 ## 3. Layout
 
 ```
 ┌───────────────────────────────────────────────┐
-│ INVENTORY ADMIN LOGOUT [R] | RAYFIELD AUTOSHOW│  ← black header, [R] = logo (hamburger < lg)
+│ INVENTORY LOGOUT       [R] | RAYFIELD AUTOSHOW│  ← black header, [R] = logo (hamburger < lg)
 │ ///INVENTORY.MODULE  24 UNITS ▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮│  ← yellow module strip (header divider)
 ├────────────┬──────────────────────────────────┤
 │ SEARCH     │  [card] [card] [card]             │
@@ -49,7 +48,7 @@ Guests are redirected to `/login`; non-admins hitting `/admin` are redirected to
 │ [SEARCH_] [CLEAR]                              │
 └────────────┴──────────────────────────────────┘
 ```
-Mobile: filters collapse into a "FILTERS" toggle above the grid.
+Mobile: filters collapse into a "FILTERS" toggle above the grid. Admins get an "ADD VEHICLE" button above the grid.
 
 ## 4. Vehicle Card
 
@@ -81,10 +80,13 @@ Mobile: filters collapse into a "FILTERS" toggle above the grid.
 
 ## 6. Admin UI
 
-- **Add / Edit:** modal `cyber-panel` form: make, model, year, category (select), price, image URL (optional); quantity only on **add** (initial stock).
-- **Restock:** small inline popover, quantity input (positive integer) + confirm.
+Admin controls appear on `/` for admins only (no separate admin page).
+
+- **Add / Edit:** modal `cyber-panel` form: make, model, year, category (select), price, image URL (optional); quantity only on **add** (initial stock, 0–10,000). Edit always sends every field (PUT is a full replacement).
+- **Category options:** from `src/constants/categories.ts`, a copy of the backend list (keep in sync).
+- **Restock:** small inline popover, quantity input (1–10,000) + confirm.
 - **Delete:** in-page confirm ("DELETE LAND CRUISER? [CONFIRM] [CANCEL]"), no `window.confirm`.
-- Client-side validation mirrors backend rules; server errors shown under fields.
+- Client-side validation mirrors backend rules; server errors (`details[].field`) shown under the matching field.
 
 ## 7. States
 
@@ -96,11 +98,11 @@ Mobile: filters collapse into a "FILTERS" toggle above the grid.
 | API error | red toast + retry |
 | Purchase success | cyan toast "UNIT ACQUIRED", stock updates in place |
 | Purchase 409 | red toast "OUT OF STOCK", card refreshes |
-| Session expired (401) | logout + redirect to login with message |
+| Session expired (401) | logout + redirect to login with message — except for `/api/auth/*`, where a 401 (e.g. wrong password) shows the login error instead |
 
 ## 8. Responsive
 
-Grid: 1 col (< 640px) → 2 (sm) → 3 (lg) → 4 (xl). Navbar → hamburger below md. Modals full-screen on mobile.
+Grid: 1 col (< 640px) → 2 (sm) → 3 (lg) → 4 (xl). Header → hamburger below lg. Modals full-screen on mobile.
 
 ## 9. Components → Theme Classes
 
@@ -114,14 +116,50 @@ Grid: 1 col (< 640px) → 2 (sm) → 3 (lg) → 4 (xl). Navbar → hamburger bel
 | `ConfirmDialog`, `RestockPopover` | `cyber-panel`, `btn-danger`, `btn-ghost` |
 | `Toast` | `cyber-toast` |
 | `CategoryIcon` | inline SVG per category, yellow stroke |
+| `NotFound` (page) | `cyber-panel`, glitch heading `///SIGNAL.LOST` |
 
-## 10. Key Frontend Tests
+## 10. Frontend Tests
 
+The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behaviour; write the test first.
+
+**API client**
+- [ ] Attaches `Authorization: Bearer <token>` when logged in
+- [ ] Turns the error format into `{ code, message, details }`
+- [ ] A 401 from a non-auth call logs out and redirects to `/login` with a "session expired" message
+- [ ] A 401 from `/api/auth/*` does **not** trigger that redirect
+
+**Auth**
+- [ ] Register form shows validation messages
+- [ ] Confirm-password mismatch shows an error and sends nothing
+- [ ] Successful register logs in automatically and lands on `/`
+- [ ] Login shows the API error on 401
+- [ ] Successful login redirects to `/`
+- [ ] Logout clears the token and returns to `/login`
+- [ ] Protected route redirects a guest to `/login`
+
+**Inventory**
+- [ ] Cards show make, model, year, category, USD price and stock
+- [ ] Loading shows skeleton cards
+- [ ] Empty inventory shows `///NO.UNITS.IN.STOCK`
+- [ ] API error shows the red toast with retry
 - [ ] Purchase button disabled when quantity is 0 (required)
-- [ ] Purchase click calls API and updates stock shown
 - [ ] Sold-out badge shown at 0
-- [ ] Admin controls hidden for regular users
+- [ ] Purchase click calls the API and updates the stock shown
+- [ ] Purchase success shows the "UNIT ACQUIRED" toast
+- [ ] Purchase 409 shows the "OUT OF STOCK" toast and refreshes the card
+
+**Search / filter**
 - [ ] Search submits only filled params
-- [ ] Login shows error on 401; success redirects
-- [ ] Protected route redirects guest to `/login`
-- [ ] Vehicle form shows validation errors
+- [ ] "In stock only" hides sold-out vehicles (client-side)
+- [ ] Clear resets the filters and the list
+
+**Admin**
+- [ ] Admin controls hidden for regular users
+- [ ] Vehicle form shows validation errors (client-side)
+- [ ] Server validation errors show under the matching field
+- [ ] Adding a vehicle shows it in the grid
+- [ ] Edit opens the form prefilled
+- [ ] Saving an edit updates the card
+- [ ] Delete asks for in-page confirmation
+- [ ] Confirming delete removes the card
+- [ ] Restock updates the stock shown
