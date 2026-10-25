@@ -130,4 +130,16 @@ describe('my garage', () => {
     await user.click(screen.getByTestId('dialog-backdrop'));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
+
+  it('from the mobile menu: tapping My Garage closes the menu and opens the garage', async () => {
+    serveGarage(makePurchase());
+    const { user } = renderApp('/');
+    await user.click(screen.getByRole('button', { name: 'Menu' }));
+    const menu = screen.getByRole('navigation', { name: 'Mobile' });
+
+    await user.click(within(menu).getByRole('button', { name: 'My Garage' }));
+
+    expect(screen.queryByRole('navigation', { name: 'Mobile' })).not.toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'My Garage' })).toBeInTheDocument();
+  });
 });
