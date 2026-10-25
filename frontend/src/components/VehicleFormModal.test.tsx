@@ -172,4 +172,23 @@ describe('vehicle form', () => {
       quantity: 4,
     });
   });
+
+  it('Edit opens the form prefilled, without a quantity field', async () => {
+    serveVehicles({ ...inStock, imageUrl: 'https://cdn.example.com/lc.jpg' });
+    const { user } = renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+
+    await user.click(within(card).getByRole('button', { name: 'Edit' }));
+
+    const dialog = screen.getByRole('dialog', { name: 'Edit vehicle' });
+    expect(within(dialog).getByRole('form')).toHaveFormValues({
+      make: 'Toyota',
+      model: 'Land Cruiser',
+      year: 2024,
+      category: 'SUV',
+      price: 125000,
+      imageUrl: 'https://cdn.example.com/lc.jpg',
+    });
+    expect(within(dialog).queryByLabelText('Quantity')).not.toBeInTheDocument();
+  });
 });
