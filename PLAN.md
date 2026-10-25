@@ -308,7 +308,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [ ] Optional, only if time allows: `helmet` (responses carry its security headers). No rate limiting: it would 429 the auth tests, and an in-memory limit doesn't hold across Vercel instances.
 
 ### 4.12 End of backend
-- [ ] Friendlier validation messages for every schema, replacing Zod's defaults (one cycle; the UI shows them under form fields)
+- [x] Friendlier validation messages for every schema, replacing Zod's defaults (one cycle; the UI shows them under form fields)
 - [ ] Jest coverage threshold (e.g. 90% lines) in `jest.config`; exclude `server.ts`, migrations and script entry points (moved from §3)
 
 ---
