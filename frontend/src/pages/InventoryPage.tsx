@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { ApiError } from '../api/client';
 import {
@@ -26,7 +26,6 @@ import { validateFilters } from '../validation/search';
 import { toFormValues } from '../validation/vehicle';
 import { useAuth } from '../context/AuthContext';
 
-const SUCCESS_TOAST_MS = 4000;
 // Long enough to wait out a burst of keystrokes, short enough to feel live.
 const SEARCH_DEBOUNCE_MS = 300;
 
@@ -42,8 +41,9 @@ export function InventoryPage() {
   const [error, setError] = useState('');
   // The load error stays (it explains the empty page) even once its toast is closed.
   const [errorToastClosed, setErrorToastClosed] = useState(false);
-  // Feedback for the last purchase; the load error above has its own toast with Retry.
-  const [notice, setNotice] = useState<{ tone: 'success' | 'error'; message: string } | null>(null);
+  // The last action's error (admin actions, a failed refresh); the load error has its own
+  // toast with Retry. Purchase results show in the purchase dialog.
+  const [notice, setNotice] = useState<string | null>(null);
   // What's typed in the search panel. The list follows it live: once typing pauses, the filled
   // filters become the query, and a new query reloads the list.
   const [searchParams, setSearchParams] = useSearchParams();
@@ -103,13 +103,6 @@ export function InventoryPage() {
     if (next.toString() !== searchParams.toString()) setSearchParams(next, { replace: true });
   }, [debouncedForm, inStockOnly, searchParams, setSearchParams]);
 
-  // Success toasts clear themselves; error toasts stay until the next action replaces them.
-  useEffect(() => {
-    if (notice?.tone !== 'success') return;
-    const timer = setTimeout(() => setNotice(null), SUCCESS_TOAST_MS);
-    return () => clearTimeout(timer);
-  }, [notice]);
-
   /** Swaps an updated vehicle (from purchase, edit, restock) into the list in place. */
   function replaceVehicle(updated: Vehicle) {
     setVehicles((list) => list?.map((v) => (v.id === updated.id ? updated : v)) ?? null);
@@ -118,7 +111,7 @@ export function InventoryPage() {
   /** Shows an API failure as a red toast; anything else is a bug and is rethrown. */
   function showError(e: unknown) {
     if (!(e instanceof ApiError)) throw e;
-    setNotice({ tone: 'error', message: e.message });
+    setNotice(e.message);
   }
 
   // On failure the card keeps its confirmation open, so the admin can retry or cancel.
@@ -143,6 +136,7 @@ export function InventoryPage() {
     }
   }
 
+  /** True when bought (the dialog shows success); false after showing the error. */
   async function purchase(vehicle: Vehicle) {
     let updated: Vehicle;
     try {
@@ -150,22 +144,25 @@ export function InventoryPage() {
     } catch (e) {
       if (!(e instanceof ApiError)) throw e;
       if (e.status !== 409) {
-        setNotice({ tone: 'error', message: e.message });
-        return;
+        setNotice(e.message);
+        return false;
       }
       // Someone bought the last unit first: our list is stale, so reload it quietly.
-      setNotice({ tone: 'error', message: 'OUT OF STOCK' });
+      setNotice('OUT OF STOCK');
       try {
         setVehicles(await fetchVehicles(query));
       } catch (reloadError) {
         // The stale card stays; say why it couldn't be refreshed instead.
         showError(reloadError);
       }
-      return;
+      return false;
     }
     replaceVehicle(updated);
-    setNotice({ tone: 'success', message: 'UNIT ACQUIRED' });
+    return true;
   }
+
+  // Stable, since the dialog's auto-close timer depends on it.
+  const closePurchase = useCallback(() => setBuying(null), []);
 
   function clearFilters() {
     setForm(EMPTY_FILTERS);
@@ -270,20 +267,11 @@ export function InventoryPage() {
       {buying && (
         <PurchaseDialog
           vehicle={buying}
-          onConfirm={async () => {
-            await purchase(buying);
-            setBuying(null);
-          }}
-          onClose={() => setBuying(null)}
+          onConfirm={() => purchase(buying)}
+          onClose={closePurchase}
         />
       )}
-      {notice && (
-        <Toast
-          tone={notice.tone}
-          message={notice.message}
-          onDismiss={notice.tone === 'error' ? () => setNotice(null) : undefined}
-        />
-      )}
+      {notice && <Toast tone="error" message={notice} onDismiss={() => setNotice(null)} />}
       {error && !errorToastClosed && (
         <Toast
           tone="error"

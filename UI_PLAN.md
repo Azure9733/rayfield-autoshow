@@ -167,7 +167,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 **Purchase dialog**
 - [x] Purchase opens a confirmation dialog (make + model, year, price; focus on CONFIRM PURCHASE); Cancel, Escape and the backdrop close it without buying
 - [x] CONFIRM PURCHASE shows PROCESSING... and is disabled in flight: a double-click sends one request; the stock updates (replaces "Purchase is disabled while its request is in flight")
-- [ ] Success shows UNIT ACQUIRED inside the dialog (no toast); it closes itself 1.6 s later, or sooner on a click (replaces the UNIT ACQUIRED toast and its 4 s auto-dismiss)
+- [x] Success shows UNIT ACQUIRED inside the dialog (no toast); it closes itself 1.6 s later, or sooner on a click (replaces the UNIT ACQUIRED toast and its 4 s auto-dismiss)
 
 **Search / filter**
 - [x] Typing in the search bar loads matching vehicles live (`?q=`, make or model), debounced to one request
