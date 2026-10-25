@@ -23,6 +23,8 @@ export interface Purchase {
 export interface PurchasesRepository {
   /** The purchases made by `userId`, newest first. */
   listForUser(userId: string): Promise<Purchase[]>;
+  /** Deletes every purchase (the demo reset). */
+  deleteAll(): Promise<void>;
 }
 
 /** Postgres-backed implementation of {@link PurchasesRepository}. */
@@ -36,6 +38,10 @@ export function createPurchasesRepository(db: Database): PurchasesRepository {
         // id breaks ties, so two purchases in the same instant still list in a stable order.
         .orderBy(desc(purchases.createdAt), desc(purchases.id));
       return rows.map(toPurchase);
+    },
+
+    async deleteAll() {
+      await db.delete(purchases);
     },
   };
 }

@@ -1,5 +1,9 @@
 import { db, pool } from '../db/client';
 import {
+  createPurchasesRepository,
+  type PurchasesRepository,
+} from '../modules/purchases/purchases.repository';
+import {
   createVehiclesRepository,
   type NewVehicle,
   type VehiclesRepository,
@@ -44,10 +48,15 @@ export const DEMO_VEHICLES: NewVehicle[] = [
   },
 ];
 
-/** Replaces the whole inventory with DEMO_VEHICLES; safe to re-run (resets the demo). */
+/**
+ * Resets the demo: deletes every purchase (so everyone's garage starts empty) and replaces the
+ * whole inventory with DEMO_VEHICLES. Safe to re-run.
+ */
 export async function seedDemo(
   vehicles: VehiclesRepository = createVehiclesRepository(db),
+  purchases: PurchasesRepository = createPurchasesRepository(db),
 ): Promise<void> {
+  await purchases.deleteAll();
   await vehicles.replaceAll(DEMO_VEHICLES);
 }
 

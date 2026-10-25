@@ -323,7 +323,7 @@ Table `purchases`: `id`, `user_id` (→ users, cascade), `vehicle_id` (→ vehic
 - [x] **(guard)** Another user's purchases are never returned
 - [x] **(guard)** `[]` when the caller has none
 - [x] **(guard)** No token → 401
-- [ ] `seedDemo` also deletes all purchases
+- [x] `seedDemo` also deletes all purchases
 
 ---
 
