@@ -15,6 +15,6 @@ export function createVehiclesRouter(service: VehiclesService): Router {
   router.get('/', controller.list);
   router.get('/search', validateQuery(searchQuerySchema), controller.search);
   router.post('/', requireAdmin, validateBody(createVehicleSchema), controller.create);
-  router.put('/:id', validateBody(updateVehicleSchema), controller.update);
+  router.put('/:id', requireAdmin, validateBody(updateVehicleSchema), controller.update);
   return router;
 }
