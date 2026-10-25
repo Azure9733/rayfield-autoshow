@@ -1,5 +1,8 @@
+import { within } from '@testing-library/react';
+import { http, HttpResponse } from 'msw';
 import { saveSession, type User } from '../api/session';
 import type { Vehicle } from '../api/vehicles';
+import { server } from './server';
 
 /** Stores a session as if `role` had logged in. */
 export function loginAs(role: User['role'] = 'user') {
@@ -29,4 +32,27 @@ export function makeVehicle(overrides: Partial<Vehicle> = {}): Vehicle {
     updatedAt: '2026-10-01T10:00:00.000Z',
     ...overrides,
   };
+}
+
+export const inStock = makeVehicle({
+  id: 'a1',
+  make: 'Toyota',
+  model: 'Land Cruiser',
+  quantity: 2,
+});
+export const soldOut = makeVehicle({
+  id: 'b2',
+  make: 'Porsche',
+  model: '911 Carrera',
+  quantity: 0,
+});
+
+/** Makes GET /api/vehicles answer with these vehicles. */
+export function serveVehicles(...vehicles: Vehicle[]) {
+  server.use(http.get('/api/vehicles', () => HttpResponse.json(vehicles)));
+}
+
+/** The value next to a badge's label, e.g. badge(card, 'Stock') → the stock count element. */
+export function badge(card: HTMLElement, label: string) {
+  return within(card).getByText(label).nextElementSibling;
 }

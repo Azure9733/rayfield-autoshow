@@ -1,20 +1,8 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
-import { loginAs, makeVehicle } from '../test/fixtures';
+import { badge, inStock, loginAs, makeVehicle, serveVehicles, soldOut } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
 import { server } from '../test/server';
-
-/** The value next to a badge's label, e.g. badge(card, 'Stock') → the stock count element. */
-function badge(card: HTMLElement, label: string) {
-  return within(card).getByText(label).nextElementSibling;
-}
-
-const inStock = makeVehicle({ id: 'a1', make: 'Toyota', model: 'Land Cruiser', quantity: 2 });
-const soldOut = makeVehicle({ id: 'b2', make: 'Porsche', model: '911 Carrera', quantity: 0 });
-
-function serveVehicles(...vehicles: ReturnType<typeof makeVehicle>[]) {
-  server.use(http.get('/api/vehicles', () => HttpResponse.json(vehicles)));
-}
 
 describe('inventory page', () => {
   beforeEach(() => loginAs('user'));
