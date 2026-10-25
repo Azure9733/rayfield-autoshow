@@ -50,6 +50,8 @@ export interface VehiclesRepository {
   exists(id: string): Promise<boolean>;
   /** Adds `quantity` units to stock; the updated vehicle, or undefined for an unknown id. */
   restock(id: string, quantity: number): Promise<Vehicle | undefined>;
+  /** Deletes every vehicle and inserts `list`, in one transaction (used by the demo reseed). */
+  replaceAll(list: NewVehicle[]): Promise<void>;
 }
 
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
@@ -127,6 +129,16 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
         .where(eq(vehicles.id, id))
         .returning();
       return row && toVehicle(row);
+    },
+
+    async replaceAll(list) {
+      // One transaction, so a failure halfway never leaves the inventory empty.
+      await db.transaction(async (tx) => {
+        await tx.delete(vehicles);
+        if (list.length > 0) {
+          await tx.insert(vehicles).values(list.map((v) => ({ ...v, price: String(v.price) })));
+        }
+      });
     },
   };
 }
