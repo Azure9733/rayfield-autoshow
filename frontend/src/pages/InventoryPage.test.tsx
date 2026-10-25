@@ -131,4 +131,28 @@ describe('inventory page', () => {
 
     expect(await screen.findByRole('status')).toHaveTextContent('UNIT ACQUIRED');
   });
+
+  it('a 409 on purchase shows the OUT OF STOCK toast and refreshes the card', async () => {
+    // The page loaded while 2 were left; someone else bought them before this click.
+    let loads = 0;
+    server.use(
+      http.get('/api/vehicles', () =>
+        HttpResponse.json([++loads === 1 ? inStock : { ...inStock, quantity: 0 }]),
+      ),
+      http.post('/api/vehicles/a1/purchase', () =>
+        HttpResponse.json(
+          { error: { code: 'OUT_OF_STOCK', message: 'Out of stock' } },
+          { status: 409 },
+        ),
+      ),
+    );
+    const { user } = renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+
+    await user.click(within(card).getByRole('button', { name: 'Purchase' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('OUT OF STOCK');
+    await waitFor(() => expect(badge(card, 'Stock')).toHaveTextContent('Sold out'));
+    expect(within(card).getByRole('button', { name: 'Purchase' })).toBeDisabled();
+  });
 });
