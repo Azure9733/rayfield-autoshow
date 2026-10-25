@@ -133,7 +133,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Register form shows validation messages
 - [x] Confirm-password mismatch shows an error and sends nothing
 - [x] Successful register logs in automatically and lands on `/`
-- [ ] Register shows the API error (e.g. 409 "Email is already registered")
+- [x] Register shows the API error (e.g. 409 "Email is already registered")
 - [ ] Login shows the API error on 401
 - [ ] Successful login redirects to `/`
 - [ ] Logout clears the token and returns to `/login`

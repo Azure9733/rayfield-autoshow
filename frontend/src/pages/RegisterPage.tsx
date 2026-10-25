@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { ApiError } from '../api/client';
 import { TextField } from '../components/TextField';
 import { useAuth } from '../context/AuthContext';
 import { validateRegister, type FieldErrors, type RegisterValues } from '../validation/auth';
@@ -13,6 +14,7 @@ export function RegisterPage() {
     confirm: '',
   });
   const [errors, setErrors] = useState<FieldErrors<RegisterValues>>({});
+  const [formError, setFormError] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -29,7 +31,14 @@ export function RegisterPage() {
     if (Object.keys(found).length > 0) return;
 
     const { name, email, password } = values;
-    await register({ name, email, password });
+    setFormError('');
+    try {
+      await register({ name, email, password });
+    } catch (error) {
+      if (!(error instanceof ApiError)) throw error;
+      setFormError(error.message);
+      return;
+    }
     navigate('/');
   }
 
@@ -44,6 +53,11 @@ export function RegisterPage() {
         <h1 className="glitch text-3xl uppercase" data-text="Register">
           Register
         </h1>
+        {formError && (
+          <p role="alert" className="cyber-error">
+            {formError}
+          </p>
+        )}
         <TextField label="Name" autoComplete="name" {...field('name')} />
         <TextField label="Email" type="email" autoComplete="email" {...field('email')} />
         <TextField
