@@ -418,10 +418,10 @@
 .boot-lines {
   position: absolute;
   top: 24px;
-  right: 24px;
-  text-align: right;
+  left: 24px;
+  text-align: left;
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 11px;
   line-height: 1.7;
 }
 .boot-lines.is-flickering {
