@@ -73,3 +73,8 @@ export interface VehicleInput {
 export function createVehicle(input: VehicleInput) {
   return api.post<Vehicle>('/api/vehicles', input);
 }
+
+/** PUT /api/vehicles/:id (admin): full replacement of the editable fields (no quantity). */
+export function updateVehicle(id: string, input: VehicleInput) {
+  return api.put<Vehicle>(`/api/vehicles/${id}`, input);
+}

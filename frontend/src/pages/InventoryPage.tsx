@@ -7,6 +7,7 @@ import {
   listVehicles,
   purchaseVehicle,
   searchVehicles,
+  updateVehicle,
   type SearchFilters,
   type Vehicle,
 } from '../api/vehicles';
@@ -61,6 +62,11 @@ export function InventoryPage() {
     };
   }, [attempt, query]);
 
+  /** Swaps an updated vehicle (from purchase, edit, restock) into the list in place. */
+  function replaceVehicle(updated: Vehicle) {
+    setVehicles((list) => list?.map((v) => (v.id === updated.id ? updated : v)) ?? null);
+  }
+
   async function purchase(vehicle: Vehicle) {
     let updated: Vehicle;
     try {
@@ -72,7 +78,7 @@ export function InventoryPage() {
       setVehicles(await fetchVehicles(query));
       return;
     }
-    setVehicles((list) => list?.map((v) => (v.id === updated.id ? updated : v)) ?? null);
+    replaceVehicle(updated);
     setNotice({ tone: 'success', message: 'UNIT ACQUIRED' });
   }
 
@@ -179,7 +185,10 @@ export function InventoryPage() {
           title="Edit vehicle"
           initial={toFormValues(editing)}
           withQuantity={false}
-          onSave={async () => {}}
+          onSave={async (input) => {
+            replaceVehicle(await updateVehicle(editing.id, input));
+            setEditing(null);
+          }}
           onClose={() => setEditing(null)}
         />
       )}
