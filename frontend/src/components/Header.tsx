@@ -2,6 +2,7 @@ import { useId, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import logo from '../assets/rayfield-logo.png';
 import { useAuth } from '../context/AuthContext';
+import { UserIdentity } from './UserIdentity';
 
 /**
  * Black top bar: brand lockup on the left, nav for logged-in users on the right. Below lg the
@@ -29,9 +30,9 @@ export function Header() {
       </Link>
       {user && (
         <>
-          <nav className="hidden h-full items-center lg:flex" aria-label="Main">
-            <span className="hidden px-4 font-mono text-sm text-cp-muted xl:inline">
-              {user.name}
+          <nav className="hidden h-full items-center gap-2 lg:flex" aria-label="Main">
+            <span className="px-4">
+              <UserIdentity user={user} />
             </span>
             <button type="button" className="cyber-nav-link cursor-pointer" onClick={handleLogout}>
               Logout
@@ -55,7 +56,9 @@ export function Header() {
               aria-label="Mobile"
               className="cyber-panel absolute top-full right-0 w-full sm:w-72 lg:hidden"
             >
-              <p className="px-5 py-3 font-mono text-sm text-cp-muted">{user.name}</p>
+              <p className="px-5 py-3">
+                <UserIdentity user={user} />
+              </p>
               <button
                 type="button"
                 className="cyber-list-item cursor-pointer"
