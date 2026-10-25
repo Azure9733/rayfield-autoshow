@@ -140,7 +140,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Protected route redirects a guest to `/login`
 
 **Header**
-- [ ] Below lg, the Menu button opens and closes the nav; choosing a link closes it
+- [x] Below lg, the Menu button opens and closes the nav; choosing a link closes it
 
 **Inventory**
 - [x] Cards show make, model, year, category, USD price and stock
