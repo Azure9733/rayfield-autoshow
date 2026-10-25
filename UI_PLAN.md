@@ -145,7 +145,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Empty inventory shows `///NO.UNITS.IN.STOCK`
 - [x] API error shows the red toast with retry
 - [x] Purchase button disabled when quantity is 0 (required)
-- [ ] Sold-out badge shown at 0
+- [x] Sold-out badge shown at 0
 - [ ] Purchase click calls the API and updates the stock shown
 - [ ] Purchase success shows the "UNIT ACQUIRED" toast
 - [ ] Purchase 409 shows the "OUT OF STOCK" toast and refreshes the card

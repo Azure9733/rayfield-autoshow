@@ -32,7 +32,11 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           </div>
           <div className="cyber-badge">
             <dt className="cyber-badge-label">Stock</dt>
-            <dd className="cyber-badge-value">{quantity}</dd>
+            {quantity === 0 ? (
+              <dd className="cyber-badge-value is-red">Sold out</dd>
+            ) : (
+              <dd className="cyber-badge-value">{quantity}</dd>
+            )}
           </div>
         </dl>
         <p className="font-mono text-xl">{formatPrice(price)}</p>
