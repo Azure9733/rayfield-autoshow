@@ -16,7 +16,7 @@ Product/data decisions that affect the backend live in `PLAN.md` → "Product Sp
 ### Header & Logo
 - Black header bar, full width, sticky.
 - **Left:** brand lockup `[logo] | RAYFIELD AUTOSHOW`: Rayfield logo (white PNG, used as-is), thin vertical divider, name in white Rajdhani with wide tracking. Below `sm` the text shortens to `AUTOSHOW` (the logo already says RAYFIELD). Links to `/`.
-- **Right:** a person icon + the signed-in user's name (admins: a shield icon + a cyan ADMIN badge), then LOGOUT right-most (no INVENTORY link: the logo goes to `/`); hamburger below `lg`. On `/login` and `/register` only the brand shows.
+- **Right:** a person icon + the signed-in user's name (admins: a shield icon + a cyan ADMIN badge), then LOGOUT right-most (no INVENTORY link: the logo goes to `/`); hamburger below `lg`. Guests get no hamburger: the corner shows LOGIN on `/register` (and the 404) and REGISTER on `/login`.
 - Logo file: `Thumbnails-144.png` → `frontend/src/assets/rayfield-logo.png` (resized from 2314×611 to 424×112, 2x the largest display size), `alt="Rayfield"`, ~36px tall on mobile, ~56px on desktop.
 - Footer disclaimer: "Rayfield is a fictional brand from Cyberpunk 2077 © CD PROJEKT RED. Fan project, not affiliated." The README credits the logo as well.
 - Favicon: the shield "R" emblem cropped from the logo, white on a black square (`frontend/src/assets/rayfield-icon.png`).
@@ -142,7 +142,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Below lg, the Menu button opens and closes the nav
 - [x] No INVENTORY link in the header (nav or menu); the logo links to `/`
 - [x] Logged in, the nav and menu show a person icon + name (admins: a shield icon + ADMIN badge), with LOGOUT right-most
-- [ ] Guests get no Menu; the corner shows LOGIN on `/register` and REGISTER on `/login`
+- [x] Guests get no Menu; the corner shows LOGIN on `/register` and REGISTER on `/login`
 
 **Not found**
 - [x] Unknown routes show `///SIGNAL.LOST` with a link home
