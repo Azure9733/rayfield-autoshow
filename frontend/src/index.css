@@ -399,6 +399,49 @@
 }
 
 /* Respect users who turn off motion */
+/* ── LOGIN SWEEP (UI_PLAN.md §1): after a login only ──
+   A black panel wipes away left to right (350 ms) after a one-frame glitch, then the inventory
+   rises 8px and fades in (200 ms). Reduced motion: neither is rendered or played. */
+.login-sweep {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: #000;
+  pointer-events: none;
+  animation: login-sweep 350ms cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+.login-reveal {
+  animation: login-reveal 200ms ease-out 350ms both;
+}
+@keyframes login-sweep {
+  0% {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+  /* the glitch frame */
+  5% {
+    transform: translateX(6px);
+    opacity: 0.85;
+  }
+  10% {
+    transform: none;
+    opacity: 1;
+  }
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+@keyframes login-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ── FILTERS PANEL (UI_PLAN.md §3): sharp top-to-bottom clip-path wipe ──
    Opening flickers for two frames first; closing wipes back up, then JS removes the panel.
    Reduced motion: JS opens and closes instantly (and animations are off below). */

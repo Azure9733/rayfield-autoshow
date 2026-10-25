@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
+import { LoginSweep } from './components/LoginSweep';
 import { InventoryPage } from './pages/InventoryPage';
 import { LoginPage } from './pages/LoginPage';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
+      <LoginSweep />
     </div>
   );
 }

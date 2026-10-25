@@ -21,6 +21,7 @@ import { SkeletonCard } from '../components/SkeletonCard';
 import { Toast } from '../components/Toast';
 import { VehicleCard } from '../components/VehicleCard';
 import { VehicleFormModal } from '../components/VehicleFormModal';
+import { prefersReducedMotion } from '../lib/motion';
 import { useDebouncedValue } from '../lib/useDebouncedValue';
 import { validateFilters } from '../validation/search';
 import { toFormValues } from '../validation/vehicle';
@@ -58,7 +59,11 @@ export function InventoryPage() {
     () => Object.fromEntries(new URLSearchParams(queryString)) as SearchFilters,
     [queryString],
   );
-  const isAdmin = useAuth().user?.role === 'admin';
+  const { user, revealPending, ackReveal } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  // Rise-and-fade in behind the login sweep, only on the first mount after a login.
+  const [reveal] = useState(() => revealPending && !prefersReducedMotion());
+  useEffect(ackReveal, [ackReveal]);
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<Vehicle | null>(null);
   // The vehicle whose purchase dialog is open.
@@ -172,7 +177,7 @@ export function InventoryPage() {
 
   return (
     <>
-      <main className="flex-1 space-y-6 px-4 py-8 md:px-8">
+      <main className={`flex-1 space-y-6 px-4 py-8 md:px-8 ${reveal ? 'login-reveal' : ''}`}>
         <h1 className="sr-only">Inventory</h1>
         <SearchPanel
           values={form}

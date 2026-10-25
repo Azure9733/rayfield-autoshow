@@ -1,6 +1,7 @@
 import {
   createContext,
   startTransition,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -19,6 +20,15 @@ interface AuthValue {
   /** Creates the account, then logs in with the same credentials. */
   register: (input: authApi.RegisterInput) => Promise<void>;
   logout: () => void;
+  /**
+   * Counts logins (and registers, which log in) in this page load; 0 after a reload. Drives the
+   * login sweep, which plays only right after logging in.
+   */
+  logins: number;
+  /** True until the inventory has played its reveal for the latest login. */
+  revealPending: boolean;
+  /** Marks the latest login's reveal as played. */
+  ackReveal: () => void;
 }
 
 const AuthContext = createContext<AuthValue | null>(null);
@@ -27,6 +37,9 @@ const AuthContext = createContext<AuthValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(loadSession);
+  const [logins, setLogins] = useState(0);
+  const [revealed, setRevealed] = useState(0);
+  const ackReveal = useCallback(() => setRevealed(logins), [logins]);
 
   useEffect(
     () =>
@@ -44,6 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const next = await authApi.login(email, password);
     saveSession(next);
     setSession(next);
+    setLogins((n) => n + 1);
   }
 
   async function register(input: authApi.RegisterInput) {
@@ -57,7 +71,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user: session?.user ?? null, login, register, logout }}>
+    <AuthContext.Provider
+      value={{
+        user: session?.user ?? null,
+        login,
+        register,
+        logout,
+        logins,
+        revealPending: logins > revealed,
+        ackReveal,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
