@@ -29,4 +29,13 @@ describe('POST /api/vehicles/:id/restock', () => {
     expect(res.body).toMatchObject({ id, quantity: 7 });
     expect(await stockOf(id)).toBe(7);
   });
+
+  it('moves updatedAt forward: a stock change counts as an update', async () => {
+    const seededAt = new Date('2026-01-01T00:00:00Z');
+    const { id } = await createVehicle({ quantity: 2, createdAt: seededAt });
+
+    const res = await restock(id, { quantity: 5 });
+
+    expect(new Date(res.body.updatedAt).getTime()).toBeGreaterThan(seededAt.getTime());
+  });
 });
