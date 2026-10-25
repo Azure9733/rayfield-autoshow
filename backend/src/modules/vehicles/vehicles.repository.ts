@@ -1,3 +1,4 @@
+import { desc } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { vehicles } from '../../db/schema';
 
@@ -15,7 +16,7 @@ export interface VehiclesRepository {
 export function createVehiclesRepository(db: Database): VehiclesRepository {
   return {
     async list() {
-      const rows = await db.select().from(vehicles);
+      const rows = await db.select().from(vehicles).orderBy(desc(vehicles.createdAt));
       return rows.map(toVehicle);
     },
   };
