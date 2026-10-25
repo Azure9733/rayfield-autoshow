@@ -266,7 +266,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] `updatedAt` changes on update
 - [x] Body is validated like create (`it.each`: a missing field, an invalid value) → 400
 - [x] An omitted `imageUrl` clears the stored image (`null`)
-- [ ] **(guard)** `quantity` in the body is ignored; stock unchanged
+- [x] **(guard)** `quantity` in the body is ignored; stock unchanged
 - [ ] Unknown id → 404
 - [ ] Malformed id → 400 (builds the shared UUID check)
 - [ ] Non-admin → 403

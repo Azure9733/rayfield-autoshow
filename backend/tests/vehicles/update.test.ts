@@ -68,4 +68,13 @@ describe('PUT /api/vehicles/:id', () => {
     expect(res.status).toBe(200);
     expect(res.body.imageUrl).toBeNull();
   });
+
+  it('ignores quantity in the body: stock only changes via purchase / restock', async () => {
+    const { id } = await createVehicle({ quantity: 3 });
+
+    const res = await putVehicle(id, { ...replacement, quantity: 99 });
+
+    expect(res.status).toBe(200);
+    expect(res.body.quantity).toBe(3);
+  });
 });
