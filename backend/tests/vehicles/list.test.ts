@@ -86,4 +86,16 @@ describe('GET /api/vehicles', () => {
 
     expect(res.body.map((v: { id: string }) => v.id)).toEqual([newest.id, middle.id, oldest.id]);
   });
+
+  it('breaks createdAt ties by id descending, so the order is deterministic', async () => {
+    // Five rows, not two: insertion order can't match the expected order by chance (1 in 120).
+    const createdAt = new Date('2026-01-01T00:00:00Z');
+    const ids: string[] = [];
+    for (let i = 0; i < 5; i++) ids.push((await createVehicle({ createdAt })).id);
+
+    const res = await listVehicles();
+
+    // Postgres orders uuids like their lowercase hex strings.
+    expect(res.body.map((v: { id: string }) => v.id)).toEqual([...ids].sort().reverse());
+  });
 });

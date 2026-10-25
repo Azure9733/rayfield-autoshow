@@ -214,6 +214,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] `price` is a JSON number, not a string
 - [x] **(guard)** Includes out-of-stock vehicles (frontend shows them with disabled Purchase) — documented in README
 - [x] Newest first (give the helper explicit `createdAt` values: rows inserted in one statement share a timestamp)
+- [ ] Vehicles with the same `createdAt` are ordered by `id` descending, so the order is deterministic
 
 ### 4.4 Auth middleware (tested via `GET /api/vehicles`)
 - [ ] No `Authorization` header → 401
