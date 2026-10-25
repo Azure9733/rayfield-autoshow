@@ -60,4 +60,12 @@ describe('GET /api/vehicles', () => {
       ]),
     );
   });
+
+  it('returns price as a JSON number, not a string', async () => {
+    await createVehicle({ price: 38999.99 });
+
+    const res = await listVehicles();
+
+    expect(res.body[0].price).toBe(38999.99);
+  });
 });
