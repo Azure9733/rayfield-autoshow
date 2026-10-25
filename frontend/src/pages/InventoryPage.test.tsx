@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { badge, inStock, loginAs, makeVehicle, serveVehicles, soldOut } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
@@ -187,5 +187,46 @@ describe('inventory page', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent(message);
     expect(within(card).getByRole('button', { name: 'Purchase' })).toBeEnabled();
+  });
+
+  describe('toast timing', () => {
+    // shouldAdvanceTime keeps real time flowing too, so MSW and user-event still work.
+    beforeEach(() => vi.useFakeTimers({ shouldAdvanceTime: true }));
+    afterEach(() => vi.useRealTimers());
+
+    it('the success toast dismisses itself after about 4 seconds', async () => {
+      serveVehicles(inStock);
+      server.use(
+        http.post('/api/vehicles/a1/purchase', () =>
+          HttpResponse.json({ ...inStock, quantity: 1 }),
+        ),
+      );
+      const { user } = renderApp('/');
+      const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+      await user.click(within(card).getByRole('button', { name: 'Purchase' }));
+      const toast = await screen.findByRole('status');
+
+      act(() => vi.advanceTimersByTime(3500));
+      expect(toast).toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(1000));
+      expect(toast).not.toBeInTheDocument();
+    });
+
+    it('the load-error toast with Retry stays', async () => {
+      server.use(
+        http.get('/api/vehicles', () =>
+          HttpResponse.json(
+            { error: { code: 'INTERNAL_ERROR', message: 'Something went wrong' } },
+            { status: 500 },
+          ),
+        ),
+      );
+      renderApp('/');
+      const toast = await screen.findByRole('alert');
+
+      act(() => vi.advanceTimersByTime(30_000));
+
+      expect(toast).toBeInTheDocument();
+    });
   });
 });
