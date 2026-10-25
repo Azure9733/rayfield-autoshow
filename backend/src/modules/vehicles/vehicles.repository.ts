@@ -19,6 +19,9 @@ export interface NewVehicle {
   imageUrl?: string;
 }
 
+/** The editable fields a PUT replaces; stock only changes through purchase / restock. */
+export type VehicleUpdate = Omit<NewVehicle, 'quantity'>;
+
 /** Search filters; every filter is optional and they combine with AND. */
 export interface VehicleFilters {
   make?: string;
@@ -35,6 +38,7 @@ export interface VehiclesRepository {
   /** Vehicles matching the filters, newest first; `{}` returns every vehicle. */
   search(filters: VehicleFilters): Promise<Vehicle[]>;
   create(input: NewVehicle): Promise<Vehicle>;
+  update(id: string, input: VehicleUpdate): Promise<Vehicle>;
 }
 
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
@@ -61,6 +65,15 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
       const [row] = await db
         .insert(vehicles)
         .values({ ...input, price: String(input.price) })
+        .returning();
+      return toVehicle(row);
+    },
+
+    async update(id, input) {
+      const [row] = await db
+        .update(vehicles)
+        .set({ ...input, price: String(input.price) })
+        .where(eq(vehicles.id, id))
         .returning();
       return toVehicle(row);
     },

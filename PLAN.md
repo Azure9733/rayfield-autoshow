@@ -262,7 +262,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] **(guard)** No token → 401
 
 ### 4.7 `PUT /api/vehicles/:id` (admin; full replacement)
-- [ ] Valid full update → 200 with the updated vehicle
+- [x] Valid full update → 200 with the updated vehicle
 - [ ] `updatedAt` changes on update
 - [ ] Body is validated like create (`it.each`: a missing field, an invalid value) → 400
 - [ ] An omitted `imageUrl` clears the stored image (`null`)

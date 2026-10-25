@@ -16,5 +16,12 @@ export function createVehiclesController(service: VehiclesService) {
     async create(_req: Request, res: Response) {
       res.status(201).json(await service.create(res.locals.body as NewVehicle));
     },
+
+    async update(req: Request<{ id: string }>, res: Response) {
+      const { make, model, year, category, price, imageUrl } = req.body;
+      res.json(
+        await service.update(req.params.id, { make, model, year, category, price, imageUrl }),
+      );
+    },
   };
 }
