@@ -191,4 +191,34 @@ describe('vehicle form', () => {
     });
     expect(within(dialog).queryByLabelText('Quantity')).not.toBeInTheDocument();
   });
+
+  it('saving an edit sends a full replacement and updates the card', async () => {
+    serveVehicles(inStock);
+    let body: unknown;
+    server.use(
+      http.put('/api/vehicles/a1', async ({ request }) => {
+        body = await request.json();
+        return HttpResponse.json({ ...inStock, model: 'Land Cruiser 300', price: 119999.99 });
+      }),
+    );
+    const { user } = renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+    await user.click(within(card).getByRole('button', { name: 'Edit' }));
+    const dialog = screen.getByRole('dialog', { name: 'Edit vehicle' });
+
+    await fill(user, dialog, { Model: 'Land Cruiser 300', Price: '119999.99' });
+    await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+
+    const updated = await screen.findByRole('article', { name: 'Toyota Land Cruiser 300' });
+    expect(within(updated).getByText('$119,999.99')).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    // PUT replaces every editable field and never sends quantity.
+    expect(body).toEqual({
+      make: 'Toyota',
+      model: 'Land Cruiser 300',
+      year: 2024,
+      category: 'SUV',
+      price: 119999.99,
+    });
+  });
 });
