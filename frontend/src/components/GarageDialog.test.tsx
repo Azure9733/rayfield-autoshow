@@ -56,4 +56,23 @@ describe('my garage', () => {
     expect(within(second).getByText(/^24 Oct 2026, \d{2}:\d{2}$/)).toBeInTheDocument();
     expect(badge(second, 'Order ID')).toHaveTextContent(earlier.id);
   });
+
+  it('shows skeleton rows while loading', async () => {
+    let respond = () => {};
+    const responded = new Promise<void>((resolve) => (respond = resolve));
+    server.use(
+      http.get('/api/purchases/me', async () => {
+        await responded;
+        return HttpResponse.json([makePurchase()]);
+      }),
+    );
+    const { user } = renderApp('/');
+
+    const dialog = await openGarage(user);
+
+    expect(within(dialog).getAllByTestId('garage-skeleton')).not.toHaveLength(0);
+    respond();
+    expect(await within(dialog).findByRole('listitem')).toBeInTheDocument();
+    expect(within(dialog).queryByTestId('garage-skeleton')).not.toBeInTheDocument();
+  });
 });
