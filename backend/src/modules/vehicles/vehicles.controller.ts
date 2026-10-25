@@ -9,6 +9,11 @@ export function createVehiclesController(service: VehiclesService) {
       res.json(await service.list());
     },
 
+    async search(req: Request, res: Response) {
+      const make = typeof req.query.make === 'string' ? req.query.make : undefined;
+      res.json(await service.search({ make }));
+    },
+
     async create(_req: Request, res: Response) {
       res.status(201).json(await service.create(res.locals.body as NewVehicle));
     },

@@ -12,6 +12,7 @@ export function createVehiclesRouter(service: VehiclesService): Router {
   const router = Router();
   router.use(authenticate);
   router.get('/', controller.list);
+  router.get('/search', controller.search);
   router.post('/', requireAdmin, validateBody(createVehicleSchema), controller.create);
   return router;
 }

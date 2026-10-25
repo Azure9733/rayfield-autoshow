@@ -1,7 +1,13 @@
-import type { NewVehicle, Vehicle, VehiclesRepository } from './vehicles.repository';
+import type {
+  NewVehicle,
+  Vehicle,
+  VehicleFilters,
+  VehiclesRepository,
+} from './vehicles.repository';
 
 export interface VehiclesService {
   list(): Promise<Vehicle[]>;
+  search(filters: VehicleFilters): Promise<Vehicle[]>;
   create(input: NewVehicle): Promise<Vehicle>;
 }
 
@@ -10,6 +16,10 @@ export function createVehiclesService(vehicles: VehiclesRepository): VehiclesSer
   return {
     list() {
       return vehicles.list();
+    },
+
+    search(filters) {
+      return vehicles.search(filters);
     },
 
     create(input) {

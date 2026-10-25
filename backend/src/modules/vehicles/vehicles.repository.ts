@@ -1,4 +1,4 @@
-import { desc } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { vehicles } from '../../db/schema';
 import type { Category } from './categories';
@@ -19,9 +19,15 @@ export interface NewVehicle {
   imageUrl?: string;
 }
 
+/** Search filters; every filter is optional and they combine with AND. */
+export interface VehicleFilters {
+  make?: string;
+}
+
 /** All SQL for the vehicles table lives behind this interface, so tests can swap in a fake. */
 export interface VehiclesRepository {
   list(): Promise<Vehicle[]>;
+  search(filters: VehicleFilters): Promise<Vehicle[]>;
   create(input: NewVehicle): Promise<Vehicle>;
 }
 
@@ -32,6 +38,15 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
       const rows = await db
         .select()
         .from(vehicles)
+        .orderBy(desc(vehicles.createdAt), desc(vehicles.id));
+      return rows.map(toVehicle);
+    },
+
+    async search({ make }) {
+      const rows = await db
+        .select()
+        .from(vehicles)
+        .where(make === undefined ? undefined : eq(vehicles.make, make))
         .orderBy(desc(vehicles.createdAt), desc(vehicles.id));
       return rows.map(toVehicle);
     },

@@ -243,7 +243,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] (stretch) imageUrl rule (`it.each`): `http://…` or not a URL → 400; omitted is fine
 
 ### 4.6 `GET /api/vehicles/search`
-- [ ] `?make=Toyota` → only Toyotas (exact case first: the simplest test for a new endpoint)
+- [x] `?make=Toyota` → only Toyotas (exact case first: the simplest test for a new endpoint)
 - [ ] Make matching is case-insensitive (`?make=toyota`)
 - [ ] Make matching is partial (`?make=toy`)
 - [ ] `?model=cor` → partial, case-insensitive match
