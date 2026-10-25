@@ -164,8 +164,8 @@ frontend/
 
 - [ ] Create empty GitHub repo (no README/.gitignore), `git init -b main`, add remote
 - [x] `CLAUDE.md` **first**, before any AI-written code: TDD + commit rules (exact co-author trailer from §8, guard tests), comment style (§9), and "never read or print real env files" (every session goes unedited into the public PROMPTS.md)
-- [ ] `.gitignore` excludes `.env*` (except `.env.example` and `.env.test`), `node_modules`, `dist`, `coverage`, `.vercel/`, the assignment PDF
-- [ ] Scaffold backend (one prompt, one `chore:` commit): Express + TS, Jest + Supertest, ESLint + Prettier, docker-compose with **separate dev (volume) and test (tmpfs) Postgres** on the same major version as the Supabase project, `.env.example`, `.env.test` (committed: local test DB and dummy secrets only)
+- [x] `.gitignore` excludes `.env*` (except `.env.example` and `.env.test`), `node_modules`, `dist`, `coverage`, `.vercel/`, the assignment PDF
+- [x] Scaffold backend (one prompt, one `chore:` commit): Express + TS, Jest + Supertest, ESLint + Prettier, docker-compose with **separate dev (volume) and test (tmpfs) Postgres** on the same major version as the Supabase project, `.env.example`, `.env.test` (committed: local test DB and dummy secrets only)
 - [ ] Health-check test → red → green (proves runner works)
 - [ ] Add `zod`, `drizzle-orm`, `pg`, `drizzle-kit`; schema + first migration
 - [ ] Test helpers: load `.env.test`, run migrations once before all tests, truncate tables before each test, close the pg pool after all tests (otherwise Jest hangs)

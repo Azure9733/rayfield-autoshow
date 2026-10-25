@@ -1,0 +1,37 @@
+# Local databases only. Production uses Supabase (same Postgres major version).
+services:
+  db-dev:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rayfield_dev
+    ports:
+      - '5432:5432'
+    volumes:
+      - db-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 2s
+      retries: 15
+
+  db-test:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rayfield_test
+    ports:
+      - '5433:5432'
+    # Data lives in RAM and durability is switched off: tests wipe tables constantly,
+    # so speed matters and nothing here needs to survive a restart.
+    tmpfs:
+      - /var/lib/postgresql/data
+    command: postgres -c fsync=off -c synchronous_commit=off -c full_page_writes=off
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 2s
+      retries: 15
+
+volumes:
+  db-dev-data:

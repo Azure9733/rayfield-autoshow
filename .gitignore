@@ -1,1 +1,11 @@
 Assignment.pdf
+
+# Env files: only the example and the dummy-value test file are committed
+.env*
+!.env.example
+!.env.test
+
+node_modules/
+dist/
+coverage/
+.vercel/
