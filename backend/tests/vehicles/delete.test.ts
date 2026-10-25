@@ -23,4 +23,11 @@ describe('DELETE /api/vehicles/:id', () => {
     expect(res.text).toBe('');
     expect(await vehicleExists(id)).toBe(false);
   });
+
+  it('returns 404 for an id that does not exist', async () => {
+    const res = await deleteVehicle('00000000-0000-4000-8000-000000000000');
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe('NOT_FOUND');
+  });
 });
