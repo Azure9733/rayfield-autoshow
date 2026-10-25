@@ -1,0 +1,2 @@
+-- Intentionally empty: creates the migration journal so `migrate` has something to run.
+-- Tables arrive with the TDD cycle that first needs them (users: PLAN.md §4.1, vehicles: §4.3).
