@@ -25,5 +25,6 @@ export function validateRegister(values: RegisterValues): FieldErrors<RegisterVa
     // bcrypt ignores everything after byte 72, so the limit is bytes, as on the backend.
     errors.password = 'Password is too long (max 72 characters)';
   }
+  if (values.confirm !== values.password) errors.confirm = "Passwords don't match";
   return errors;
 }
