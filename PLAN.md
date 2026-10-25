@@ -346,7 +346,7 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 ### Supabase
 - [x] Code: `DATABASE_SSL` (`true` / `false`, default `false`) turns TLS on for Supabase; local Docker stays without TLS
 - [x] Code: `DATABASE_POOL_MAX` sets the pool size (default 10)
-- [ ] Code: the DB client builds its pool from both (TLS with `rejectUnauthorized: false`, trade-off documented)
+- [x] Code: the DB client builds its pool from both (TLS with `rejectUnauthorized: false`, trade-off documented)
 - [ ] Create project; copy **pooler** connection string (transaction mode, port 6543) for the app
 - [ ] Use direct/session connection string for running migrations
 - [ ] Run migrations against Supabase; run `seedAdmin` and `seedDemo`

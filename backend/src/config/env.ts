@@ -20,8 +20,11 @@ const envSchema = z.object({
   JWT_EXPIRES_IN: z.string().default('1h'),
 });
 
+/** The validated, converted environment. */
+export type Env = z.output<typeof envSchema>;
+
 /** Validates and converts a set of env vars; separate from `env` so tests can pass their own. */
-export function validateEnv(source: NodeJS.ProcessEnv) {
+export function validateEnv(source: NodeJS.ProcessEnv): Env {
   return envSchema.parse(source);
 }
 
