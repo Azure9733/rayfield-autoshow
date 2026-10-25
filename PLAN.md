@@ -148,7 +148,7 @@ frontend/
 - Purchase = always 1 unit; any request body is ignored. Purchase and restock return 200 with the updated vehicle. Stock changes count as updates: purchase and restock move `updatedAt` forward too.
 - `PUT /api/vehicles/:id` replaces make, model, year, category, price and imageUrl (same validation as create); `quantity` is ignored; an omitted `imageUrl` clears the image (stored as `null`).
 - `GET /api/vehicles` returns all vehicles, newest first, including sold-out ones.
-- Search params: `make`, `model` (case-insensitive partial; `%` and `_` match literally), `category` (case-insensitive exact; unknown → 400), `minPrice`, `maxPrice` (inclusive). Empty params (`?make=`) count as absent; filters combine with AND. "In stock only" is a frontend filter.
+- Search params: `q` (make **or** model, case-insensitive partial; the UI's search bar), `make`, `model` (case-insensitive partial; `%` and `_` match literally), `category` (case-insensitive exact; unknown → 400), `minPrice`, `maxPrice` (inclusive). Empty params (`?make=`) count as absent; filters combine with AND. "In stock only" is a frontend filter.
 - Duplicate vehicles (same make/model/year) are allowed.
 - No pagination (inventory is small) — mention as future work.
 - Currency: USD. The API returns a plain number; display with `Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })` → `$125,000.00`.
@@ -260,6 +260,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Non-numeric price (`it.each`: `minPrice`, `maxPrice`) → 400 (turned out to be a guard: `z.coerce.number()` rejects NaN)
 - [x] Negative price filter (`it.each`: `minPrice`, `maxPrice` = -5) → 400; 0 is allowed
 - [x] **(guard)** No token → 401
+- [ ] `?q=` → partial, case-insensitive match on make **or** model (the UI's single search bar; literal `%`/`_`, ANDs with the other filters)
 
 ### 4.7 `PUT /api/vehicles/:id` (admin; full replacement)
 - [x] Valid full update → 200 with the updated vehicle

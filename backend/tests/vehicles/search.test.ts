@@ -67,6 +67,18 @@ describe('GET /api/vehicles/search', () => {
     expect(idsOf(byModel)).toEqual([literal.id]);
   });
 
+  it('q matches part of the make or the model, case-insensitively', async () => {
+    const toyota = await createVehicle({ make: 'Toyota', model: 'Corolla' });
+    const cruiser = await createVehicle({ make: 'Lexus', model: 'Land Cruiser' });
+    await createVehicle({ make: 'Ford', model: 'Ranger' });
+
+    const byMake = await search({ q: 'TOY' });
+    const byModel = await search({ q: 'cruis' });
+
+    expect(idsOf(byMake)).toEqual([toyota.id]);
+    expect(idsOf(byModel)).toEqual([cruiser.id]);
+  });
+
   it('filters by category, case-insensitively', async () => {
     const suv = await createVehicle({ category: 'SUV' });
     await createVehicle({ category: 'SEDAN' });
