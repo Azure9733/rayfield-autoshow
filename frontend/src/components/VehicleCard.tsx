@@ -2,6 +2,7 @@ import { useId, useState } from 'react';
 import type { Vehicle } from '../api/vehicles';
 import { formatPrice } from '../lib/format';
 import { ConfirmDialog } from './ConfirmDialog';
+import { RestockPopover } from './RestockPopover';
 
 /** One vehicle in the inventory grid (UI_PLAN.md §4). */
 export function VehicleCard({
@@ -12,11 +13,16 @@ export function VehicleCard({
   vehicle: Vehicle;
   onPurchase: (vehicle: Vehicle) => void;
   /** Admin actions; when absent (regular users) the admin buttons aren't rendered. */
-  admin?: { onEdit: (vehicle: Vehicle) => void; onDelete: (vehicle: Vehicle) => void };
+  admin?: {
+    onEdit: (vehicle: Vehicle) => void;
+    onDelete: (vehicle: Vehicle) => void;
+    onRestock: (vehicle: Vehicle, quantity: number) => Promise<void>;
+  };
 }) {
   const { make, model, year, category, price, quantity, imageUrl } = vehicle;
   const id = useId();
-  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  // Which admin panel replaces the admin buttons, if any.
+  const [panel, setPanel] = useState<'none' | 'delete' | 'restock'>('none');
 
   return (
     // Named "<make> <model>" so tests and screen readers can tell cards apart.
@@ -60,24 +66,35 @@ export function VehicleCard({
         >
           Purchase
         </button>
-        {admin && confirmingDelete && (
+        {admin && panel === 'delete' && (
           <div className="border-t border-cp-yellow/15 pt-3">
             <ConfirmDialog
               message={`Delete ${model}?`}
               onConfirm={() => admin.onDelete(vehicle)}
-              onCancel={() => setConfirmingDelete(false)}
+              onCancel={() => setPanel('none')}
             />
           </div>
         )}
-        {admin && !confirmingDelete && (
+        {admin && panel === 'restock' && (
+          <div className="border-t border-cp-yellow/15 pt-3">
+            <RestockPopover
+              onRestock={async (units) => {
+                await admin.onRestock(vehicle, units);
+                setPanel('none');
+              }}
+              onCancel={() => setPanel('none')}
+            />
+          </div>
+        )}
+        {admin && panel === 'none' && (
           <div className="flex flex-wrap gap-2 border-t border-cp-yellow/15 pt-3">
             <button type="button" className="btn-ghost" onClick={() => admin.onEdit(vehicle)}>
               Edit
             </button>
-            <button type="button" className="btn-ghost">
+            <button type="button" className="btn-ghost" onClick={() => setPanel('restock')}>
               Restock
             </button>
-            <button type="button" className="btn-danger" onClick={() => setConfirmingDelete(true)}>
+            <button type="button" className="btn-danger" onClick={() => setPanel('delete')}>
               Delete
             </button>
           </div>

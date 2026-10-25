@@ -7,6 +7,7 @@ import {
   filledFilters,
   listVehicles,
   purchaseVehicle,
+  restockVehicle,
   searchVehicles,
   updateVehicle,
   type SearchFilters,
@@ -71,6 +72,10 @@ export function InventoryPage() {
   async function remove(vehicle: Vehicle) {
     await deleteVehicle(vehicle.id);
     setVehicles((list) => list?.filter((v) => v.id !== vehicle.id) ?? null);
+  }
+
+  async function restock(vehicle: Vehicle, quantity: number) {
+    replaceVehicle(await restockVehicle(vehicle.id, quantity));
   }
 
   async function purchase(vehicle: Vehicle) {
@@ -167,7 +172,11 @@ export function InventoryPage() {
                     key={vehicle.id}
                     vehicle={vehicle}
                     onPurchase={purchase}
-                    admin={isAdmin ? { onEdit: setEditing, onDelete: remove } : undefined}
+                    admin={
+                      isAdmin
+                        ? { onEdit: setEditing, onDelete: remove, onRestock: restock }
+                        : undefined
+                    }
                   />
                 ))}
           </div>
