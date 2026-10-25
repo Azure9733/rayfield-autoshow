@@ -205,7 +205,7 @@ How to read this list:
 - [x] Unknown email → 401 (same message — don't leak which emails exist)
 - [x] Email is case-insensitive (register `a@x.com`, log in as `A@X.com` → 200)
 - [x] Missing fields (`it.each`: email, password) → 400
-- [ ] `unit:` an unknown email still runs a bcrypt comparison against a dummy hash, so its response time doesn't reveal which emails exist (auth service + fake users repository)
+- [x] `unit:` an unknown email still runs a bcrypt comparison against a dummy hash, so its response time doesn't reveal which emails exist (auth service + fake users repository)
 
 ### 4.3 `GET /api/vehicles` (comes before the middleware, so 4.4 has a real route to protect)
 Seed rows with the `createVehicle` helper, and send a valid token in every test from the start; it's ignored until 4.4 adds the middleware.
