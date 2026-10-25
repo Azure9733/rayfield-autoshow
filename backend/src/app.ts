@@ -1,5 +1,6 @@
 import express, { type Express } from 'express';
 import { db } from './db/client';
+import { NotFoundError } from './lib/errors';
 import { errorHandler } from './middleware/errorHandler';
 import { createAuthRouter } from './modules/auth/auth.routes';
 import { createAuthService } from './modules/auth/auth.service';
@@ -38,6 +39,11 @@ export function createApp({ repos }: AppDeps = defaultDeps()): Express {
 
   app.use('/api/auth', createAuthRouter(createAuthService(repos.users)));
   app.use('/api/vehicles', createVehiclesRouter(createVehiclesService(repos.vehicles)));
+
+  // No route matched. A path-less app.use, because Express 5 rejects app.all('*').
+  app.use(() => {
+    throw new NotFoundError('NOT_FOUND', 'Route not found');
+  });
 
   // Registered last: Express treats 4-argument middleware as the error handler.
   app.use(errorHandler);
