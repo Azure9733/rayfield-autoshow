@@ -320,9 +320,9 @@ Table `purchases`: `id`, `user_id` (→ users, cascade), `vehicle_id` (→ vehic
 - [x] **(guard)** 10 parallel purchases at stock 5 leave exactly 5 purchase rows
 - [x] `GET /api/purchases/me` → 200 with the caller's purchases `{ id, vehicleId, make, model, year, category, price, purchasedAt }`, price as a number
 - [x] Newest first
-- [ ] Another user's purchases are never returned
-- [ ] **(guard)** `[]` when the caller has none
-- [ ] **(guard)** No token → 401
+- [x] Another user's purchases are never returned
+- [x] **(guard)** `[]` when the caller has none
+- [x] **(guard)** No token → 401
 - [ ] `seedDemo` also deletes all purchases
 
 ---

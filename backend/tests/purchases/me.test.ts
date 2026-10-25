@@ -52,4 +52,32 @@ describe('GET /api/purchases/me', () => {
 
     expect(res.body.map((p: { id: string }) => p.id)).toEqual([newest.id, middle.id, oldest.id]);
   });
+
+  it("never returns another user's purchases", async () => {
+    const me = await createUser();
+    const someoneElse = await createUser();
+    const mine = await createPurchase(me.id, { model: 'Mine' });
+    await createPurchase(someoneElse.id, { model: 'Theirs' });
+
+    const res = await myPurchases(me.auth);
+
+    expect(res.body.map((p: { id: string }) => p.id)).toEqual([mine.id]);
+  });
+
+  it('returns [] when the caller has none, even while others have some', async () => {
+    const me = await createUser();
+    const someoneElse = await createUser();
+    await createPurchase(someoneElse.id);
+
+    const res = await myPurchases(me.auth);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([]);
+  });
+
+  it('returns 401 without a token', async () => {
+    const res = await request(createApp()).get('/api/purchases/me');
+
+    expect(res.status).toBe(401);
+  });
 });
