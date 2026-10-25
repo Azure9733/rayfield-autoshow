@@ -219,7 +219,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 ### 4.4 Auth middleware (tested via `GET /api/vehicles`)
 - [x] No `Authorization` header → 401
 - [x] Malformed header (`it.each`: `Basic abc`, `Bearer` with no token, a bare token) → 401
-- [ ] **(guard)** `unit:` `jwt.verify` rejects tampered and expired tokens (`it.each`)
+- [x] **(guard)** `unit:` `jwt.verify` rejects tampered and expired tokens (`it.each`)
 - [ ] Invalid signature → 401
 - [ ] **(guard)** Expired token → 401
 - [ ] **(guard)** Valid token → request passes through (4.3's tests already send one)
