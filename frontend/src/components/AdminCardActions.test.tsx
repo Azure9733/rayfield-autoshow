@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
-import { inStock, loginAs, serveVehicles } from '../test/fixtures';
+import { badge, inStock, loginAs, serveVehicles } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
 import { server } from '../test/server';
 
@@ -44,5 +44,24 @@ describe('admin card actions', () => {
 
     await waitFor(() => expect(card).not.toBeInTheDocument());
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('restock adds units and updates the stock shown', async () => {
+    let body: unknown;
+    server.use(
+      http.post('/api/vehicles/a1/restock', async ({ request }) => {
+        body = await request.json();
+        return HttpResponse.json({ ...inStock, quantity: inStock.quantity + 5 });
+      }),
+    );
+    const { user, card } = await renderAsAdmin();
+
+    await user.click(within(card).getByRole('button', { name: 'Restock' }));
+    await user.type(within(card).getByLabelText('Units to add'), '5');
+    await user.click(within(card).getByRole('button', { name: 'Add stock' }));
+
+    await waitFor(() => expect(badge(card, 'Stock')).toHaveTextContent('7'));
+    expect(body).toEqual({ quantity: 5 });
+    expect(within(card).queryByLabelText('Units to add')).not.toBeInTheDocument();
   });
 });
