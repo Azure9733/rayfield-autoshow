@@ -91,4 +91,13 @@ describe('PUT /api/vehicles/:id', () => {
     expect(res.status).toBe(400);
     expect(res.body.error.details).toEqual([{ field: 'id', message: expect.any(String) }]);
   });
+
+  it('returns 403 for a logged-in user who is not an admin', async () => {
+    const { id } = await createVehicle();
+
+    const res = await putVehicle(id, replacement, 'user');
+
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('FORBIDDEN');
+  });
 });
