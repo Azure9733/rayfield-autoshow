@@ -91,4 +91,23 @@ describe('POST /api/vehicles', () => {
       expect(res.body[field]).toBe(stored);
     });
   });
+
+  describe('category rule: one of the list, case-insensitive', () => {
+    it.each(['BOAT', ''])('rejects category %j with 400', async (category) => {
+      const res = await postVehicle({ category });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field: 'category', message: expect.any(String) }]);
+    });
+
+    it.each([
+      ['suv', 'SUV'],
+      [' Truck ', 'TRUCK'],
+    ])('accepts %j and stores it as %j', async (category, stored) => {
+      const res = await postVehicle({ category });
+
+      expect(res.status).toBe(201);
+      expect(res.body.category).toBe(stored);
+    });
+  });
 });
