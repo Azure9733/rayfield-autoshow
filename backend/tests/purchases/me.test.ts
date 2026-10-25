@@ -39,4 +39,17 @@ describe('GET /api/purchases/me', () => {
       },
     ]);
   });
+
+  it('lists them newest first', async () => {
+    const me = await createUser();
+    const at = (iso: string) => ({ createdAt: new Date(iso) });
+    // Inserted out of order, so the database's natural order can't pass by accident.
+    const middle = await createPurchase(me.id, { model: 'Middle', ...at('2026-10-02T10:00:00Z') });
+    const newest = await createPurchase(me.id, { model: 'Newest', ...at('2026-10-03T10:00:00Z') });
+    const oldest = await createPurchase(me.id, { model: 'Oldest', ...at('2026-10-01T10:00:00Z') });
+
+    const res = await myPurchases(me.auth);
+
+    expect(res.body.map((p: { id: string }) => p.id)).toEqual([newest.id, middle.id, oldest.id]);
+  });
 });
