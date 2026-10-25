@@ -181,4 +181,16 @@ describe('admin card actions', () => {
       expect(calls).toBe(1);
     },
   );
+
+  it('an admin error toast closes with its Dismiss button', async () => {
+    server.use(http.delete('/api/vehicles/a1', notFound));
+    const { user, card } = await renderAsAdmin();
+    await user.click(within(card).getByRole('button', { name: 'Delete' }));
+    await user.click(within(card).getByRole('button', { name: 'Confirm' }));
+    const toast = await screen.findByRole('alert');
+
+    await user.click(within(toast).getByRole('button', { name: 'Dismiss' }));
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
 });
