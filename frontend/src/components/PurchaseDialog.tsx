@@ -2,10 +2,13 @@ import { useEffect, useId, useState } from 'react';
 import type { Vehicle } from '../api/vehicles';
 import { formatPrice } from '../lib/format';
 
+/** What a purchase attempt came to; `message` is shown in the dialog. */
+export type PurchaseResult = { ok: true } | { ok: false; message: string };
+
 interface Props {
   vehicle: Vehicle;
-  /** Buys one unit; resolves true when bought (the dialog then shows its success state). */
-  onConfirm: () => Promise<boolean>;
+  /** Buys one unit; the dialog then shows success or the error message. */
+  onConfirm: () => Promise<PurchaseResult>;
   onClose: () => void;
 }
 
@@ -15,13 +18,19 @@ const SUCCESS_CLOSE_MS = 1600;
 export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
   const kickerId = useId();
   const titleId = useId();
-  const [phase, setPhase] = useState<'confirm' | 'processing' | 'success'>('confirm');
+  const [phase, setPhase] = useState<'confirm' | 'processing' | 'success' | 'error'>('confirm');
+  const [error, setError] = useState('');
   const processing = phase === 'processing';
 
   async function confirm() {
     setPhase('processing');
-    if (await onConfirm()) setPhase('success');
-    else onClose();
+    const result = await onConfirm();
+    if (result.ok) {
+      setPhase('success');
+    } else {
+      setError(result.message);
+      setPhase('error');
+    }
   }
 
   // The success state is a moment, not a stop: it closes itself (a click closes it sooner).
@@ -55,7 +64,16 @@ export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
         onClick={phase === 'success' ? onClose : undefined}
         className="cyber-panel relative w-full max-w-md overflow-hidden p-6 md:p-8"
       >
-        {phase === 'success' ? (
+        {phase === 'error' ? (
+          <div className="flex flex-col items-center gap-6 py-4 text-center">
+            <p role="alert" className="text-2xl font-bold uppercase tracking-[2px] text-cp-red">
+              {error}
+            </p>
+            <button type="button" className="btn-ghost" autoFocus onClick={onClose}>
+              Close
+            </button>
+          </div>
+        ) : phase === 'success' ? (
           <div role="status" className="flex flex-col items-center gap-4 py-6 text-center">
             <svg viewBox="0 0 48 48" className="size-16 text-cp-cyan" aria-hidden="true">
               <path

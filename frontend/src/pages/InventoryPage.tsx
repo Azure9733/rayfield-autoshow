@@ -15,7 +15,7 @@ import {
   type SearchFilters,
   type Vehicle,
 } from '../api/vehicles';
-import { PurchaseDialog } from '../components/PurchaseDialog';
+import { PurchaseDialog, type PurchaseResult } from '../components/PurchaseDialog';
 import { SearchPanel } from '../components/SearchPanel';
 import { SkeletonCard } from '../components/SkeletonCard';
 import { Toast } from '../components/Toast';
@@ -136,29 +136,23 @@ export function InventoryPage() {
     }
   }
 
-  /** True when bought (the dialog shows success); false after showing the error. */
-  async function purchase(vehicle: Vehicle) {
-    let updated: Vehicle;
+  /** Buys one unit; the dialog shows the result. A 401 still goes through session expiry. */
+  async function purchase(vehicle: Vehicle): Promise<PurchaseResult> {
     try {
-      updated = await purchaseVehicle(vehicle.id);
+      replaceVehicle(await purchaseVehicle(vehicle.id));
+      return { ok: true };
     } catch (e) {
       if (!(e instanceof ApiError)) throw e;
-      if (e.status !== 409) {
-        setNotice(e.message);
-        return false;
-      }
+      if (e.status !== 409) return { ok: false, message: e.message };
       // Someone bought the last unit first: our list is stale, so reload it quietly.
-      setNotice('OUT OF STOCK');
       try {
         setVehicles(await fetchVehicles(query));
       } catch (reloadError) {
         // The stale card stays; say why it couldn't be refreshed instead.
         showError(reloadError);
       }
-      return false;
+      return { ok: false, message: 'OUT OF STOCK' };
     }
-    replaceVehicle(updated);
-    return true;
   }
 
   // Stable, since the dialog's auto-close timer depends on it.
