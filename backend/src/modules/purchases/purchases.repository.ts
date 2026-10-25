@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { purchases } from '../../db/schema';
 import type { Category } from '../vehicles/categories';
@@ -21,7 +21,7 @@ export interface Purchase {
 /** All SQL for the purchases table. Recording a purchase lives in the vehicles repository,
  * inside the same transaction as the stock decrement. */
 export interface PurchasesRepository {
-  /** The purchases made by `userId`. */
+  /** The purchases made by `userId`, newest first. */
   listForUser(userId: string): Promise<Purchase[]>;
 }
 
@@ -29,7 +29,12 @@ export interface PurchasesRepository {
 export function createPurchasesRepository(db: Database): PurchasesRepository {
   return {
     async listForUser(userId) {
-      const rows = await db.select().from(purchases).where(eq(purchases.userId, userId));
+      const rows = await db
+        .select()
+        .from(purchases)
+        .where(eq(purchases.userId, userId))
+        // id breaks ties, so two purchases in the same instant still list in a stable order.
+        .orderBy(desc(purchases.createdAt), desc(purchases.id));
       return rows.map(toPurchase);
     },
   };

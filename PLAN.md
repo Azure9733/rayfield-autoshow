@@ -319,7 +319,7 @@ Table `purchases`: `id`, `user_id` (→ users, cascade), `vehicle_id` (→ vehic
 - [x] **(guard)** A 409 or 404 purchase records nothing (`it.each`)
 - [x] **(guard)** 10 parallel purchases at stock 5 leave exactly 5 purchase rows
 - [x] `GET /api/purchases/me` → 200 with the caller's purchases `{ id, vehicleId, make, model, year, category, price, purchasedAt }`, price as a number
-- [ ] Newest first
+- [x] Newest first
 - [ ] Another user's purchases are never returned
 - [ ] **(guard)** `[]` when the caller has none
 - [ ] **(guard)** No token → 401
