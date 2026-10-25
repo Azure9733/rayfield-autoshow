@@ -149,7 +149,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Purchase click calls the API and updates the stock shown
 - [x] Purchase success shows the "UNIT ACQUIRED" toast
 - [x] Purchase 409 shows the "OUT OF STOCK" toast and refreshes the card
-- [ ] Purchase is disabled while its request is in flight
+- [x] Purchase is disabled while its request is in flight
 - [ ] Other purchase errors (404, network) show a red toast with the API message
 - [ ] Success toasts auto-dismiss after ~4s; the load-error toast with Retry stays
 
