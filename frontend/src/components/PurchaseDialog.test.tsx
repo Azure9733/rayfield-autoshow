@@ -118,7 +118,7 @@ describe('purchase dialog', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('a 409 on purchase shows the OUT OF STOCK toast and refreshes the card', async () => {
+  it('a 409 shows OUT OF STOCK in the dialog with Close, and refreshes the card', async () => {
     // The page loaded while 2 were left; someone else bought them before this click.
     let loads = 0;
     server.use(
@@ -137,9 +137,11 @@ describe('purchase dialog', () => {
 
     await user.click(confirmButton(dialog));
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('OUT OF STOCK');
+    expect(await within(dialog).findByRole('alert')).toHaveTextContent('OUT OF STOCK');
     await waitFor(() => expect(badge(card, 'Stock')).toHaveTextContent('Sold out'));
     expect(within(card).getByRole('button', { name: 'Purchase' })).toBeDisabled();
+    await user.click(within(dialog).getByRole('button', { name: 'Close' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it.each([
@@ -153,7 +155,7 @@ describe('purchase dialog', () => {
       'Vehicle not found',
     ],
     ['a network failure', () => HttpResponse.error(), "Can't reach the server. Please try again."],
-  ])('%s on purchase shows a red toast with the API message', async (_case, resolver, message) => {
+  ])('%s shows the API message in the dialog with Close', async (_case, resolver, message) => {
     serveVehicles(inStock);
     servePurchase(resolver);
     const { user } = renderApp('/');
@@ -161,7 +163,8 @@ describe('purchase dialog', () => {
 
     await user.click(confirmButton(dialog));
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(message);
+    expect(await within(dialog).findByRole('alert')).toHaveTextContent(message);
+    expect(within(dialog).getByRole('button', { name: 'Close' })).toBeInTheDocument();
   });
 
   it('a failed refresh after a 409 shows its error as the red toast', async () => {
