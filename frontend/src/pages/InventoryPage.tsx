@@ -83,7 +83,11 @@ export function InventoryPage() {
     try {
       updated = await purchaseVehicle(vehicle.id);
     } catch (e) {
-      if (!(e instanceof ApiError && e.status === 409)) throw e;
+      if (!(e instanceof ApiError)) throw e;
+      if (e.status !== 409) {
+        setNotice({ tone: 'error', message: e.message });
+        return;
+      }
       // Someone bought the last unit first: our list is stale, so reload it quietly.
       setNotice({ tone: 'error', message: 'OUT OF STOCK' });
       setVehicles(await fetchVehicles(query));
