@@ -52,7 +52,9 @@ export function createVehiclesService(vehicles: VehiclesRepository): VehiclesSer
     },
 
     async restock(id, quantity) {
-      return (await vehicles.restock(id, quantity))!;
+      const restocked = await vehicles.restock(id, quantity);
+      if (!restocked) throw vehicleNotFound();
+      return restocked;
     },
   };
 }
