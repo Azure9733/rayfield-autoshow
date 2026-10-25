@@ -132,7 +132,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 **Auth**
 - [x] Register form shows validation messages
 - [x] Confirm-password mismatch shows an error and sends nothing
-- [ ] Successful register logs in automatically and lands on `/`
+- [x] Successful register logs in automatically and lands on `/`
 - [ ] Login shows the API error on 401
 - [ ] Successful login redirects to `/`
 - [ ] Logout clears the token and returns to `/login`

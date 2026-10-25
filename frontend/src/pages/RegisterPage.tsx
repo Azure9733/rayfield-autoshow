@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { TextField } from '../components/TextField';
+import { useAuth } from '../context/AuthContext';
 import { validateRegister, type FieldErrors, type RegisterValues } from '../validation/auth';
 
 /** `/register`: create an account. */
@@ -12,6 +13,8 @@ export function RegisterPage() {
     confirm: '',
   });
   const [errors, setErrors] = useState<FieldErrors<RegisterValues>>({});
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
   const field = (name: keyof RegisterValues) => ({
     value: values[name],
@@ -19,9 +22,15 @@ export function RegisterPage() {
     onChange: (value: string) => setValues((v) => ({ ...v, [name]: value })),
   });
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    setErrors(validateRegister(values));
+    const found = validateRegister(values);
+    setErrors(found);
+    if (Object.keys(found).length > 0) return;
+
+    const { name, email, password } = values;
+    await register({ name, email, password });
+    navigate('/');
   }
 
   return (
