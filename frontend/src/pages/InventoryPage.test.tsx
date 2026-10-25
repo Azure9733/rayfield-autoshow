@@ -28,4 +28,24 @@ describe('inventory page', () => {
     expect(badge(card, 'Category')).toHaveTextContent('SUV');
     expect(badge(card, 'Stock')).toHaveTextContent('3');
   });
+
+  it('shows skeleton cards while loading', async () => {
+    let respond = () => {};
+    const responded = new Promise<void>((resolve) => (respond = resolve));
+    server.use(
+      http.get('/api/vehicles', async () => {
+        await responded;
+        return HttpResponse.json([makeVehicle()]);
+      }),
+    );
+    renderApp('/');
+
+    expect(await screen.findAllByTestId('skeleton-card')).not.toHaveLength(0);
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
+    respond();
+
+    expect(await screen.findByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
+    expect(screen.queryByTestId('skeleton-card')).not.toBeInTheDocument();
+  });
 });
