@@ -183,7 +183,7 @@ How to read this list:
 - `unit:` = tests a module directly (no HTTP, no DB), written when that module is first needed.
 
 ### 4.1 `POST /api/auth/register`
-- [ ] Valid name + email + password → 201 with exactly `{ id, name, email, role: "user" }` (walking skeleton: route → controller → service → repository → DB, so the biggest cycle by design)
+- [x] Valid name + email + password → 201 with exactly `{ id, name, email, role: "user" }` (walking skeleton: route → controller → service → repository → DB, so the biggest cycle by design)
 - [ ] **(guard)** Response never contains password or hash
 - [ ] `unit:` `password.hash` then `compare` → true for the right password, false for a wrong one
 - [ ] Password is stored hashed (DB value ≠ plain text, `compare` passes)

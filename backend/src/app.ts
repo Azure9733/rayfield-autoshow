@@ -1,10 +1,21 @@
 import express, { type Express } from 'express';
+import { db } from './db/client';
+import { createAuthRouter } from './modules/auth/auth.routes';
+import { createAuthService } from './modules/auth/auth.service';
+import { createUsersRepository, type UsersRepository } from './modules/auth/users.repository';
+
+/** Everything the app needs from the outside world; tests can pass fakes (PLAN.md §1). */
+export interface AppDeps {
+  repos: { users: UsersRepository };
+}
 
 /**
  * Builds the Express app without starting a server, so tests can drive it through
- * Supertest. Repositories will be injected here once they exist (PLAN.md §1).
+ * Supertest. Defaults to the real Postgres repositories.
  */
-export function createApp(): Express {
+export function createApp(
+  { repos }: AppDeps = { repos: { users: createUsersRepository(db) } },
+): Express {
   const app = express();
   app.use(express.json());
 
@@ -12,6 +23,8 @@ export function createApp(): Express {
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });
   });
+
+  app.use('/api/auth', createAuthRouter(createAuthService(repos.users)));
 
   return app;
 }
