@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, ilike, lte } from 'drizzle-orm';
+import { and, desc, eq, gte, ilike, lte, sql } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { vehicles } from '../../db/schema';
 import type { Category } from './categories';
@@ -72,7 +72,7 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
     async update(id, input) {
       const [row] = await db
         .update(vehicles)
-        .set({ ...input, price: String(input.price) })
+        .set({ ...input, price: String(input.price), updatedAt: sql`now()` })
         .where(eq(vehicles.id, id))
         .returning();
       return toVehicle(row);
