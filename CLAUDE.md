@@ -26,6 +26,7 @@ Co-authored-by: Claude <noreply@anthropic.com>
 
 - Write the message to a temp file outside the repo and commit with `git commit --cleanup=verbatim -F <file>` so both blank lines survive. Every commit, including `--amend`, uses `--cleanup=verbatim`.
 - Show me the message and ask before committing.
+- Push after each finished item (once its last commit lands); never push a lone red commit.
 
 ## Safety
 - Never read, print or commit real `.env` files (only `.env.example`, plus `.env.test`, which holds dummy values) or `Assignment.pdf`. Every session is published unedited in PROMPTS.md.

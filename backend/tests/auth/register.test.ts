@@ -17,4 +17,15 @@ describe('POST /api/auth/register', () => {
       role: 'user',
     });
   });
+
+  it('never returns the password or its hash', async () => {
+    const res = await request(createApp())
+      .post('/api/auth/register')
+      .send({ name: 'Ann Driver', email: 'ann@example.com', password: 'supersecret' });
+
+    expect(res.body).not.toHaveProperty('password');
+    expect(res.body).not.toHaveProperty('passwordHash');
+    expect(res.body).not.toHaveProperty('password_hash');
+    expect(JSON.stringify(res.body)).not.toContain('supersecret');
+  });
 });
