@@ -141,4 +141,12 @@ describe('POST /api/auth/register', () => {
 
     expect(res.status).toBe(409);
   });
+
+  it('treats email case-insensitively: stores it lowercased, so A@x.com and a@x.com conflict', async () => {
+    const first = await register({ email: 'Ann@Example.com' });
+    const second = await register({ email: 'ann@example.com' });
+
+    expect(first.body.email).toBe('ann@example.com');
+    expect(second.status).toBe(409);
+  });
 });
