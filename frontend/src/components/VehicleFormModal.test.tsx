@@ -1,7 +1,9 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
+import { http, HttpResponse } from 'msw';
 import { loginAs, serveVehicles, inStock } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
+import { server } from '../test/server';
 
 const validForm = {
   Make: 'Toyota',
@@ -94,5 +96,33 @@ describe('vehicle form', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Save' }));
 
     expect(within(dialog).getByLabelText(field)).toHaveAccessibleDescription(message);
+  });
+
+  it('shows server validation errors under the matching field', async () => {
+    server.use(
+      http.post('/api/vehicles', () =>
+        HttpResponse.json(
+          {
+            error: {
+              code: 'VALIDATION_ERROR',
+              message: 'Validation failed',
+              details: [{ field: 'imageUrl', message: 'Image URL host is not allowed' }],
+            },
+          },
+          { status: 400 },
+        ),
+      ),
+    );
+    const { user } = renderApp('/');
+    const dialog = await openAddForm(user);
+
+    await fill(user, dialog, { ...validForm, 'Image URL': 'https://cdn.example.com/supra.jpg' });
+    await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+
+    await waitFor(() =>
+      expect(within(dialog).getByLabelText('Image URL')).toHaveAccessibleDescription(
+        'Image URL host is not allowed',
+      ),
+    );
   });
 });
