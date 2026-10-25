@@ -162,4 +162,10 @@ describe('GET /api/vehicles/search', () => {
     expect(res.status).toBe(400);
     expect(res.body.error.details).toEqual([{ field: param, message: expect.any(String) }]);
   });
+
+  it('returns 401 without a token', async () => {
+    const res = await request(createApp()).get('/api/vehicles/search');
+
+    expect(res.status).toBe(401);
+  });
 });
