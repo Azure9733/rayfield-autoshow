@@ -154,7 +154,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Purchase is disabled while its request is in flight
 - [x] Other purchase errors (404, network) show a red toast with the API message
 - [x] Success toasts auto-dismiss after ~4s; the load-error toast with Retry stays
-- [ ] Error toasts have a close button (they never auto-dismiss), the load-error one included
+- [x] Error toasts have a close button (they never auto-dismiss), the load-error one included
 
 **Search / filter**
 - [x] Typing in the search bar loads matching vehicles live (`?q=`, make or model), debounced to one request

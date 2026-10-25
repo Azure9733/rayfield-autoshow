@@ -39,6 +39,8 @@ export function InventoryPage() {
   // null until a response arrives; with no error, that's the loading state.
   const [vehicles, setVehicles] = useState<Vehicle[] | null>(null);
   const [error, setError] = useState('');
+  // The load error stays (it explains the empty page) even once its toast is closed.
+  const [errorToastClosed, setErrorToastClosed] = useState(false);
   // Feedback for the last purchase; the load error above has its own toast with Retry.
   const [notice, setNotice] = useState<{ tone: 'success' | 'error'; message: string } | null>(null);
   // What's typed in the search panel. The list follows it live: once typing pauses, the filled
@@ -77,7 +79,10 @@ export function InventoryPage() {
       })
       .catch((e: unknown) => {
         if (!(e instanceof ApiError)) throw e;
-        if (active) setError(e.message);
+        if (!active) return;
+        setError(e.message);
+        // A fresh failure shows its toast again, even if an earlier one was closed.
+        setErrorToastClosed(false);
       });
     return () => {
       active = false;
@@ -142,6 +147,7 @@ export function InventoryPage() {
 
   function retry() {
     setError('');
+    setErrorToastClosed(false);
     setVehicles(null);
     setAttempt((n) => n + 1);
   }
@@ -242,8 +248,21 @@ export function InventoryPage() {
           onClose={() => setEditing(null)}
         />
       )}
-      {notice && <Toast tone={notice.tone} message={notice.message} />}
-      {error && <Toast tone="error" message={error} action={{ label: 'Retry', onClick: retry }} />}
+      {notice && (
+        <Toast
+          tone={notice.tone}
+          message={notice.message}
+          onDismiss={notice.tone === 'error' ? () => setNotice(null) : undefined}
+        />
+      )}
+      {error && !errorToastClosed && (
+        <Toast
+          tone="error"
+          message={error}
+          action={{ label: 'Retry', onClick: retry }}
+          onDismiss={() => setErrorToastClosed(true)}
+        />
+      )}
     </>
   );
 }
