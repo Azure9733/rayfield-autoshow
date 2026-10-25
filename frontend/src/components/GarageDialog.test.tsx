@@ -111,4 +111,23 @@ describe('my garage', () => {
     expect(await within(dialog).findByRole('listitem')).toBeInTheDocument();
     expect(within(dialog).queryByRole('alert')).not.toBeInTheDocument();
   });
+
+  it('starts with focus on ×; ×, Escape and the backdrop each close it', async () => {
+    serveGarage(makePurchase());
+    const { user } = renderApp('/');
+
+    let dialog = await openGarage(user);
+    const close = within(dialog).getByRole('button', { name: 'Close' });
+    expect(close).toHaveFocus();
+    await user.click(close);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    dialog = await openGarage(user);
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    await openGarage(user);
+    await user.click(screen.getByTestId('dialog-backdrop'));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
 });

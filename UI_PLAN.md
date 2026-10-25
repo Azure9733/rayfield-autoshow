@@ -188,6 +188,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Loading shows skeleton rows
 - [x] No purchases: `///GARAGE.EMPTY` and "Your purchased vehicles will appear here."
 - [x] An error shows its message with RETRY, which loads again
+- [ ] Focus starts on ×; ×, Escape and a backdrop click close it
 
 **Search / filter**
 - [x] The search bar has no visible label: placeholder "Search", accessible name "Search"
