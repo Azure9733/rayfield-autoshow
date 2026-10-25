@@ -260,7 +260,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Non-numeric price (`it.each`: `minPrice`, `maxPrice`) → 400 (turned out to be a guard: `z.coerce.number()` rejects NaN)
 - [x] Negative price filter (`it.each`: `minPrice`, `maxPrice` = -5) → 400; 0 is allowed
 - [x] **(guard)** No token → 401
-- [ ] `?q=` → partial, case-insensitive match on make **or** model (the UI's single search bar; literal `%`/`_`, ANDs with the other filters)
+- [x] `?q=` → partial, case-insensitive match on make **or** model (the UI's single search bar; literal `%`/`_`, ANDs with the other filters)
 
 ### 4.7 `PUT /api/vehicles/:id` (admin; full replacement)
 - [x] Valid full update → 200 with the updated vehicle

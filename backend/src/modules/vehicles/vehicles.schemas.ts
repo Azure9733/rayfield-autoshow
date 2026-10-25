@@ -35,6 +35,7 @@ const priceFilter = z.coerce.number({ error: priceFilterMessage }).nonnegative(p
 /** Query string for GET /api/vehicles/search; every filter is optional. */
 export const searchQuerySchema = z
   .object({
+    q: optionalFilter(z.string()),
     make: optionalFilter(z.string()),
     model: optionalFilter(z.string()),
     category: optionalFilter(categorySchema),

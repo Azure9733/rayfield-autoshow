@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, gte, ilike, lte, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, gte, ilike, lte, or, sql } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { vehicles } from '../../db/schema';
 import type { Category } from './categories';
@@ -24,6 +24,8 @@ export type VehicleUpdate = Omit<NewVehicle, 'quantity'>;
 
 /** Search filters; every filter is optional and they combine with AND. */
 export interface VehicleFilters {
+  /** Matches part of the make or the model (the UI's single search bar). */
+  q?: string;
   make?: string;
   model?: string;
   category?: Category;
@@ -57,9 +59,12 @@ export interface VehiclesRepository {
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
 export function createVehiclesRepository(db: Database): VehiclesRepository {
   return {
-    async search({ make, model, category, minPrice, maxPrice }) {
+    async search({ q, make, model, category, minPrice, maxPrice }) {
       // Each filter adds a condition; and() of the defined ones, ignoring undefined.
       const where = and(
+        q === undefined
+          ? undefined
+          : or(ilike(vehicles.make, contains(q)), ilike(vehicles.model, contains(q))),
         make === undefined ? undefined : ilike(vehicles.make, contains(make)),
         model === undefined ? undefined : ilike(vehicles.model, contains(model)),
         category === undefined ? undefined : eq(vehicles.category, category),
