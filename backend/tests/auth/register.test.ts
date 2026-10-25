@@ -1,5 +1,7 @@
 import request from 'supertest';
 import { createApp } from '../../src/app';
+import { pool } from '../../src/db/client';
+import { comparePassword } from '../../src/lib/password';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -27,5 +29,19 @@ describe('POST /api/auth/register', () => {
     expect(res.body).not.toHaveProperty('passwordHash');
     expect(res.body).not.toHaveProperty('password_hash');
     expect(JSON.stringify(res.body)).not.toContain('supersecret');
+  });
+
+  it('stores the password as a bcrypt hash, not plain text', async () => {
+    await request(createApp())
+      .post('/api/auth/register')
+      .send({ name: 'Ann Driver', email: 'ann@example.com', password: 'supersecret' });
+
+    const { rows } = await pool.query<{ password_hash: string }>(
+      'select password_hash from users where email = $1',
+      ['ann@example.com'],
+    );
+
+    expect(rows[0].password_hash).not.toBe('supersecret');
+    await expect(comparePassword('supersecret', rows[0].password_hash)).resolves.toBe(true);
   });
 });
