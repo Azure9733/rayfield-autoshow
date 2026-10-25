@@ -6,14 +6,22 @@ const name = z.string().trim().min(1).max(50);
 /** Case-insensitive category: trimmed and uppercased, then checked against the list. */
 export const categorySchema = z.string().trim().toUpperCase().pipe(z.enum(CATEGORIES));
 
+/**
+ * An optional query filter where an empty string (a blank form field) counts as absent.
+ * Without this, "" would fail the category check and coerce to 0 for prices.
+ */
+function optionalFilter<T extends z.ZodType>(schema: T) {
+  return z.preprocess((value) => (value === '' ? undefined : value), schema.optional());
+}
+
 /** Query string for GET /api/vehicles/search; every filter is optional. */
 export const searchQuerySchema = z.object({
-  make: z.string().optional(),
-  model: z.string().optional(),
-  category: categorySchema.optional(),
+  make: optionalFilter(z.string()),
+  model: optionalFilter(z.string()),
+  category: optionalFilter(categorySchema),
   // Query values arrive as strings; coerce turns "25000" into 25000 (and "abc" into a 400).
-  minPrice: z.coerce.number().optional(),
-  maxPrice: z.coerce.number().optional(),
+  minPrice: optionalFilter(z.coerce.number()),
+  maxPrice: optionalFilter(z.coerce.number()),
 });
 
 /** Request body for POST /api/vehicles. Unknown keys (e.g. a client-sent `id`) are stripped. */

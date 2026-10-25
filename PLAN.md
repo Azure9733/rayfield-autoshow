@@ -255,7 +255,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] **(guard)** Filters combine with AND (e.g. `make` + `maxPrice`, `minPrice` + `maxPrice`)
 - [x] **(guard)** No filters → returns all
 - [x] **(guard)** No matches → 200 `[]`
-- [ ] Empty params count as absent (`it.each`: `?make=`, `?model=`, `?category=`, `?minPrice=`, `?maxPrice=`; an empty `maxPrice` would otherwise coerce to 0)
+- [x] Empty params count as absent (`it.each`: `?make=`, `?model=`, `?category=`, `?minPrice=`, `?maxPrice=`; an empty `maxPrice` would otherwise coerce to 0)
 - [ ] `minPrice > maxPrice` → 400
 - [ ] Non-numeric price (`it.each`: `minPrice`, `maxPrice`) → 400
 - [ ] **(guard)** No token → 401
