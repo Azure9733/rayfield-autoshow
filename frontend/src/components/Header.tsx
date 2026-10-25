@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import logo from '../assets/rayfield-logo.png';
 import { useAuth } from '../context/AuthContext';
+import { GarageDialog } from './GarageDialog';
 import { prefersReducedMotion } from '../lib/motion';
 import { UserIdentity } from './UserIdentity';
 
@@ -16,6 +17,7 @@ export function Header() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [garageOpen, setGarageOpen] = useState(false);
   const menuId = useId();
   const headerRef = useRef<HTMLElement>(null);
   // While the close animation plays the menu stays mounted, but inert and aria-hidden.
@@ -73,7 +75,11 @@ export function Header() {
       {user && (
         <>
           <nav className="hidden h-full items-center gap-2 lg:flex" aria-label="Main">
-            <button type="button" className="cyber-nav-link cursor-pointer">
+            <button
+              type="button"
+              className="cyber-nav-link cursor-pointer"
+              onClick={() => setGarageOpen(true)}
+            >
               My Garage
             </button>
             <span className="px-4">
@@ -128,6 +134,7 @@ export function Header() {
               </button>
             </nav>
           )}
+          {garageOpen && <GarageDialog onClose={() => setGarageOpen(false)} />}
         </>
       )}
     </header>
