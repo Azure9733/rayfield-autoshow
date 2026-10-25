@@ -217,7 +217,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Vehicles with the same `createdAt` are ordered by `id` descending, so the order is deterministic
 
 ### 4.4 Auth middleware (tested via `GET /api/vehicles`)
-- [ ] No `Authorization` header → 401
+- [x] No `Authorization` header → 401
 - [ ] Malformed header (`it.each`: `Basic abc`, `Bearer` with no token, a bare token) → 401
 - [ ] **(guard)** `unit:` `jwt.verify` rejects tampered and expired tokens (`it.each`)
 - [ ] Invalid signature → 401
