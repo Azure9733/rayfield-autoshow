@@ -190,7 +190,7 @@ How to read this list:
 - [x] Missing name → 400
 - [x] Validation errors use the standard format: `code: "VALIDATION_ERROR"` and `details: [{ field, message }]`
 - [x] Name rule (`it.each`): whitespace-only, 61 chars → 400; 60 chars accepted; `"  Ann  "` stored as `"Ann"`
-- [ ] Email rule (`it.each`): missing, invalid format → 400
+- [x] Email rule (`it.each`): missing, invalid format → 400
 - [ ] Password rule (`it.each`): missing, 7 chars, 73 ASCII chars, 19 emoji (passes a 72-character check but is 76 bytes) → 400; exactly 8 chars and exactly 72 bytes accepted
 - [ ] Duplicate email → 409
 - [ ] Email is case-insensitive: stored lowercased, so `A@x.com` then `a@x.com` → 409
