@@ -1,8 +1,15 @@
 import { screen, waitFor } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { inStock, loginAs, serveVehicles, soldOut } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
 import { server } from '../test/server';
+
+const searchBar = () => screen.getByRole('searchbox', { name: 'Make or model' });
+
+async function openFilters(user: UserEvent) {
+  await user.click(screen.getByRole('button', { name: 'Filters' }));
+}
 
 describe('search panel', () => {
   beforeEach(() => loginAs('user'));
@@ -30,7 +37,7 @@ describe('search panel', () => {
     expect(requests).toEqual([{ q: 'cruis' }]);
   });
 
-  it('submits only the filled params', async () => {
+  it('requests carry only the filled filters', async () => {
     serveVehicles(inStock, soldOut);
     let params: Record<string, string> | undefined;
     server.use(
@@ -42,20 +49,36 @@ describe('search panel', () => {
     const { user } = renderApp('/');
     await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
 
-    await user.type(screen.getByLabelText('Make'), 'toy');
-    await user.type(screen.getByLabelText('Model'), '   ');
+    await user.type(searchBar(), 'toy');
+    await openFilters(user);
     await user.selectOptions(screen.getByLabelText('Category'), 'SUV');
     await user.type(screen.getByLabelText('Max price'), '200000');
-    await user.click(screen.getByRole('button', { name: 'Search' }));
 
-    await waitFor(() =>
-      expect(params).toEqual({ make: 'toy', category: 'SUV', maxPrice: '200000' }),
-    );
+    await waitFor(() => expect(params).toEqual({ q: 'toy', category: 'SUV', maxPrice: '200000' }));
     await waitFor(() =>
       expect(
         screen.queryByRole('article', { name: 'Porsche 911 Carrera' }),
       ).not.toBeInTheDocument(),
     );
+  });
+
+  it('the Filters button shows and hides the other filters', async () => {
+    serveVehicles(inStock);
+    const { user } = renderApp('/');
+    const filters = await screen.findByRole('button', { name: 'Filters' });
+    expect(filters).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByLabelText('Category')).not.toBeInTheDocument();
+
+    await user.click(filters);
+
+    expect(filters).toHaveAttribute('aria-expanded', 'true');
+    for (const label of ['Category', 'Min price', 'Max price', 'In stock only']) {
+      expect(screen.getByLabelText(label)).toBeInTheDocument();
+    }
+
+    await user.click(filters);
+
+    expect(screen.queryByLabelText('Category')).not.toBeInTheDocument();
   });
 
   it('"In stock only" hides sold-out vehicles without a new request', async () => {
@@ -69,6 +92,7 @@ describe('search panel', () => {
     );
     const { user } = renderApp('/');
     await screen.findByRole('article', { name: 'Porsche 911 Carrera' });
+    await openFilters(user);
 
     await user.click(screen.getByLabelText('In stock only'));
 
@@ -82,9 +106,9 @@ describe('search panel', () => {
     server.use(http.get('/api/vehicles/search', () => HttpResponse.json([soldOut])));
     const { user } = renderApp('/');
     await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
-    await user.type(screen.getByLabelText('Make'), 'por');
+    await user.type(searchBar(), 'por');
+    await openFilters(user);
     await user.selectOptions(screen.getByLabelText('Category'), 'COUPE');
-    await user.click(screen.getByRole('button', { name: 'Search' }));
     await waitFor(() =>
       expect(
         screen.queryByRole('article', { name: 'Toyota Land Cruiser' }),
@@ -94,7 +118,7 @@ describe('search panel', () => {
 
     await user.click(screen.getByRole('button', { name: 'Clear' }));
 
-    expect(screen.getByLabelText('Make')).toHaveValue('');
+    expect(searchBar()).toHaveValue('');
     expect(screen.getByLabelText('Category')).toHaveValue('');
     expect(screen.getByLabelText('In stock only')).not.toBeChecked();
     expect(await screen.findByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
@@ -106,8 +130,7 @@ describe('search panel', () => {
     server.use(http.get('/api/vehicles/search', () => HttpResponse.json([])));
     const { user } = renderApp('/');
     await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
-    await user.type(screen.getByLabelText('Make'), 'zzz');
-    await user.click(screen.getByRole('button', { name: 'Search' }));
+    await user.type(searchBar(), 'zzz');
 
     expect(await screen.findByText('///NO.MATCH')).toBeInTheDocument();
     expect(screen.queryByText('///NO.UNITS.IN.STOCK')).not.toBeInTheDocument();
@@ -115,6 +138,6 @@ describe('search panel', () => {
     await user.click(screen.getByRole('button', { name: 'Clear filters' }));
 
     expect(await screen.findByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
-    expect(screen.getByLabelText('Make')).toHaveValue('');
+    expect(searchBar()).toHaveValue('');
   });
 });
