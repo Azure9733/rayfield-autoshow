@@ -24,6 +24,22 @@ export function GarageDialog({ onClose }: { onClose: () => void }) {
         <h2 id={titleId} className="p-6 pb-4 text-2xl font-bold uppercase tracking-[3px]">
           My Garage
         </h2>
+        {purchases === null && (
+          <div className="space-y-3 px-6 pb-6" aria-busy="true">
+            {Array.from({ length: 3 }, (_, i) => (
+              <div
+                key={i}
+                data-testid="garage-skeleton"
+                className="animate-pulse space-y-2 border border-cp-yellow/15 p-4"
+                aria-hidden="true"
+              >
+                <div className="h-5 w-1/2 bg-white/10" />
+                <div className="h-4 w-3/4 bg-white/10" />
+                <div className="h-3 w-2/3 bg-white/10" />
+              </div>
+            ))}
+          </div>
+        )}
         <ul className="space-y-3 overflow-y-auto px-6 pb-6">
           {purchases?.map((p) => (
             <li key={p.id} className="space-y-2 border border-cp-yellow/15 p-4">
