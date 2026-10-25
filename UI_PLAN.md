@@ -186,6 +186,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] MY GARAGE comes first in the desktop nav (`cyber-nav-link`, LOGOUT stays right-most) and sits above LOGOUT in the menu (`cyber-list-item`)
 - [x] Opening it fetches `/api/purchases/me` and lists each purchase (same car twice = two rows): make + model, year, category badge, price paid, local date and time, ORDER ID
 - [x] Loading shows skeleton rows
+- [ ] No purchases: `///GARAGE.EMPTY` and "Your purchased vehicles will appear here."
 
 **Search / filter**
 - [x] The search bar has no visible label: placeholder "Search", accessible name "Search"

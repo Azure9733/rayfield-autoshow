@@ -75,4 +75,17 @@ describe('my garage', () => {
     expect(await within(dialog).findByRole('listitem')).toBeInTheDocument();
     expect(within(dialog).queryByTestId('garage-skeleton')).not.toBeInTheDocument();
   });
+
+  it('shows ///GARAGE.EMPTY when there are no purchases', async () => {
+    serveGarage();
+    const { user } = renderApp('/');
+
+    const dialog = await openGarage(user);
+
+    expect(await within(dialog).findByText('///GARAGE.EMPTY')).toBeInTheDocument();
+    expect(
+      within(dialog).getByText('Your purchased vehicles will appear here.'),
+    ).toBeInTheDocument();
+    expect(within(dialog).queryByRole('listitem')).not.toBeInTheDocument();
+  });
 });
