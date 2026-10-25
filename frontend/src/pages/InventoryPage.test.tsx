@@ -9,6 +9,9 @@ function badge(card: HTMLElement, label: string) {
   return within(card).getByText(label).nextElementSibling;
 }
 
+const inStock = makeVehicle({ id: 'a1', make: 'Toyota', model: 'Land Cruiser', quantity: 2 });
+const soldOut = makeVehicle({ id: 'b2', make: 'Porsche', model: '911 Carrera', quantity: 0 });
+
 function serveVehicles(...vehicles: ReturnType<typeof makeVehicle>[]) {
   server.use(http.get('/api/vehicles', () => HttpResponse.json(vehicles)));
 }
@@ -77,5 +80,16 @@ describe('inventory page', () => {
 
     expect(await screen.findByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('disables the Purchase button when quantity is 0', async () => {
+    serveVehicles(inStock, soldOut);
+    renderApp('/');
+
+    const available = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+    const unavailable = screen.getByRole('article', { name: 'Porsche 911 Carrera' });
+
+    expect(within(available).getByRole('button', { name: 'Purchase' })).toBeEnabled();
+    expect(within(unavailable).getByRole('button', { name: 'Purchase' })).toBeDisabled();
   });
 });
