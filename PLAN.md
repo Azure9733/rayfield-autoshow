@@ -386,7 +386,7 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 - [x] Local setup: prerequisites (Node, Docker), `.env` setup, `docker compose up` (dev + test DBs), migrate, seed admin, seed demo vehicles, run backend, run frontend (Vite proxies `/api`)
 - [x] How to run tests + coverage
 - [x] API endpoint table
-- [ ] Screenshots (`docs/screenshots/`): login, inventory, search, sold-out card, admin form, mobile view — taken with the demo data
+- [x] Screenshots (`docs/screenshots/`): login, inventory, search, sold-out card, admin form, mobile view — taken with the demo data
 - [ ] Live link + demo logins (user and admin); say that anyone can change the demo data and `seedDemo` resets it
 - [x] Credits: Rayfield logo (Cyberpunk 2077 © CD PROJEKT RED; fan project) and the CodePen glitch effects (author + link)
 - [x] Note: tests use a real Postgres in Docker (tmpfs for speed); production uses Supabase — not an in-memory DB

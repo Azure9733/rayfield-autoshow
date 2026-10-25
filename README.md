@@ -7,14 +7,13 @@ them.
 
 **Live:** https://incubyte.somvanshi.dev
 
-<!-- TODO: add the screenshots to docs/screenshots/ (taken with the demo data). -->
-| Login | Inventory | Search |
+| Login | Search and filters | Purchase |
 |---|---|---|
-| ![Login](docs/screenshots/login.png) | ![Inventory](docs/screenshots/inventory.png) | ![Search and filters](docs/screenshots/search.png) |
+| ![Login page](docs/Screenshots/login.png) | ![Search bar with the filters open](docs/Screenshots/SearchFilter.png) | ![Purchase confirmation dialog](docs/Screenshots/purchase.png) |
 
-| Sold-out card | Admin form | Mobile |
-|---|---|---|
-| ![Sold-out card](docs/screenshots/sold-out.png) | ![Add vehicle form](docs/screenshots/admin-form.png) | ![Mobile view](docs/screenshots/mobile.png) |
+| Admin: edit a vehicle | My Garage |
+|---|---|
+| ![Admin editing a vehicle](docs/Screenshots/Inventory_Mangement.png) | ![My Garage purchase history](docs/Screenshots/Garage.png) |
 
 ## Contents
 
