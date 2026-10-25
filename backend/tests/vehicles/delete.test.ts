@@ -47,4 +47,12 @@ describe('DELETE /api/vehicles/:id', () => {
     expect(res.body.error.code).toBe('FORBIDDEN');
     expect(await vehicleExists(id)).toBe(true);
   });
+
+  it('returns 401 without a token', async () => {
+    const { id } = await createVehicle();
+
+    const res = await request(createApp()).delete(`/api/vehicles/${id}`);
+
+    expect(res.status).toBe(401);
+  });
 });

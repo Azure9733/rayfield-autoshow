@@ -277,7 +277,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Unknown id → 404
 - [x] **(guard)** Malformed id → 400 (shared UUID check)
 - [x] Non-admin → 403
-- [ ] **(guard)** No token → 401
+- [x] **(guard)** No token → 401
 
 ### 4.9 `POST /api/vehicles/:id/purchase` (always 1 unit)
 - [ ] In stock → 200 with the updated vehicle, quantity decreased by 1
