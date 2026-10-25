@@ -204,4 +204,26 @@ describe('POST /api/vehicles', () => {
     expect([first.status, second.status]).toEqual([201, 201]);
     expect(second.body.id).not.toBe(first.body.id);
   });
+
+  describe('imageUrl rule: optional https URL', () => {
+    it.each([
+      ['an http URL', 'http://example.com/car.jpg'],
+      ['not a URL', 'not-a-url'],
+    ])('rejects an imageUrl that is %s with 400', async (_case, imageUrl) => {
+      const res = await postVehicle({ imageUrl });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field: 'imageUrl', message: expect.any(String) }]);
+    });
+
+    it.each([
+      ['an https URL', 'https://example.com/car.jpg', 'https://example.com/car.jpg'],
+      ['omitted', undefined, null],
+    ])('accepts an imageUrl that is %s', async (_case, imageUrl, stored) => {
+      const res = await postVehicle({ imageUrl });
+
+      expect(res.status).toBe(201);
+      expect(res.body.imageUrl).toBe(stored);
+    });
+  });
 });
