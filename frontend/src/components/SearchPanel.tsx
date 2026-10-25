@@ -11,8 +11,15 @@ const EMPTY: Required<SearchFilters> = {
   maxPrice: '',
 };
 
+interface Props {
+  onSearch: (filters: SearchFilters) => void;
+  /** Client-side filter (the API has none): applies as soon as it's toggled. */
+  inStockOnly: boolean;
+  onInStockOnlyChange: (checked: boolean) => void;
+}
+
 /** Search filters (UI_PLAN.md §3). Calls onSearch with the form values on submit. */
-export function SearchPanel({ onSearch }: { onSearch: (filters: SearchFilters) => void }) {
+export function SearchPanel({ onSearch, inStockOnly, onInStockOnlyChange }: Props) {
   const [values, setValues] = useState(EMPTY);
 
   const field = (name: keyof SearchFilters) => ({
@@ -57,6 +64,15 @@ export function SearchPanel({ onSearch }: { onSearch: (filters: SearchFilters) =
         <TextField label="Min price" type="number" min="0" step="0.01" {...field('minPrice')} />
         <TextField label="Max price" type="number" min="0" step="0.01" {...field('maxPrice')} />
       </div>
+      <label className="flex cursor-pointer items-center gap-3 text-sm uppercase tracking-[2px]">
+        <input
+          type="checkbox"
+          className="size-4 accent-cp-yellow"
+          checked={inStockOnly}
+          onChange={(e) => onInStockOnlyChange(e.target.checked)}
+        />
+        In stock only
+      </label>
       <button type="submit" className="btn-cyber w-full" data-text="Search">
         Search
       </button>
