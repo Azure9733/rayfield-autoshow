@@ -1,6 +1,6 @@
 import { and, desc, eq, gt, gte, ilike, lte, or, sql } from 'drizzle-orm';
 import type { Database } from '../../db/client';
-import { vehicles } from '../../db/schema';
+import { purchases, vehicles } from '../../db/schema';
 import type { Category } from './categories';
 
 type VehicleRow = typeof vehicles.$inferSelect;
@@ -45,10 +45,11 @@ export interface VehiclesRepository {
   /** True if a vehicle was deleted, false if no vehicle has that id. */
   remove(id: string): Promise<boolean>;
   /**
-   * Atomically takes one unit out of stock. Returns the updated vehicle, or undefined when
-   * nothing was sold (unknown id, or quantity already 0).
+   * Atomically takes one unit out of stock and records the purchase for `buyerId`, in one
+   * transaction. Returns the updated vehicle, or undefined when nothing was sold (unknown id,
+   * or quantity already 0); then no purchase is recorded either.
    */
-  purchaseOne(id: string): Promise<Vehicle | undefined>;
+  purchaseOne(id: string, buyerId: string): Promise<Vehicle | undefined>;
   exists(id: string): Promise<boolean>;
   /** Adds `quantity` units to stock; the updated vehicle, or undefined for an unknown id. */
   restock(id: string, quantity: number): Promise<Vehicle | undefined>;
@@ -111,15 +112,23 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
       return deleted.length > 0;
     },
 
-    async purchaseOne(id) {
-      // One conditional UPDATE: Postgres row-locks it, so concurrent purchases can't both take
-      // the last unit (no read-then-write race).
-      const [row] = await db
-        .update(vehicles)
-        .set({ quantity: sql`${vehicles.quantity} - 1`, updatedAt: sql`now()` })
-        .where(and(eq(vehicles.id, id), gt(vehicles.quantity, 0)))
-        .returning();
-      return row && toVehicle(row);
+    async purchaseOne(id, buyerId) {
+      // The stock decrement and the purchase record commit together or not at all.
+      return db.transaction(async (tx) => {
+        // One conditional UPDATE: Postgres row-locks it, so concurrent purchases can't both take
+        // the last unit (no read-then-write race).
+        const [row] = await tx
+          .update(vehicles)
+          .set({ quantity: sql`${vehicles.quantity} - 1`, updatedAt: sql`now()` })
+          .where(and(eq(vehicles.id, id), gt(vehicles.quantity, 0)))
+          .returning();
+        if (!row) return undefined;
+        const { make, model, year, category, price } = row;
+        await tx
+          .insert(purchases)
+          .values({ userId: buyerId, vehicleId: row.id, make, model, year, category, price });
+        return toVehicle(row);
+      });
     },
 
     async exists(id) {

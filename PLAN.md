@@ -315,7 +315,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 
 ### 4.13 Purchases — My Garage (purchase history)
 Table `purchases`: `id`, `user_id` (→ users, cascade), `vehicle_id` (→ vehicles, set null), a snapshot of make, model, year, category and the price paid, `created_at`; index on `user_id`; row-level security on (Supabase exposes public tables).
-- [ ] A purchase records a row with the buyer and a snapshot of the vehicle, in the same transaction as the stock decrement
+- [x] A purchase records a row with the buyer and a snapshot of the vehicle, in the same transaction as the stock decrement
 - [ ] **(guard)** A 409 or 404 purchase records nothing (`it.each`)
 - [ ] **(guard)** 10 parallel purchases at stock 5 leave exactly 5 purchase rows
 - [ ] `GET /api/purchases/me` → 200 with the caller's purchases `{ id, vehicleId, make, model, year, category, price, purchasedAt }`, price as a number

@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express';
+import type { AuthUser } from '../../middleware/authenticate';
 import type { NewVehicle, VehicleFilters, VehicleUpdate } from './vehicles.repository';
 import type { VehiclesService } from './vehicles.service';
 
@@ -27,7 +28,8 @@ export function createVehiclesController(service: VehiclesService) {
     },
 
     async purchase(req: Request<{ id: string }>, res: Response) {
-      res.json(await service.purchase(req.params.id));
+      const buyer = res.locals.user as AuthUser;
+      res.json(await service.purchase(req.params.id, buyer.id));
     },
 
     async restock(req: Request<{ id: string }>, res: Response) {

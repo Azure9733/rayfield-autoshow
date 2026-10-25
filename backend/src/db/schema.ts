@@ -1,5 +1,14 @@
 import { sql } from 'drizzle-orm';
-import { check, integer, numeric, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import {
+  check,
+  index,
+  integer,
+  numeric,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { CATEGORIES } from '../modules/vehicles/categories';
 
 // Drizzle table definitions. Each table and column is added in the TDD cycle whose first
@@ -46,3 +55,29 @@ export const vehicles = pgTable(
     check('vehicles_quantity_check', sql`${t.quantity} >= 0`),
   ],
 );
+
+/**
+ * One row per unit bought, for "My Garage". Make, model, year, category and price are copied
+ * at purchase time, so the history stays right after the vehicle is edited or deleted.
+ */
+export const purchases = pgTable(
+  'purchases',
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    userId: uuid()
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    // Kept as null when the vehicle is deleted: the snapshot still says what was bought.
+    vehicleId: uuid().references(() => vehicles.id, { onDelete: 'set null' }),
+    make: text().notNull(),
+    model: text().notNull(),
+    year: integer().notNull(),
+    category: text({ enum: CATEGORIES }).notNull(),
+    // What was paid (the vehicle's price at the time).
+    price: numeric({ precision: 12, scale: 2 }).notNull(),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('purchases_user_id_idx').on(t.userId)],
+  // Supabase exposes public tables through its Data API; RLS with no policies closes that
+  // (the backend connects as the owner and isn't affected).
+).enableRLS();

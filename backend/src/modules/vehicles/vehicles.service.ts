@@ -13,7 +13,8 @@ export interface VehiclesService {
   create(input: NewVehicle): Promise<Vehicle>;
   update(id: string, input: VehicleUpdate): Promise<Vehicle>;
   remove(id: string): Promise<void>;
-  purchase(id: string): Promise<Vehicle>;
+  /** Sells one unit to `buyerId` and records the purchase. */
+  purchase(id: string, buyerId: string): Promise<Vehicle>;
   restock(id: string, quantity: number): Promise<Vehicle>;
 }
 
@@ -42,8 +43,8 @@ export function createVehiclesService(vehicles: VehiclesRepository): VehiclesSer
       if (!(await vehicles.remove(id))) throw vehicleNotFound();
     },
 
-    async purchase(id) {
-      const sold = await vehicles.purchaseOne(id);
+    async purchase(id, buyerId) {
+      const sold = await vehicles.purchaseOne(id, buyerId);
       if (sold) return sold;
       // The atomic update can't say why it changed nothing; a follow-up lookup tells
       // "no such vehicle" (404) from "none left" (409).
