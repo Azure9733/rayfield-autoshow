@@ -36,4 +36,14 @@ describe('PUT /api/vehicles/:id', () => {
       updatedAt: expect.any(String),
     });
   });
+
+  it('moves updatedAt forward and leaves createdAt alone', async () => {
+    const seededAt = new Date('2026-01-01T00:00:00Z');
+    const { id } = await createVehicle({ createdAt: seededAt });
+
+    const res = await putVehicle(id, replacement);
+
+    expect(new Date(res.body.updatedAt).getTime()).toBeGreaterThan(seededAt.getTime());
+    expect(new Date(res.body.createdAt).getTime()).toBe(seededAt.getTime());
+  });
 });
