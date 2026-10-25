@@ -46,8 +46,8 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
     async search({ make, model }) {
       // Each filter adds a condition; and() of the defined ones, ignoring undefined.
       const where = and(
-        make === undefined ? undefined : ilike(vehicles.make, `%${make}%`),
-        model === undefined ? undefined : ilike(vehicles.model, `%${model}%`),
+        make === undefined ? undefined : ilike(vehicles.make, contains(make)),
+        model === undefined ? undefined : ilike(vehicles.model, contains(model)),
       );
       const rows = await db
         .select()
@@ -65,6 +65,14 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
       return toVehicle(row);
     },
   };
+}
+
+/**
+ * A LIKE pattern matching `text` anywhere. Escapes \, % and _ (backslash is Postgres's default
+ * LIKE escape) so user input is matched literally rather than as wildcards.
+ */
+function contains(text: string): string {
+  return `%${text.replace(/[\\%_]/g, '\\$&')}%`;
 }
 
 // numeric(12,2) holds at most 10 integer digits, well inside a double's exact range.

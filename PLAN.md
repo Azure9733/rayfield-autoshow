@@ -247,7 +247,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Make matching is case-insensitive (`?make=toyota`)
 - [x] Make matching is partial (`?make=toy`)
 - [x] `?model=cor` → partial, case-insensitive match
-- [ ] `%` and `_` match literally (`?make=%` doesn't return everything)
+- [x] `%` and `_` match literally (`?make=%` doesn't return everything)
 - [ ] `?category=suv` → only SUVs (normalised to uppercase)
 - [ ] **(guard)** Unknown category → 400 (reuses the category rule from 4.5)
 - [ ] `?minPrice=` → inclusive lower bound (a vehicle priced exactly at `minPrice` is included)
