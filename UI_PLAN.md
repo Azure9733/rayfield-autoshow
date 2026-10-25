@@ -148,7 +148,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Sold-out badge shown at 0
 - [x] Purchase click calls the API and updates the stock shown
 - [x] Purchase success shows the "UNIT ACQUIRED" toast
-- [ ] Purchase 409 shows the "OUT OF STOCK" toast and refreshes the card
+- [x] Purchase 409 shows the "OUT OF STOCK" toast and refreshes the card
 
 **Search / filter**
 - [ ] Search submits only filled params

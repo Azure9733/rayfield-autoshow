@@ -33,7 +33,16 @@ export function InventoryPage() {
   }, [attempt]);
 
   async function purchase(vehicle: Vehicle) {
-    const updated = await purchaseVehicle(vehicle.id);
+    let updated: Vehicle;
+    try {
+      updated = await purchaseVehicle(vehicle.id);
+    } catch (e) {
+      if (!(e instanceof ApiError && e.status === 409)) throw e;
+      // Someone bought the last unit first: our list is stale, so reload it quietly.
+      setNotice({ tone: 'error', message: 'OUT OF STOCK' });
+      setVehicles(await listVehicles());
+      return;
+    }
     setVehicles((list) => list?.map((v) => (v.id === updated.id ? updated : v)) ?? null);
     setNotice({ tone: 'success', message: 'UNIT ACQUIRED' });
   }
