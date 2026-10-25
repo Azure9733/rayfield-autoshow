@@ -1,9 +1,13 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import type { SearchFilters } from '../api/vehicles';
 import { CATEGORIES } from '../constants/categories';
+import { prefersReducedMotion } from '../lib/motion';
 import type { FieldErrors } from '../validation/types';
 import { SelectField } from './SelectField';
 import { TextField } from './TextField';
+
+// Matches the .filters-panel.is-closing animation in index.css.
+const CLOSE_MS = 160;
 
 interface Props {
   values: Required<SearchFilters>;
@@ -32,7 +36,32 @@ export function SearchPanel({
   const [filtersOpen, setFiltersOpen] = useState(() =>
     Boolean(values.category || values.minPrice || values.maxPrice || inStockOnly),
   );
+  // While the close wipe plays the panel stays mounted, but inert and aria-hidden, so it's
+  // already out of the accessibility tree.
+  const [closing, setClosing] = useState(false);
+  const closeTimer = useRef<number | undefined>(undefined);
   const filtersId = useId();
+
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+  function finishClose() {
+    clearTimeout(closeTimer.current);
+    setClosing(false);
+  }
+
+  function toggleFilters() {
+    if (!filtersOpen) {
+      finishClose();
+      setFiltersOpen(true);
+      return;
+    }
+    setFiltersOpen(false);
+    if (prefersReducedMotion()) return;
+    setClosing(true);
+    // animationend alone isn't enough (a background tab, CSS that didn't load), so a timer
+    // removes the panel regardless.
+    closeTimer.current = window.setTimeout(finishClose, CLOSE_MS + 40);
+  }
   const set = (name: keyof SearchFilters) => (value: string) =>
     onChange({ ...values, [name]: value });
 
@@ -60,7 +89,7 @@ export function SearchPanel({
           className="btn-ghost h-11"
           aria-expanded={filtersOpen}
           aria-controls={filtersId}
-          onClick={() => setFiltersOpen((open) => !open)}
+          onClick={toggleFilters}
         >
           Filters
         </button>
@@ -69,8 +98,14 @@ export function SearchPanel({
         </button>
       </div>
       {/* items-start: a field's error message mustn't push it out of line with the others */}
-      {filtersOpen && (
-        <div id={filtersId} className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {(filtersOpen || closing) && (
+        <div
+          id={filtersId}
+          className={`filters-panel ${closing ? 'is-closing' : 'is-opening'} grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4`}
+          aria-hidden={closing || undefined}
+          inert={closing}
+          onAnimationEnd={closing ? finishClose : undefined}
+        >
           <SelectField
             label="Category"
             options={CATEGORIES}

@@ -45,7 +45,7 @@ Guests are redirected to `/login`. There is no `/admin` route: admin controls re
 │  [card] [card] [card] [card]                  │
 └───────────────────────────────────────────────┘
 ```
-Same on every width: the filters stay folded behind FILTERS until opened. Changes apply live (debounced) and are kept in the URL, so a reload or shared link restores them.
+Same on every width: the filters stay folded behind FILTERS until opened. Opening is a sharp clip-path wipe from top to bottom (200 ms, ease-out) after a two-frame flicker; closing wipes back up (160 ms) and then removes the panel (a timer backs up `animationend`); while closing it's already inert and aria-hidden. Reduced motion: open and close instantly. Changes apply live (debounced) and are kept in the URL, so a reload or shared link restores them.
 
 ## 4. Vehicle Card
 

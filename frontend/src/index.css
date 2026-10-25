@@ -399,6 +399,41 @@
 }
 
 /* Respect users who turn off motion */
+/* ── FILTERS PANEL (UI_PLAN.md §3): sharp top-to-bottom clip-path wipe ──
+   Opening flickers for two frames first; closing wipes back up, then JS removes the panel.
+   Reduced motion: JS opens and closes instantly (and animations are off below). */
+.filters-panel.is-opening {
+  animation: filters-wipe-in 200ms ease-out both;
+}
+.filters-panel.is-closing {
+  animation: filters-wipe-out 160ms ease-in forwards;
+}
+@keyframes filters-wipe-in {
+  0% {
+    clip-path: inset(0 0 100% 0);
+    opacity: 1;
+  }
+  /* the two flicker frames (~16 ms each at 60 fps) */
+  8% {
+    opacity: 0.2;
+  }
+  16% {
+    opacity: 1;
+  }
+  100% {
+    clip-path: inset(0);
+    opacity: 1;
+  }
+}
+@keyframes filters-wipe-out {
+  from {
+    clip-path: inset(0);
+  }
+  to {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
 /* ── PURCHASE SUCCESS (UI_PLAN.md §4): about 1.2 s in all ──
    Each element's resting style is its final state, so under prefers-reduced-motion (which
    turns animations off below) the success state simply appears. */
