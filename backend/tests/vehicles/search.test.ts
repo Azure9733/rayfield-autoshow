@@ -51,4 +51,19 @@ describe('GET /api/vehicles/search', () => {
 
     expect(idsOf(res)).toEqual([corolla.id]);
   });
+
+  // In SQL LIKE, % matches anything and _ matches any one character; user input must not.
+  it.each(['%', '_'])('treats %s in the search text literally', async (wildcard) => {
+    await createVehicle({ make: 'Toyota', model: 'Corolla' });
+    const literal = await createVehicle({
+      make: `Make${wildcard}One`,
+      model: `Model${wildcard}One`,
+    });
+
+    const byMake = await search({ make: wildcard });
+    const byModel = await search({ model: wildcard });
+
+    expect(idsOf(byMake)).toEqual([literal.id]);
+    expect(idsOf(byModel)).toEqual([literal.id]);
+  });
 });
