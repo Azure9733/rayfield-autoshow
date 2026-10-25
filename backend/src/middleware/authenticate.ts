@@ -1,9 +1,12 @@
 import type { RequestHandler } from 'express';
 import { UnauthorizedError } from '../lib/errors';
 
-/** Rejects requests that don't carry a bearer token with 401 UNAUTHENTICATED. */
+const BEARER = /^Bearer (\S+)$/;
+
+/** Rejects requests that don't carry a `Bearer <token>` header with 401 UNAUTHENTICATED. */
 export const authenticate: RequestHandler = (req, _res, next) => {
-  if (!req.headers.authorization) {
+  const match = BEARER.exec(req.headers.authorization ?? '');
+  if (!match) {
     throw new UnauthorizedError('UNAUTHENTICATED', 'Authentication required');
   }
   next();
