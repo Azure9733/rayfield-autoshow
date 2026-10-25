@@ -68,4 +68,12 @@ describe('GET /api/vehicles', () => {
 
     expect(res.body[0].price).toBe(38999.99);
   });
+
+  it('includes sold-out vehicles, so the UI can show them with Purchase disabled', async () => {
+    const soldOut = await createVehicle({ quantity: 0 });
+
+    const res = await listVehicles();
+
+    expect(res.body).toEqual([expect.objectContaining({ id: soldOut.id, quantity: 0 })]);
+  });
 });

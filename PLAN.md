@@ -212,7 +212,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Empty DB → 200 with `[]`
 - [x] Returns all vehicles with all fields (camelCase)
 - [x] `price` is a JSON number, not a string
-- [ ] **(guard)** Includes out-of-stock vehicles (frontend shows them with disabled Purchase) — documented in README
+- [x] **(guard)** Includes out-of-stock vehicles (frontend shows them with disabled Purchase) — documented in README
 - [ ] Newest first (give the helper explicit `createdAt` values: rows inserted in one statement share a timestamp)
 
 ### 4.4 Auth middleware (tested via `GET /api/vehicles`)
