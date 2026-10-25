@@ -125,4 +125,13 @@ describe('GET /api/vehicles/search', () => {
     expect(res.status).toBe(200);
     expect(idsOf(res)).toEqual([a.id, b.id].sort());
   });
+
+  it('returns 200 with [] when nothing matches', async () => {
+    await createVehicle({ make: 'Toyota' });
+
+    const res = await search({ make: 'Lamborghini' });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([]);
+  });
 });
