@@ -305,7 +305,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] `seedAdmin` creates the admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 - [x] Re-running `seedAdmin` resets the admin's password and role from env, including when that email already belongs to a normal user
 - [x] `seedDemo` replaces all vehicles with the sample set (safe to re-run)
-- [ ] Optional, only if time allows: `helmet` (responses carry its security headers). No rate limiting: it would 429 the auth tests, and an in-memory limit doesn't hold across Vercel instances.
+- [x] Optional, only if time allows: `helmet` (responses carry its security headers). No rate limiting: it would 429 the auth tests, and an in-memory limit doesn't hold across Vercel instances.
 
 ### 4.12 End of backend
 - [x] Friendlier validation messages for every schema, replacing Zod's defaults (one cycle; the UI shows them under form fields)

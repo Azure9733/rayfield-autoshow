@@ -1,4 +1,5 @@
 import express, { type Express } from 'express';
+import helmet from 'helmet';
 import { db } from './db/client';
 import { NotFoundError } from './lib/errors';
 import { errorHandler } from './middleware/errorHandler';
@@ -30,6 +31,8 @@ function defaultDeps(): AppDeps {
  */
 export function createApp({ repos }: AppDeps = defaultDeps()): Express {
   const app = express();
+  // Security headers (nosniff, HSTS, CSP, frame options) and no X-Powered-By.
+  app.use(helmet());
   app.use(express.json());
 
   // Liveness probe for local checks and the deploy smoke test; no DB access on purpose.
