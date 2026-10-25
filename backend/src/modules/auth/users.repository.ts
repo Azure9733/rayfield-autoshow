@@ -28,7 +28,11 @@ export interface UsersRepository {
   create(input: NewUser): Promise<PublicUser>;
   /** Exact match on the stored (lowercased) email; undefined if there's no such user. */
   findByEmail(email: string): Promise<UserWithHash | undefined>;
-  /** Stores a user with role admin (used by the seed script, never by the API). */
+  /**
+   * Creates the admin, or — if the email already exists (an earlier seed, or someone who
+   * registered it first) — resets that user's name, password and role (used by the seed
+   * script, never by the API).
+   */
   saveAdmin(input: NewUser): Promise<PublicUser>;
 }
 
@@ -41,6 +45,10 @@ export function createUsersRepository(db: Database): UsersRepository {
       const [admin] = await db
         .insert(users)
         .values({ ...input, role: 'admin' })
+        .onConflictDoUpdate({
+          target: users.email,
+          set: { name: input.name, passwordHash: input.passwordHash, role: 'admin' },
+        })
         .returning(publicColumns);
       return admin;
     },

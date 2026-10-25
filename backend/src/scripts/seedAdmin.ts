@@ -16,8 +16,10 @@ export interface AdminCredentials {
 }
 
 /**
- * Creates the admin account. Admins are never created through /register, so this script (run
- * with ADMIN_EMAIL / ADMIN_PASSWORD from the environment) is the only way in.
+ * Creates the admin account, or resets it on a re-run. Admins are never created through
+ * /register, so this script (run with ADMIN_EMAIL / ADMIN_PASSWORD from the environment) is
+ * the only way in. If someone registered the admin email first, they lose access: the role
+ * and password are both reset from the environment.
  */
 export async function seedAdmin(
   credentials: AdminCredentials,
