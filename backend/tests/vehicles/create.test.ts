@@ -136,4 +136,27 @@ describe('POST /api/vehicles', () => {
       expect(res.body.year).toBe(year);
     });
   });
+
+  describe('price rule: > 0, ≤ 100,000,000, at most 2 decimals', () => {
+    it.each([
+      ['zero', 0],
+      ['negative', -1],
+      ['a string', 'abc'],
+      ['3 decimals', 1.234],
+      ['over 100,000,000', 100_000_000.01],
+    ])('rejects a price that is %s with 400', async (_case, price) => {
+      const res = await postVehicle({ price });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field: 'price', message: expect.any(String) }]);
+    });
+
+    // 19.99 * 100 is 1998.9999999999998 in JS, so a naive "× 100 is an integer" check rejects it.
+    it.each([0.01, 19.99, 100_000_000])('accepts a price of %d', async (price) => {
+      const res = await postVehicle({ price });
+
+      expect(res.status).toBe(201);
+      expect(res.body.price).toBe(price);
+    });
+  });
 });
