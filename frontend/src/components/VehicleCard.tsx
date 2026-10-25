@@ -4,6 +4,9 @@ import { formatPrice } from '../lib/format';
 import { ConfirmDialog } from './ConfirmDialog';
 import { RestockPopover } from './RestockPopover';
 
+/** At or below this many units (but not sold out) the card shows "Only N left". */
+const LOW_STOCK = 3;
+
 /** One vehicle in the inventory grid (UI_PLAN.md §4). */
 export function VehicleCard({
   vehicle,
@@ -54,20 +57,27 @@ export function VehicleCard({
         <h2 id={`${id}-model`} className="text-2xl font-bold uppercase leading-tight">
           {model}
         </h2>
-        <dl className="flex flex-wrap gap-2">
-          <div className="cyber-badge">
-            <dt className="cyber-badge-label">Category</dt>
-            <dd className="cyber-badge-value">{category}</dd>
-          </div>
-          <div className="cyber-badge">
-            <dt className="cyber-badge-label">Stock</dt>
-            {quantity === 0 ? (
-              <dd className="cyber-badge-value is-red">Sold out</dd>
-            ) : (
-              <dd className="cyber-badge-value">{quantity}</dd>
-            )}
-          </div>
-        </dl>
+        <div className="flex flex-wrap gap-2">
+          <dl className="contents">
+            <div className="cyber-badge">
+              <dt className="cyber-badge-label">Category</dt>
+              <dd className="cyber-badge-value">{category}</dd>
+            </div>
+            <div className="cyber-badge">
+              <dt className="cyber-badge-label">Stock</dt>
+              {quantity === 0 ? (
+                <dd className="cyber-badge-value is-red">Sold out</dd>
+              ) : (
+                <dd className="cyber-badge-value">{quantity}</dd>
+              )}
+            </div>
+          </dl>
+          {quantity >= 1 && quantity <= LOW_STOCK && (
+            <span className="cyber-badge">
+              <span className="cyber-badge-value is-cyan">Only {quantity} left</span>
+            </span>
+          )}
+        </div>
         <p className="font-mono text-xl">{formatPrice(price)}</p>
         <button
           type="button"
