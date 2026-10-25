@@ -146,7 +146,7 @@ frontend/
 - Unknown fields in a request body are ignored (Zod strips them).
 - Register → 201 `{ id, name, email, role }`; login → 200 `{ token, user }`. The frontend logs in right after a successful register.
 - Purchase = always 1 unit; any request body is ignored. Purchase and restock return 200 with the updated vehicle.
-- `PUT /api/vehicles/:id` replaces make, model, year, category, price and imageUrl (same validation as create); `quantity` is ignored.
+- `PUT /api/vehicles/:id` replaces make, model, year, category, price and imageUrl (same validation as create); `quantity` is ignored; an omitted `imageUrl` clears the image (stored as `null`).
 - `GET /api/vehicles` returns all vehicles, newest first, including sold-out ones.
 - Search params: `make`, `model` (case-insensitive partial; `%` and `_` match literally), `category` (case-insensitive exact; unknown → 400), `minPrice`, `maxPrice` (inclusive). Empty params (`?make=`) count as absent; filters combine with AND. "In stock only" is a frontend filter.
 - Duplicate vehicles (same make/model/year) are allowed.
@@ -264,6 +264,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [ ] Valid full update → 200 with the updated vehicle
 - [ ] `updatedAt` changes on update
 - [ ] Body is validated like create (`it.each`: a missing field, an invalid value) → 400
+- [ ] An omitted `imageUrl` clears the stored image (`null`)
 - [ ] **(guard)** `quantity` in the body is ignored; stock unchanged
 - [ ] Unknown id → 404
 - [ ] Malformed id → 400 (builds the shared UUID check)
