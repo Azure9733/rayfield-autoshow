@@ -1,5 +1,6 @@
+import { UnauthorizedError } from '../../lib/errors';
 import { signToken } from '../../lib/jwt';
-import { hashPassword } from '../../lib/password';
+import { comparePassword, hashPassword } from '../../lib/password';
 import type { PublicUser, UsersRepository } from './users.repository';
 
 export interface RegisterInput {
@@ -30,8 +31,11 @@ export function createAuthService(users: UsersRepository): AuthService {
       return users.create({ name, email, passwordHash: await hashPassword(password) });
     },
 
-    async login({ email }) {
+    async login({ email, password }) {
       const found = (await users.findByEmail(email))!;
+      if (!(await comparePassword(password, found.passwordHash))) {
+        throw new UnauthorizedError('INVALID_CREDENTIALS', 'Invalid email or password');
+      }
       const user: PublicUser = {
         id: found.id,
         name: found.name,
