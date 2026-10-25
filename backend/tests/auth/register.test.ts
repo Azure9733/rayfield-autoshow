@@ -52,4 +52,18 @@ describe('POST /api/auth/register', () => {
 
     expect(res.status).toBe(400);
   });
+
+  it('reports validation errors in the standard format', async () => {
+    const res = await request(createApp())
+      .post('/api/auth/register')
+      .send({ email: 'ann@example.com', password: 'supersecret' });
+
+    expect(res.body).toEqual({
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: expect.any(String),
+        details: [{ field: 'name', message: expect.any(String) }],
+      },
+    });
+  });
 });
