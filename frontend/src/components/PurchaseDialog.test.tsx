@@ -93,7 +93,7 @@ describe('purchase dialog', () => {
     await waitFor(() => expect(badge(card, 'Stock')).toHaveTextContent('1'));
   });
 
-  it('a successful purchase shows the UNIT ACQUIRED toast', async () => {
+  it('success shows UNIT ACQUIRED inside the dialog, with no toast', async () => {
     serveVehicles(inStock);
     servePurchase();
     const { user } = renderApp('/');
@@ -101,7 +101,21 @@ describe('purchase dialog', () => {
 
     await user.click(confirmButton(dialog));
 
-    expect(await screen.findByRole('status')).toHaveTextContent('UNIT ACQUIRED');
+    expect(await within(dialog).findByRole('status')).toHaveTextContent('UNIT ACQUIRED');
+    expect(screen.getAllByRole('status')).toHaveLength(1);
+  });
+
+  it('a click closes the success dialog straight away', async () => {
+    serveVehicles(inStock);
+    servePurchase();
+    const { user } = renderApp('/');
+    const { dialog } = await openPurchase(user);
+    await user.click(confirmButton(dialog));
+    await within(dialog).findByText('UNIT ACQUIRED');
+
+    await user.click(within(dialog).getByText('UNIT ACQUIRED'));
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it('a 409 on purchase shows the OUT OF STOCK toast and refreshes the card', async () => {
@@ -185,18 +199,18 @@ describe('purchase dialog', () => {
     beforeEach(() => vi.useFakeTimers({ shouldAdvanceTime: true }));
     afterEach(() => vi.useRealTimers());
 
-    it('the success toast dismisses itself after about 4 seconds', async () => {
+    it('the success dialog closes itself 1.6 s after success', async () => {
       serveVehicles(inStock);
       servePurchase();
       const { user } = renderApp('/');
       const { dialog } = await openPurchase(user);
       await user.click(confirmButton(dialog));
-      const toast = await screen.findByRole('status');
+      await within(dialog).findByText('UNIT ACQUIRED');
 
-      act(() => vi.advanceTimersByTime(3500));
-      expect(toast).toBeInTheDocument();
-      act(() => vi.advanceTimersByTime(1000));
-      expect(toast).not.toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(1500));
+      expect(dialog).toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(200));
+      expect(dialog).not.toBeInTheDocument();
     });
   });
 });

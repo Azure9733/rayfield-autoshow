@@ -158,16 +158,16 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Low stock (1–3) shows an "Only N left" badge (§4)
 - [x] A card image loads lazily and falls back to the category icon if it fails to load
 - [x] Purchase click calls the API and updates the stock shown
-- [x] Purchase success shows the "UNIT ACQUIRED" toast
 - [x] Purchase 409 shows the "OUT OF STOCK" toast and refreshes the card
 - [x] If that refresh fails, its error shows as the red toast
 - [x] Other purchase errors (404, network) show a red toast with the API message
-- [x] Success toasts auto-dismiss after ~4s; the load-error toast with Retry stays
+- [x] The load-error toast with Retry stays (no auto-dismiss)
 - [x] Error toasts have a close button (they never auto-dismiss), the load-error one included
 
 **Purchase dialog**
 - [x] Purchase opens a confirmation dialog (make + model, year, price; focus on CONFIRM PURCHASE); Cancel, Escape and the backdrop close it without buying
 - [x] CONFIRM PURCHASE shows PROCESSING... and is disabled in flight: a double-click sends one request; the stock updates (replaces "Purchase is disabled while its request is in flight")
+- [ ] Success shows UNIT ACQUIRED inside the dialog (no toast); it closes itself 1.6 s later, or sooner on a click (replaces the UNIT ACQUIRED toast and its 4 s auto-dismiss)
 
 **Search / filter**
 - [x] Typing in the search bar loads matching vehicles live (`?q=`, make or model), debounced to one request
