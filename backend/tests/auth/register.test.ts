@@ -5,6 +5,15 @@ import { comparePassword } from '../../src/lib/password';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+const validUser = { name: 'Ann Driver', email: 'ann@example.com', password: 'supersecret' };
+
+/** Registers a user, overriding fields of a valid body (pass `undefined` to omit one). */
+function register(overrides: Record<string, unknown> = {}) {
+  return request(createApp())
+    .post('/api/auth/register')
+    .send({ ...validUser, ...overrides });
+}
+
 describe('POST /api/auth/register', () => {
   it('creates a user and returns 201 with exactly { id, name, email, role: "user" }', async () => {
     const res = await request(createApp())
@@ -64,6 +73,28 @@ describe('POST /api/auth/register', () => {
         message: expect.any(String),
         details: [{ field: 'name', message: expect.any(String) }],
       },
+    });
+  });
+
+  describe('name rule: trimmed, 1–60 characters', () => {
+    it.each([
+      ['whitespace-only', '   '],
+      ['61 characters', 'a'.repeat(61)],
+    ])('rejects a %s name with 400', async (_case, name) => {
+      const res = await register({ name });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field: 'name', message: expect.any(String) }]);
+    });
+
+    it.each([
+      ['60 characters', 'a'.repeat(60), 'a'.repeat(60)],
+      ['surrounding spaces', '  Ann  ', 'Ann'],
+    ])('accepts a name with %s and stores it trimmed', async (_case, name, stored) => {
+      const res = await register({ name });
+
+      expect(res.status).toBe(201);
+      expect(res.body.name).toBe(stored);
     });
   });
 });
