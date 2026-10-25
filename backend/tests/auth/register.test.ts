@@ -149,4 +149,11 @@ describe('POST /api/auth/register', () => {
     expect(first.body.email).toBe('ann@example.com');
     expect(second.status).toBe(409);
   });
+
+  it('ignores role: "admin" in the body and creates a regular user', async () => {
+    const res = await register({ role: 'admin' });
+
+    expect(res.status).toBe(201);
+    expect(res.body.role).toBe('user');
+  });
 });

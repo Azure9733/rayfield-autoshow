@@ -194,7 +194,7 @@ How to read this list:
 - [x] Password rule (`it.each`): missing, 7 chars, 73 ASCII chars, 19 emoji (passes a 72-character check but is 76 bytes) → 400; exactly 8 chars and exactly 72 bytes accepted
 - [x] Duplicate email → 409
 - [x] Email is case-insensitive: stored lowercased, so `A@x.com` then `a@x.com` → 409
-- [ ] **(guard)** `role: "admin"` in body is ignored → user created as `"user"`
+- [x] **(guard)** `role: "admin"` in body is ignored → user created as `"user"`
 
 ### 4.2 `POST /api/auth/login`
 - [ ] `unit:` `jwt.sign` then `jwt.verify` keeps `sub` and `role`; the token has an `exp`
