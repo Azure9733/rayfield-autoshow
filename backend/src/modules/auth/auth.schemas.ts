@@ -1,5 +1,15 @@
 import { z } from 'zod';
 
+/**
+ * Request body for POST /api/auth/login. No format rules: a malformed email simply matches
+ * no user and gets the same generic 401 as a wrong password.
+ */
+export const loginSchema = z.object({
+  // Emails are stored lowercased, so lowercase here to match them case-insensitively.
+  email: z.string().toLowerCase(),
+  password: z.string(),
+});
+
 /** Request body for POST /api/auth/register. Unknown keys (e.g. `role`) are stripped. */
 export const registerSchema = z.object({
   name: z.string().trim().min(1).max(60),

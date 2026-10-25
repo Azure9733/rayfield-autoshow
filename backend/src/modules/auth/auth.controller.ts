@@ -9,8 +9,8 @@ export function createAuthController(service: AuthService) {
       res.status(201).json(user);
     },
 
-    async login(req: Request, res: Response) {
-      res.json(await service.login(req.body as LoginInput));
+    async login(_req: Request, res: Response) {
+      res.json(await service.login(res.locals.body as LoginInput));
     },
   };
 }
