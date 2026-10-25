@@ -6,7 +6,7 @@ cyberpunk theme. Users browse, search and buy vehicles; admins add, edit, delete
 them.
 
 **Live:** https://incubyte.somvanshi.dev
-
+**API:** https://rayfield-sable.vercel.app/api/health
 | Login | Search and filters | Purchase |
 |---|---|---|
 | ![Login page](docs/Screenshots/login.png) | ![Search bar with the filters open](docs/Screenshots/SearchFilter.png) | ![Purchase confirmation dialog](docs/Screenshots/purchase.png) |
@@ -14,6 +14,13 @@ them.
 | Admin: edit a vehicle | My Garage |
 |---|---|
 | ![Admin editing a vehicle](docs/Screenshots/Inventory_Mangement.png) | ![My Garage purchase history](docs/Screenshots/Garage.png) |
+
+
+**Login Credentials:**  
+ADMIN_EMAIL= `admin@rayfield.dev ` 
+ADMIN_PASSWORD=`DemoAdmin#2026 ` 
+
+Just Register for Normal User  
 
 ## Contents
 
