@@ -28,4 +28,14 @@ describe('POST /api/vehicles/:id/purchase', () => {
     expect(res.body).toMatchObject({ id, quantity: 2 });
     expect(await stockOf(id)).toBe(2);
   });
+
+  it('returns 409 OUT_OF_STOCK when quantity is 0 and leaves stock at 0', async () => {
+    const { id } = await createVehicle({ quantity: 0 });
+
+    const res = await purchase(id);
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toEqual({ code: 'OUT_OF_STOCK', message: 'Out of stock' });
+    expect(await stockOf(id)).toBe(0);
+  });
 });
