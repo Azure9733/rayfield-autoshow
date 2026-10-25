@@ -183,6 +183,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Errors show in the dialog in red with CLOSE: OUT OF STOCK for a 409, otherwise the API message (replaces the OUT OF STOCK and purchase-error toasts)
 
 **Search / filter**
+- [ ] The search bar has no visible label: placeholder "Search", accessible name "Search"
 - [x] Typing in the search bar loads matching vehicles live (`?q=`, make or model), debounced to one request
 - [x] Requests carry only the filled filters
 - [x] The Filters button shows and hides the other filters (category, price range, in stock only)

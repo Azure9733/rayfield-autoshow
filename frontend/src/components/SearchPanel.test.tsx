@@ -5,7 +5,7 @@ import { inStock, loginAs, serveVehicles, soldOut } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
 import { server } from '../test/server';
 
-const searchBar = () => screen.getByRole('searchbox', { name: 'Make or model' });
+const searchBar = () => screen.getByRole('searchbox', { name: 'Search' });
 
 async function openFilters(user: UserEvent) {
   await user.click(screen.getByRole('button', { name: 'Filters' }));
@@ -26,7 +26,7 @@ describe('search panel', () => {
     const { user } = renderApp('/');
     await screen.findByRole('article', { name: 'Porsche 911 Carrera' });
 
-    await user.type(screen.getByRole('searchbox', { name: 'Make or model' }), 'cruis');
+    await user.type(searchBar(), 'cruis');
 
     await waitFor(() =>
       expect(
@@ -35,6 +35,15 @@ describe('search panel', () => {
     );
     // Without the debounce there'd be one request per keystroke ("c", "cr", …).
     expect(requests).toEqual([{ q: 'cruis' }]);
+  });
+
+  it('the search bar has no visible label, just a "Search" placeholder', async () => {
+    serveVehicles(inStock);
+    renderApp('/');
+    await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+
+    expect(searchBar()).toHaveAttribute('placeholder', 'Search');
+    expect(screen.queryByText(/make or model/i)).not.toBeInTheDocument();
   });
 
   it('requests carry only the filled filters', async () => {
