@@ -170,8 +170,8 @@ frontend/
     routes/                  ProtectedRoute, GuestRoute
     validation/              client-side copies of the API's rules
     index.css                theme (Tailwind v4 tokens and components)
-docs/                        test report, screenshots
-PLAN.md, UI_PLAN.md          the plan and both TDD test lists, ticked as built
+docs/                        PLAN.md and UI_PLAN.md (the plan and both TDD test lists, ticked
+                             as built), the test report, screenshots
 ```
 
 ## API
@@ -257,7 +257,8 @@ cd frontend && npm run test:coverage
 Every behaviour was built red → green: the history has a `test:` commit with the failing test,
 then a `feat:` commit with the code that made it pass, and `refactor:` commits only while green.
 Tests that passed on their first run are marked `test: guard ...`, and each was checked by
-briefly breaking the code. The lists they follow are in PLAN.md §4 (API) and UI_PLAN.md §10 (UI).
+briefly breaking the code. The lists they follow are in [docs/PLAN.md](docs/PLAN.md) §4 (API) and
+[docs/UI_PLAN.md](docs/UI_PLAN.md) §10 (UI).
 
 ## Deployment
 
@@ -296,15 +297,16 @@ Every AI session is in [PROMPTS.md](PROMPTS.md), unedited. Every AI-assisted com
 
 - **Claude Code** (Anthropic, Claude Opus), as the VS Code extension on my Linux machine. It
   wrote almost all the code, tests and commits in this repo, working in the repo itself.
-- **A separate Claude chat** for planning, which drafted the first versions of PLAN.md and
-  UI_PLAN.md before any code. <!-- TODO: say where it ran (e.g. claude.ai) and make sure PROMPTS.md links it. -->
+- **A separate Claude chat** for planning, which drafted the first versions of
+  [PLAN.md](docs/PLAN.md) and [UI_PLAN.md](docs/UI_PLAN.md) before any code. <!-- TODO: say where it ran (e.g. claude.ai) and make sure PROMPTS.md links it. -->
 
 ### How I used it
 
 - **Planning and review before code.** I wrote the plans with the planning chat, then had Claude
   Code review them against the assignment. It listed gaps, contradictions and behaviours too big
   for one TDD cycle; I decided each point, and it rewrote the plans to match.
-- **Test lists as the contract.** PLAN.md §4 (API) and UI_PLAN.md §10 (UI) list one behaviour per
+- **Test lists as the contract.** [PLAN.md](docs/PLAN.md) §4 (API) and
+  [UI_PLAN.md](docs/UI_PLAN.md) §10 (UI) list one behaviour per
   checkbox. Claude Code worked through them in order: write the test, run it and record why it
   failed, commit (`test:`), write the minimum code, run everything, commit (`feat:`), tick the
   box. Tests that passed first time were proven by breaking the code briefly (`test: guard`).

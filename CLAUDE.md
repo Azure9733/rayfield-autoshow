@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Rayfield Autoshow — Incubyte TDD kata (car dealership inventory). PLAN.md holds the plan and the backend test list; UI_PLAN.md covers the frontend and its test list (§10).
+Rayfield Autoshow — Incubyte TDD kata (car dealership inventory). [docs/PLAN.md](docs/PLAN.md) holds the plan and the backend test list; [docs/UI_PLAN.md](docs/UI_PLAN.md) covers the frontend and its test list (§10). Below, PLAN.md and UI_PLAN.md mean those files.
 
 ## TDD workflow
 - Strict TDD: one behaviour per cycle, in PLAN.md order (frontend: UI_PLAN.md §10). A table of cases for one rule (`it.each`) counts as one cycle.
