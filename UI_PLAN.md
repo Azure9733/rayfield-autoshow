@@ -157,7 +157,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] No search results show `///NO.MATCH` with a clear-filters button (§7)
 
 **Admin**
-- [ ] Admin controls hidden for regular users
+- [x] Admin controls hidden for regular users
 - [ ] Vehicle form shows validation errors (client-side)
 - [ ] Server validation errors show under the matching field
 - [ ] Adding a vehicle shows it in the grid

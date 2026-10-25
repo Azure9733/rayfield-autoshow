@@ -13,6 +13,7 @@ import { SearchPanel } from '../components/SearchPanel';
 import { SkeletonCard } from '../components/SkeletonCard';
 import { Toast } from '../components/Toast';
 import { VehicleCard } from '../components/VehicleCard';
+import { useAuth } from '../context/AuthContext';
 
 /** All vehicles, or the search results when any filter is filled. */
 function fetchVehicles(query: SearchFilters) {
@@ -31,6 +32,7 @@ export function InventoryPage() {
   const [form, setForm] = useState(EMPTY_FILTERS);
   const [query, setQuery] = useState<SearchFilters>({});
   const [inStockOnly, setInStockOnly] = useState(false);
+  const isAdmin = useAuth().user?.role === 'admin';
   // Bumped by Retry to run the load effect again.
   const [attempt, setAttempt] = useState(0);
   const loading = vehicles === null && !error;
@@ -108,6 +110,13 @@ export function InventoryPage() {
           onInStockOnlyChange={setInStockOnly}
         />
         <div className="mt-8 lg:mt-0">
+          {isAdmin && (
+            <div className="mb-6 flex justify-end">
+              <button type="button" className="btn-cyber" data-text="Add vehicle">
+                Add vehicle
+              </button>
+            </div>
+          )}
           {shown?.length === 0 &&
             (filtering ? (
               <div className="cyber-panel mx-auto max-w-xl space-y-6 p-10 text-center">
@@ -132,7 +141,12 @@ export function InventoryPage() {
             {loading
               ? Array.from({ length: 4 }, (_, i) => <SkeletonCard key={i} />)
               : shown?.map((vehicle) => (
-                  <VehicleCard key={vehicle.id} vehicle={vehicle} onPurchase={purchase} />
+                  <VehicleCard
+                    key={vehicle.id}
+                    vehicle={vehicle}
+                    onPurchase={purchase}
+                    showAdminControls={isAdmin}
+                  />
                 ))}
           </div>
         </div>

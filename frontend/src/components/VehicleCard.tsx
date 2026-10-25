@@ -6,9 +6,11 @@ import { formatPrice } from '../lib/format';
 export function VehicleCard({
   vehicle,
   onPurchase,
+  showAdminControls = false,
 }: {
   vehicle: Vehicle;
   onPurchase: (vehicle: Vehicle) => void;
+  showAdminControls?: boolean;
 }) {
   const { make, model, year, category, price, quantity, imageUrl } = vehicle;
   const id = useId();
@@ -55,6 +57,19 @@ export function VehicleCard({
         >
           Purchase
         </button>
+        {showAdminControls && (
+          <div className="flex flex-wrap gap-2 border-t border-cp-yellow/15 pt-3">
+            <button type="button" className="btn-ghost">
+              Edit
+            </button>
+            <button type="button" className="btn-ghost">
+              Restock
+            </button>
+            <button type="button" className="btn-danger">
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </article>
   );
