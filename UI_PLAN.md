@@ -130,7 +130,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] A non-JSON response or a network failure becomes an `ApiError` with a friendly message ("Can't reach the server. Please try again.")
 
 **Auth**
-- [ ] Register form shows validation messages
+- [x] Register form shows validation messages
 - [ ] Confirm-password mismatch shows an error and sends nothing
 - [ ] Successful register logs in automatically and lands on `/`
 - [ ] Login shows the API error on 401

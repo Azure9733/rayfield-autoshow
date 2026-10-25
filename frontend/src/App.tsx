@@ -1,14 +1,26 @@
+import { Route, Routes } from 'react-router';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
+import { RegisterPage } from './pages/RegisterPage';
 
-/**
- * Root layout. The main area is a temporary theme preview; pages and routes replace it as the
- * UI_PLAN.md §10 tests are built.
- */
+/** Root layout: header, the routed page, footer. */
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
+      <Routes>
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={<ThemePreview />} />
+      </Routes>
+      <Footer />
+    </div>
+  );
+}
+
+/** Temporary `/` content until the inventory page replaces it. */
+function ThemePreview() {
+  return (
+    <>
       <div className="module-strip">
         <span>///INVENTORY.MODULE</span>
         <span>
@@ -87,8 +99,6 @@ export default function App() {
           </form>
         </section>
       </main>
-
-      <Footer />
-    </div>
+    </>
   );
 }
