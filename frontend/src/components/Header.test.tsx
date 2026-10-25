@@ -64,16 +64,15 @@ describe('header', () => {
     },
   );
 
-  it.each([
-    ['/register', 'Login', 'Log in'],
-    ['/login', 'Register', 'Register'],
-  ])('a guest on %s gets a %s button in the corner and no Menu', async (path, label, heading) => {
-    const { user } = renderApp(path);
-    const header = screen.getByRole('banner');
-    expect(within(header).queryByRole('button', { name: 'Menu' })).not.toBeInTheDocument();
+  it.each(['/login', '/register'])(
+    'a guest on %s sees only the brand: no Menu, Login or Register',
+    (path) => {
+      renderApp(path);
+      const header = screen.getByRole('banner');
 
-    await user.click(within(header).getByRole('link', { name: label }));
-
-    expect(await screen.findByRole('heading', { name: heading })).toBeInTheDocument();
-  });
+      expect(within(header).queryByRole('button')).not.toBeInTheDocument();
+      expect(within(header).getAllByRole('link')).toHaveLength(1);
+      expect(within(header).getByRole('link', { name: /rayfield/i })).toHaveAttribute('href', '/');
+    },
+  );
 });
