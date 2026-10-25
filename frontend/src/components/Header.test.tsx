@@ -32,6 +32,20 @@ describe('header', () => {
     expect(screen.queryByRole('navigation', { name: 'Mobile' })).not.toBeInTheDocument();
   });
 
+  it('tapping outside the header closes the menu; tapping inside the menu does not', async () => {
+    saveSession({ token: 'some.jwt.token', user: account });
+    const { user } = renderApp('/');
+    const menu = screen.getByRole('button', { name: 'Menu' });
+    await user.click(menu);
+
+    await user.click(within(screen.getByRole('navigation', { name: 'Mobile' })).getByText('Vik'));
+    expect(menu).toHaveAttribute('aria-expanded', 'true');
+
+    await user.click(screen.getByRole('main'));
+    expect(menu).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByRole('navigation', { name: 'Mobile' })).not.toBeInTheDocument();
+  });
+
   it('has no Inventory link, in the nav or the menu; the logo links to /', async () => {
     saveSession({ token: 'some.jwt.token', user: account });
     const { user } = renderApp('/');
