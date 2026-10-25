@@ -12,6 +12,7 @@ export interface PublicUser {
 export interface NewUser {
   name: string;
   email: string;
+  passwordHash: string;
 }
 
 /** All SQL for the users table lives behind this interface, so tests can swap in a fake. */

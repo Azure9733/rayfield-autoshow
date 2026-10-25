@@ -1,14 +1,21 @@
-import type { NewUser, PublicUser, UsersRepository } from './users.repository';
+import { hashPassword } from '../../lib/password';
+import type { PublicUser, UsersRepository } from './users.repository';
+
+export interface RegisterInput {
+  name: string;
+  email: string;
+  password: string;
+}
 
 export interface AuthService {
-  register(input: NewUser): Promise<PublicUser>;
+  register(input: RegisterInput): Promise<PublicUser>;
 }
 
 /** Registration and login rules; knows nothing about HTTP. */
 export function createAuthService(users: UsersRepository): AuthService {
   return {
-    register(input) {
-      return users.create(input);
+    async register({ name, email, password }) {
+      return users.create({ name, email, passwordHash: await hashPassword(password) });
     },
   };
 }

@@ -186,7 +186,7 @@ How to read this list:
 - [x] Valid name + email + password → 201 with exactly `{ id, name, email, role: "user" }` (walking skeleton: route → controller → service → repository → DB, so the biggest cycle by design)
 - [x] **(guard)** Response never contains password or hash
 - [x] `unit:` `password.hash` then `compare` → true for the right password, false for a wrong one
-- [ ] Password is stored hashed (DB value ≠ plain text, `compare` passes)
+- [x] Password is stored hashed (DB value ≠ plain text, `compare` passes)
 - [ ] Missing name → 400
 - [ ] Validation errors use the standard format: `code: "VALIDATION_ERROR"` and `details: [{ field, message }]`
 - [ ] Name rule (`it.each`): whitespace-only, 61 chars → 400; 60 chars accepted; `"  Ann  "` stored as `"Ann"`

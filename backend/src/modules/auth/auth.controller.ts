@@ -5,8 +5,8 @@ import type { AuthService } from './auth.service';
 export function createAuthController(service: AuthService) {
   return {
     async register(req: Request, res: Response) {
-      const { name, email } = req.body;
-      const user = await service.register({ name, email });
+      const { name, email, password } = req.body;
+      const user = await service.register({ name, email, password });
       res.status(201).json(user);
     },
   };
