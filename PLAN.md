@@ -253,7 +253,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] `?minPrice=` → inclusive lower bound (a vehicle priced exactly at `minPrice` is included)
 - [x] `?maxPrice=` → inclusive upper bound
 - [x] **(guard)** Filters combine with AND (e.g. `make` + `maxPrice`, `minPrice` + `maxPrice`)
-- [ ] **(guard)** No filters → returns all
+- [x] **(guard)** No filters → returns all
 - [ ] **(guard)** No matches → 200 `[]`
 - [ ] Empty params count as absent (`it.each`: `?make=`, `?category=`, `?minPrice=`)
 - [ ] `minPrice > maxPrice` → 400

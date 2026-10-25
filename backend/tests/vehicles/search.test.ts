@@ -115,4 +115,14 @@ describe('GET /api/vehicles/search', () => {
 
     expect(idsOf(res)).toEqual([match.id]);
   });
+
+  it('returns every vehicle when no filters are given', async () => {
+    const a = await createVehicle({ make: 'Toyota' });
+    const b = await createVehicle({ make: 'Ford' });
+
+    const res = await search();
+
+    expect(res.status).toBe(200);
+    expect(idsOf(res)).toEqual([a.id, b.id].sort());
+  });
 });
