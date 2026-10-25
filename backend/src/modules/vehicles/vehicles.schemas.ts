@@ -11,6 +11,8 @@ export const searchQuerySchema = z.object({
   make: z.string().optional(),
   model: z.string().optional(),
   category: categorySchema.optional(),
+  // Query values arrive as strings; coerce turns "25000" into 25000 (and "abc" into a 400).
+  minPrice: z.coerce.number().optional(),
 });
 
 /** Request body for POST /api/vehicles. Unknown keys (e.g. a client-sent `id`) are stripped. */
