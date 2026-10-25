@@ -348,18 +348,18 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 - [x] Code: `DATABASE_POOL_MAX` sets the pool size (default 10)
 - [x] Code: the DB client builds its pool from both (TLS with `rejectUnauthorized: false`, trade-off documented)
 - [x] Code: `npm run db:migrate` uses the same TLS setting (seedAdmin / seedDemo already go through the shared pool)
-- [ ] Create project; copy **pooler** connection string (transaction mode, port 6543) for the app
-- [ ] Use direct/session connection string for running migrations
-- [ ] Run migrations against Supabase; run `seedAdmin` and `seedDemo`
-- [ ] **Enable RLS on `users` and `vehicles` with no policies** — Supabase exposes `public` tables through its Data API; your backend connects as the DB owner and bypasses RLS, but the anon key can't read your users table
-- [ ] Store the connection string only in Vercel env vars (never paste it into an AI session)
+- [x] Create project; copy **pooler** connection string (transaction mode, port 6543) for the app
+- [x] Use direct/session connection string for running migrations
+- [x] Run migrations against Supabase; run `seedAdmin` and `seedDemo`
+- [x] **Enable RLS on `users` and `vehicles` with no policies** — Supabase exposes `public` tables through its Data API; your backend connects as the DB owner and bypasses RLS, but the anon key can't read your users table
+- [x] Store the connection string only in Vercel env vars (never paste it into an AI session)
 
 ### Vercel
-- [ ] Backend project (root `backend/`): export the Express app for Vercel's Express support / serverless function; env: `DATABASE_URL`, `JWT_SECRET`, `JWT_EXPIRES_IN`
-- [ ] Frontend project (root `frontend/`): `vercel.json` rewrites `/api/:path*` → `https://<backend>.vercel.app/api/:path*` first, then the SPA fallback to `/index.html` so deep links (`/login`) don't 404
-- [ ] Domain: add `incubyte.somvanshi.dev` to the **frontend** project → CNAME `incubyte` → `cname.vercel-dns.com` at name.com (or wherever nameservers point). The backend keeps its `*.vercel.app` URL; only the rewrite uses it
-- [ ] Create the demo user (register through the UI); the demo admin comes from `seedAdmin`
-- [ ] Smoke test live: register (auto-login), log in as the demo admin, add a vehicle, purchase until 0, button disables
+- [x] Backend project (root `backend/`): export the Express app for Vercel's Express support / serverless function; env: `DATABASE_URL`, `JWT_SECRET`, `JWT_EXPIRES_IN`
+- [x] Frontend project (root `frontend/`): `vercel.json` rewrites `/api/:path*` → `https://<backend>.vercel.app/api/:path*` first, then the SPA fallback to `/index.html` so deep links (`/login`) don't 404
+- [x] Domain: add `incubyte.somvanshi.dev` to the **frontend** project → CNAME `incubyte` → `cname.vercel-dns.com` at name.com (or wherever nameservers point). The backend keeps its `*.vercel.app` URL; only the rewrite uses it
+- [x] Create the demo user (register through the UI); the demo admin comes from `seedAdmin`
+- [x] Smoke test live: register (auto-login), log in as the demo admin, add a vehicle, purchase until 0, button disables
 
 ---
 
