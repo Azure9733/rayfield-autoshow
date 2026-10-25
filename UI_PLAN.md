@@ -161,7 +161,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Vehicle form shows validation errors (client-side)
 - [x] Server validation errors show under the matching field
 - [x] A save error without field details shows above the fields
-- [ ] Adding a vehicle shows it in the grid
+- [x] Adding a vehicle shows it in the grid
 - [ ] Edit opens the form prefilled
 - [ ] Saving an edit updates the card
 - [ ] Delete asks for in-page confirmation

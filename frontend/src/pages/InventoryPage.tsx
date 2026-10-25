@@ -164,7 +164,10 @@ export function InventoryPage() {
           title="Add vehicle"
           withQuantity
           onSave={async (input) => {
-            await createVehicle(input);
+            const created = await createVehicle(input);
+            // Newest first, matching the API's order.
+            setVehicles((list) => [created, ...(list ?? [])]);
+            setAdding(false);
           }}
           onClose={() => setAdding(false)}
         />
