@@ -72,4 +72,12 @@ describe('POST /api/auth/login', () => {
     expect(unknownEmail.status).toBe(401);
     expect(unknownEmail.body).toEqual(wrongPassword.body);
   });
+
+  it('treats the email case-insensitively', async () => {
+    await registerAnn();
+
+    const res = await login({ email: 'ANN@Example.COM' });
+
+    expect(res.status).toBe(200);
+  });
 });
