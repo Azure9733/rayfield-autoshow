@@ -55,4 +55,14 @@ describe('POST /api/vehicles', () => {
 
     expect(res.status).toBe(401);
   });
+
+  it.each(['make', 'model', 'year', 'category', 'price'])(
+    'returns 400 when %s is missing',
+    async (field) => {
+      const res = await postVehicle({ [field]: undefined });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field, message: expect.any(String) }]);
+    },
+  );
 });
