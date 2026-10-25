@@ -116,13 +116,13 @@ describe('my garage', () => {
     serveGarage(makePurchase());
     const { user } = renderApp('/');
 
-    let dialog = await openGarage(user);
+    const dialog = await openGarage(user);
     const close = within(dialog).getByRole('button', { name: 'Close' });
     expect(close).toHaveFocus();
     await user.click(close);
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
-    dialog = await openGarage(user);
+    await openGarage(user);
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 

@@ -39,9 +39,21 @@ export function GarageDialog({ onClose }: { onClose: () => void }) {
   return (
     <Modal labelledBy={titleId} onRequestClose={onClose} className="max-w-2xl">
       <div className="flex max-h-[80vh] flex-col">
-        <h2 id={titleId} className="p-6 pb-4 text-2xl font-bold uppercase tracking-[3px]">
-          My Garage
-        </h2>
+        <div className="flex items-center justify-between gap-4 p-6 pb-4">
+          <h2 id={titleId} className="text-2xl font-bold uppercase tracking-[3px]">
+            My Garage
+          </h2>
+          <button
+            type="button"
+            aria-label="Close"
+            // Focus starts here: the garage is read-only, so closing is the likeliest action.
+            autoFocus
+            onClick={onClose}
+            className="flex size-10 shrink-0 cursor-pointer items-center justify-center text-2xl text-cp-muted transition-colors hover:text-cp-yellow"
+          >
+            ×
+          </button>
+        </div>
         {error && (
           <div className="flex flex-col items-center gap-4 px-6 pt-4 pb-10 text-center">
             <p role="alert" className="font-bold text-cp-red">
