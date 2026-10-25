@@ -210,7 +210,7 @@ How to read this list:
 ### 4.3 `GET /api/vehicles` (comes before the middleware, so 4.4 has a real route to protect)
 Seed rows with the `createVehicle` helper, and send a valid token in every test from the start; it's ignored until 4.4 adds the middleware.
 - [x] Empty DB → 200 with `[]`
-- [ ] Returns all vehicles with all fields (camelCase)
+- [x] Returns all vehicles with all fields (camelCase)
 - [ ] `price` is a JSON number, not a string
 - [ ] **(guard)** Includes out-of-stock vehicles (frontend shows them with disabled Purchase) — documented in README
 - [ ] Newest first (give the helper explicit `createdAt` values: rows inserted in one statement share a timestamp)

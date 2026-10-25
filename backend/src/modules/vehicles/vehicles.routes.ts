@@ -1,10 +1,11 @@
 import { Router } from 'express';
+import { createVehiclesController } from './vehicles.controller';
+import type { VehiclesService } from './vehicles.service';
 
 /** Mounted at /api/vehicles. */
-export function createVehiclesRouter(): Router {
+export function createVehiclesRouter(service: VehiclesService): Router {
+  const controller = createVehiclesController(service);
   const router = Router();
-  router.get('/', (_req, res) => {
-    res.json([]);
-  });
+  router.get('/', controller.list);
   return router;
 }

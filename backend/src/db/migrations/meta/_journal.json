@@ -29,6 +29,13 @@
       "when": 1792909869540,
       "tag": "0003_unique_user_email",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792911599905,
+      "tag": "0004_create_vehicles",
+      "breakpoints": true
     }
   ]
 }
