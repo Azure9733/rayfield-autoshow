@@ -138,6 +138,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Successful login redirects to `/`
 - [x] Logout clears the token and returns to `/login`
 - [x] Protected route redirects a guest to `/login`
+- [ ] A logged-in user visiting `/login` or `/register` goes to `/`
 
 **Header**
 - [x] Below lg, the Menu button opens and closes the nav; choosing a link closes it
