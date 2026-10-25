@@ -7,6 +7,12 @@ import { createAuthRouter } from './modules/auth/auth.routes';
 import { createAuthService } from './modules/auth/auth.service';
 import { createUsersRepository, type UsersRepository } from './modules/auth/users.repository';
 import {
+  createPurchasesRepository,
+  type PurchasesRepository,
+} from './modules/purchases/purchases.repository';
+import { createPurchasesRouter } from './modules/purchases/purchases.routes';
+import { createPurchasesService } from './modules/purchases/purchases.service';
+import {
   createVehiclesRepository,
   type VehiclesRepository,
 } from './modules/vehicles/vehicles.repository';
@@ -15,13 +21,17 @@ import { createVehiclesService } from './modules/vehicles/vehicles.service';
 
 /** Everything the app needs from the outside world; tests can pass fakes (PLAN.md §1). */
 export interface AppDeps {
-  repos: { users: UsersRepository; vehicles: VehiclesRepository };
+  repos: { users: UsersRepository; vehicles: VehiclesRepository; purchases: PurchasesRepository };
 }
 
 /** The real Postgres-backed dependencies. */
 function defaultDeps(): AppDeps {
   return {
-    repos: { users: createUsersRepository(db), vehicles: createVehiclesRepository(db) },
+    repos: {
+      users: createUsersRepository(db),
+      vehicles: createVehiclesRepository(db),
+      purchases: createPurchasesRepository(db),
+    },
   };
 }
 
@@ -42,6 +52,7 @@ export function createApp({ repos }: AppDeps = defaultDeps()): Express {
 
   app.use('/api/auth', createAuthRouter(createAuthService(repos.users)));
   app.use('/api/vehicles', createVehiclesRouter(createVehiclesService(repos.vehicles)));
+  app.use('/api/purchases', createPurchasesRouter(createPurchasesService(repos.purchases)));
 
   // No route matched. A path-less app.use, because Express 5 rejects app.all('*').
   app.use(() => {

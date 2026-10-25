@@ -2,6 +2,7 @@ import request from 'supertest';
 import { createApp } from '../src/app';
 import { db } from '../src/db/client';
 import { createUsersRepository } from '../src/modules/auth/users.repository';
+import { createPurchasesRepository } from '../src/modules/purchases/purchases.repository';
 import type { VehiclesRepository } from '../src/modules/vehicles/vehicles.repository';
 import { authHeader } from './helpers/auth';
 
@@ -35,7 +36,11 @@ describe('error responses', () => {
       search: () => Promise.reject(new Error('connection to the database lost')),
     } as unknown as VehiclesRepository;
     const app = createApp({
-      repos: { users: createUsersRepository(db), vehicles: failingVehicles },
+      repos: {
+        users: createUsersRepository(db),
+        vehicles: failingVehicles,
+        purchases: createPurchasesRepository(db),
+      },
     });
 
     const res = await request(app).get('/api/vehicles').set('Authorization', authHeader());
