@@ -12,7 +12,10 @@ export interface PurchaseSeed {
 }
 
 /** Inserts a purchase row for `userId` with raw SQL, bypassing the app. Returns its id. */
-export async function createPurchase(userId: string, seed: PurchaseSeed = {}): Promise<{ id: string }> {
+export async function createPurchase(
+  userId: string,
+  seed: PurchaseSeed = {},
+): Promise<{ id: string }> {
   const p = {
     vehicleId: null,
     make: 'Toyota',
