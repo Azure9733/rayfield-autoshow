@@ -20,6 +20,12 @@ export class AppError extends Error {
   }
 }
 
+export class ConflictError extends AppError {
+  constructor(code: string, message: string) {
+    super(409, code, message);
+  }
+}
+
 export class ValidationError extends AppError {
   constructor(details: FieldError[]) {
     super(400, 'VALIDATION_ERROR', 'Request validation failed', details);

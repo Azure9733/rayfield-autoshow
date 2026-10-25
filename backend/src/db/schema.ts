@@ -9,7 +9,7 @@ export const users = pgTable(
   {
     id: uuid().primaryKey().defaultRandom(),
     name: text().notNull(),
-    email: text().notNull(),
+    email: text().notNull().unique(),
     passwordHash: text().notNull(),
     role: text({ enum: ['user', 'admin'] })
       .notNull()
