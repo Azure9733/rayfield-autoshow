@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import request from 'supertest';
 import { createApp } from '../../src/app';
+import { env } from '../../src/config/env';
 import { authHeader } from '../helpers/auth';
 
 /** GET /api/vehicles with the given Authorization header (or none). */
@@ -32,6 +33,15 @@ describe('authenticate middleware (via GET /api/vehicles)', () => {
     const forged = jwt.sign({ sub: 'u', role: 'admin' }, 'some-other-secret-that-is-long-enough');
 
     const res = await getProtected(`Bearer ${forged}`);
+
+    expect(res.status).toBe(401);
+    expect(res.body.error.code).toBe('UNAUTHENTICATED');
+  });
+
+  it('returns 401 for an expired token', async () => {
+    const expired = jwt.sign({ sub: 'u', role: 'user' }, env.JWT_SECRET, { expiresIn: -10 });
+
+    const res = await getProtected(`Bearer ${expired}`);
 
     expect(res.status).toBe(401);
     expect(res.body.error.code).toBe('UNAUTHENTICATED');
