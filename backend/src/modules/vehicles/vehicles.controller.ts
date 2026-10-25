@@ -31,7 +31,8 @@ export function createVehiclesController(service: VehiclesService) {
     },
 
     async restock(req: Request<{ id: string }>, res: Response) {
-      res.json(await service.restock(req.params.id, req.body.quantity));
+      const { quantity } = res.locals.body as { quantity: number };
+      res.json(await service.restock(req.params.id, quantity));
     },
   };
 }

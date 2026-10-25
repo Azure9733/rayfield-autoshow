@@ -3,7 +3,12 @@ import { authenticate } from '../../middleware/authenticate';
 import { requireAdmin } from '../../middleware/requireAdmin';
 import { validateBody, validateQuery, validateUuidParam } from '../../middleware/validate';
 import { createVehiclesController } from './vehicles.controller';
-import { createVehicleSchema, searchQuerySchema, updateVehicleSchema } from './vehicles.schemas';
+import {
+  createVehicleSchema,
+  restockSchema,
+  searchQuerySchema,
+  updateVehicleSchema,
+} from './vehicles.schemas';
 import type { VehiclesService } from './vehicles.service';
 
 /** Mounted at /api/vehicles. Every vehicle and inventory endpoint requires a logged-in user. */
@@ -18,6 +23,6 @@ export function createVehiclesRouter(service: VehiclesService): Router {
   router.put('/:id', requireAdmin, validateBody(updateVehicleSchema), controller.update);
   router.delete('/:id', requireAdmin, controller.remove);
   router.post('/:id/purchase', controller.purchase);
-  router.post('/:id/restock', controller.restock);
+  router.post('/:id/restock', validateBody(restockSchema), controller.restock);
   return router;
 }

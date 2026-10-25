@@ -52,3 +52,8 @@ export const createVehicleSchema = z.object({
  * minus quantity (stock only changes through purchase / restock; a sent quantity is stripped).
  */
 export const updateVehicleSchema = createVehicleSchema.omit({ quantity: true });
+
+/** Request body for POST /api/vehicles/:id/restock: units to add, 1–10,000 per call. */
+export const restockSchema = z.object({
+  quantity: z.number().int().min(1).max(10_000),
+});
