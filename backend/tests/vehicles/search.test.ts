@@ -92,4 +92,14 @@ describe('GET /api/vehicles/search', () => {
 
     expect(idsOf(res)).toEqual([atMin.id, above.id].sort());
   });
+
+  it('treats maxPrice as an inclusive upper bound', async () => {
+    const below = await createVehicle({ price: 20000 });
+    const atMax = await createVehicle({ price: 30000 });
+    await createVehicle({ price: 30000.01 });
+
+    const res = await search({ maxPrice: '30000' });
+
+    expect(idsOf(res)).toEqual([below.id, atMax.id].sort());
+  });
 });
