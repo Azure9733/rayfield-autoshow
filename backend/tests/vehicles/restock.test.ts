@@ -38,4 +38,31 @@ describe('POST /api/vehicles/:id/restock', () => {
 
     expect(new Date(res.body.updatedAt).getTime()).toBeGreaterThan(seededAt.getTime());
   });
+
+  describe('quantity rule: integer from 1 to 10,000 per restock', () => {
+    it.each([
+      ['missing', undefined],
+      ['zero', 0],
+      ['negative', -1],
+      ['a non-integer', 1.5],
+      ['over 10,000', 10_001],
+    ])('rejects a quantity that is %s with 400 and leaves stock alone', async (_case, quantity) => {
+      const { id } = await createVehicle({ quantity: 2 });
+
+      const res = await restock(id, { quantity });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field: 'quantity', message: expect.any(String) }]);
+      expect(await stockOf(id)).toBe(2);
+    });
+
+    it.each([1, 10_000])('accepts a quantity of %d', async (quantity) => {
+      const { id } = await createVehicle({ quantity: 2 });
+
+      const res = await restock(id, { quantity });
+
+      expect(res.status).toBe(200);
+      expect(res.body.quantity).toBe(2 + quantity);
+    });
+  });
 });
