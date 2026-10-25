@@ -1,35 +1,36 @@
-import { useState, type FormEvent } from 'react';
+import type { FormEvent } from 'react';
 import type { SearchFilters } from '../api/vehicles';
 import { CATEGORIES } from '../constants/categories';
 import { TextField } from './TextField';
 
-const EMPTY: Required<SearchFilters> = {
-  make: '',
-  model: '',
-  category: '',
-  minPrice: '',
-  maxPrice: '',
-};
-
 interface Props {
-  onSearch: (filters: SearchFilters) => void;
+  values: Required<SearchFilters>;
+  onChange: (values: Required<SearchFilters>) => void;
+  onSearch: () => void;
+  onClear: () => void;
   /** Client-side filter (the API has none): applies as soon as it's toggled. */
   inStockOnly: boolean;
   onInStockOnlyChange: (checked: boolean) => void;
 }
 
-/** Search filters (UI_PLAN.md §3). Calls onSearch with the form values on submit. */
-export function SearchPanel({ onSearch, inStockOnly, onInStockOnlyChange }: Props) {
-  const [values, setValues] = useState(EMPTY);
-
-  const field = (name: keyof SearchFilters) => ({
-    value: values[name],
-    onChange: (value: string) => setValues((v) => ({ ...v, [name]: value })),
-  });
+/**
+ * Search filters (UI_PLAN.md §3). Controlled by the page, which also needs to clear them
+ * (e.g. from the no-results message).
+ */
+export function SearchPanel({
+  values,
+  onChange,
+  onSearch,
+  onClear,
+  inStockOnly,
+  onInStockOnlyChange,
+}: Props) {
+  const set = (name: keyof SearchFilters) => (value: string) =>
+    onChange({ ...values, [name]: value });
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    onSearch(values);
+    onSearch();
   }
 
   return (
@@ -40,8 +41,8 @@ export function SearchPanel({ onSearch, inStockOnly, onInStockOnlyChange }: Prop
       className="cyber-panel space-y-4 self-start p-5"
     >
       <h2 className="text-xl font-bold uppercase tracking-[3px]">Search</h2>
-      <TextField label="Make" {...field('make')} />
-      <TextField label="Model" {...field('model')} />
+      <TextField label="Make" value={values.make} onChange={set('make')} />
+      <TextField label="Model" value={values.model} onChange={set('model')} />
       <div>
         <label className="cyber-label" htmlFor="search-category">
           Category
@@ -50,7 +51,7 @@ export function SearchPanel({ onSearch, inStockOnly, onInStockOnlyChange }: Prop
           id="search-category"
           className="cyber-input"
           value={values.category}
-          onChange={(e) => setValues((v) => ({ ...v, category: e.target.value }))}
+          onChange={(e) => set('category')(e.target.value)}
         >
           <option value="">All</option>
           {CATEGORIES.map((category) => (
@@ -61,8 +62,22 @@ export function SearchPanel({ onSearch, inStockOnly, onInStockOnlyChange }: Prop
         </select>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <TextField label="Min price" type="number" min="0" step="0.01" {...field('minPrice')} />
-        <TextField label="Max price" type="number" min="0" step="0.01" {...field('maxPrice')} />
+        <TextField
+          label="Min price"
+          type="number"
+          min="0"
+          step="0.01"
+          value={values.minPrice}
+          onChange={set('minPrice')}
+        />
+        <TextField
+          label="Max price"
+          type="number"
+          min="0"
+          step="0.01"
+          value={values.maxPrice}
+          onChange={set('maxPrice')}
+        />
       </div>
       <label className="flex cursor-pointer items-center gap-3 text-sm uppercase tracking-[2px]">
         <input
@@ -73,9 +88,14 @@ export function SearchPanel({ onSearch, inStockOnly, onInStockOnlyChange }: Prop
         />
         In stock only
       </label>
-      <button type="submit" className="btn-cyber w-full" data-text="Search">
-        Search
-      </button>
+      <div className="flex items-center gap-3">
+        <button type="submit" className="btn-cyber flex-1" data-text="Search">
+          Search
+        </button>
+        <button type="button" className="btn-ghost" onClick={onClear}>
+          Clear
+        </button>
+      </div>
     </form>
   );
 }

@@ -34,6 +34,15 @@ export interface SearchFilters {
   maxPrice?: string;
 }
 
+/** A cleared search form. */
+export const EMPTY_FILTERS: Required<SearchFilters> = {
+  make: '',
+  model: '',
+  category: '',
+  minPrice: '',
+  maxPrice: '',
+};
+
 /** The filters with blank (or whitespace-only) values removed, trimmed. */
 export function filledFilters(filters: SearchFilters): SearchFilters {
   return Object.fromEntries(

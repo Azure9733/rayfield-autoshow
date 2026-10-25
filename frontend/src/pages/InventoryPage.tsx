@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ApiError } from '../api/client';
 import {
+  EMPTY_FILTERS,
   filledFilters,
   listVehicles,
   purchaseVehicle,
@@ -25,7 +26,9 @@ export function InventoryPage() {
   const [error, setError] = useState('');
   // Feedback for the last purchase; the load error above has its own toast with Retry.
   const [notice, setNotice] = useState<{ tone: 'success' | 'error'; message: string } | null>(null);
-  // The submitted search (filled filters only); changing it reloads the list.
+  // What's typed in the search panel, and the submitted search (filled filters only);
+  // changing the query reloads the list.
+  const [form, setForm] = useState(EMPTY_FILTERS);
   const [query, setQuery] = useState<SearchFilters>({});
   const [inStockOnly, setInStockOnly] = useState(false);
   // Bumped by Retry to run the load effect again.
@@ -70,6 +73,12 @@ export function InventoryPage() {
     setQuery(filledFilters(filters));
   }
 
+  function clearFilters() {
+    setForm(EMPTY_FILTERS);
+    setInStockOnly(false);
+    search({});
+  }
+
   function retry() {
     setError('');
     setVehicles(null);
@@ -89,7 +98,10 @@ export function InventoryPage() {
       </div>
       <main className="flex-1 gap-8 px-4 py-8 md:px-8 lg:grid lg:grid-cols-[17rem_1fr] lg:items-start">
         <SearchPanel
-          onSearch={search}
+          values={form}
+          onChange={setForm}
+          onSearch={() => search(form)}
+          onClear={clearFilters}
           inStockOnly={inStockOnly}
           onInStockOnlyChange={setInStockOnly}
         />
