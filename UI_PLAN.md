@@ -18,6 +18,7 @@ Product/data decisions that affect the backend live in `PLAN.md` → "Product Sp
 - **Left:** brand lockup `[logo] | RAYFIELD AUTOSHOW`: Rayfield logo (white PNG, used as-is), thin vertical divider, name in white Rajdhani with wide tracking. Below `sm` the text shortens to `AUTOSHOW` (the logo already says RAYFIELD). Links to `/`.
 - **Right:** a person icon + the signed-in user's name (admins: a shield icon + a cyan ADMIN badge), then LOGOUT right-most (no INVENTORY link: the logo goes to `/`); hamburger below `lg`. Guests get no hamburger: the corner shows LOGIN on `/register` (and the 404) and REGISTER on `/login`.
 - Logo file: `Thumbnails-144.png` → `frontend/src/assets/rayfield-logo.png` (resized from 2314×611 to 424×112, 2x the largest display size), `alt="Rayfield"`, ~36px tall on mobile, ~56px on desktop.
+- Boot splash, on every full page load or reload (any route; not on in-app navigation or after login): 0–2 s a solid yellow screen, with lines typed in the top-right corner (24px in, right-aligned, black Share Tech Mono ~14px), one every 333 ms, blinking block cursor after the newest: INITIATE STARTUP... / RESOLVE DNS... / REVERSE PROXY... / SECURE CONNECTION... / SECURED / LOADING...; 2–2.3 s the lines flicker out; 2.3–3.5 s "Welcome to Rayfield Autoshow" centred (black Rajdhani bold, clamp(2rem, 6vw, 4rem), 100 ms glitch-in); 3.5–3.8 s it fades, revealing the app, which has loaded underneath. Any key or click skips. `role="status"`, label "Loading Rayfield Autoshow". Reduced motion: no splash.
 - Login transition: right after a successful login or register (not on reload or other navigation), a full-screen black panel wipes away left to right (sharp clip-path, 350 ms, one glitch frame), then the inventory rises 8px and fades in (200 ms). Reduced motion: none.
 - Footer disclaimer: "Rayfield is a fictional brand from Cyberpunk 2077 © CD PROJEKT RED. Fan project, not affiliated." The README credits the logo as well.
 - Favicon: the shield "R" emblem cropped from the logo, white on a black square (`frontend/src/assets/rayfield-icon.png`).
@@ -147,7 +148,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] A logged-in user visiting `/login` or `/register` goes to `/`
 
 **Boot splash**
-- [ ] On a full page load the splash types its six lines in order (one every 333 ms), shows the welcome after 2 s, then the app; a key press skips it (reduced motion: no splash)
+- [x] On a full page load the splash types its six lines in order (one every 333 ms), shows the welcome after 2 s, then the app; a key press skips it (reduced motion: no splash)
 
 **Header**
 - [x] Below lg, the Menu button opens and closes the nav

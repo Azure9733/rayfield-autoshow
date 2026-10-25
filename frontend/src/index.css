@@ -399,6 +399,93 @@
 }
 
 /* Respect users who turn off motion */
+/* ── BOOT SPLASH (UI_PLAN.md §1): every full page load ──
+   Timing lives in BootSplash.tsx; these are the looks and the short effects. Reduced motion:
+   the splash isn't rendered at all. */
+.boot-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-cp-yellow);
+  color: #000;
+}
+.boot-splash.is-fading {
+  animation: boot-fade 300ms linear forwards;
+}
+.boot-lines {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.boot-lines.is-flickering {
+  /* opacity 1 → 0.2 → 1 → 0, in hard steps */
+  animation: boot-flicker 300ms steps(1, end) forwards;
+}
+.boot-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.05em;
+  margin-left: 0.3em;
+  vertical-align: text-bottom;
+  background: #000;
+}
+.boot-welcome {
+  padding: 0 16px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.1;
+  animation: boot-glitch-in 100ms steps(1, end) both;
+}
+@keyframes boot-flicker {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  75%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes boot-glitch-in {
+  0% {
+    opacity: 0;
+    clip-path: inset(30% 0 40% 0);
+    transform: translateX(-6px);
+  }
+  33% {
+    opacity: 1;
+    clip-path: inset(60% 0 10% 0);
+    transform: translateX(4px);
+  }
+  66% {
+    clip-path: inset(0 0 55% 0);
+    transform: translateX(-2px);
+  }
+  100% {
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+@keyframes boot-fade {
+  to {
+    opacity: 0;
+  }
+}
+
 /* ── LOGIN SWEEP (UI_PLAN.md §1): after a login only ──
    A black panel wipes away left to right (350 ms) after a one-frame glitch, then the inventory
    rises 8px and fades in (200 ms). Reduced motion: neither is rendered or played. */
