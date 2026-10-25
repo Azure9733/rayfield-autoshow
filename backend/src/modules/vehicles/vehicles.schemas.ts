@@ -10,7 +10,12 @@ export const categorySchema = z.string().trim().toUpperCase().pipe(z.enum(CATEGO
 export const createVehicleSchema = z.object({
   make: name,
   model: name,
-  year: z.number(),
+  // The upper bound is computed per request, not at startup, so it rolls over on 1 January.
+  year: z
+    .number()
+    .int()
+    .min(1900)
+    .refine((y) => y <= new Date().getFullYear() + 1, 'Year must be no later than next year'),
   category: categorySchema,
   price: z.number(),
   quantity: z.number().optional(),
