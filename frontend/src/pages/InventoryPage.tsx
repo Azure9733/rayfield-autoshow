@@ -10,6 +10,8 @@ export function InventoryPage() {
   // null until a response arrives; with no error, that's the loading state.
   const [vehicles, setVehicles] = useState<Vehicle[] | null>(null);
   const [error, setError] = useState('');
+  // Feedback for the last purchase; the load error above has its own toast with Retry.
+  const [notice, setNotice] = useState<{ tone: 'success' | 'error'; message: string } | null>(null);
   // Bumped by Retry to run the load effect again.
   const [attempt, setAttempt] = useState(0);
   const loading = vehicles === null && !error;
@@ -33,6 +35,7 @@ export function InventoryPage() {
   async function purchase(vehicle: Vehicle) {
     const updated = await purchaseVehicle(vehicle.id);
     setVehicles((list) => list?.map((v) => (v.id === updated.id ? updated : v)) ?? null);
+    setNotice({ tone: 'success', message: 'UNIT ACQUIRED' });
   }
 
   function retry() {
@@ -71,6 +74,7 @@ export function InventoryPage() {
               ))}
         </div>
       </main>
+      {notice && <Toast tone={notice.tone} message={notice.message} />}
       {error && <Toast tone="error" message={error} action={{ label: 'Retry', onClick: retry }} />}
     </>
   );
