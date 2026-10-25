@@ -385,7 +385,7 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 
 ### Other deliverables
 - [ ] **PROMPTS.md**: raw logs of every AI session, no summaries — `/export` for Claude Code sessions (incl. the plan-review session), a public share link if the planning chat was on claude.ai. Logs are published unedited, so secrets must never enter a session
-- [ ] **Test report**: `jest --coverage` output + `vitest --coverage`; commit a summary (e.g. `docs/test-report.md` with pasted output or screenshot); optionally `jest-html-reporter`
+- [x] **Test report**: `jest --coverage` output + `vitest --coverage`; commit a summary (e.g. `docs/test-report.md` with pasted output or screenshot); optionally `jest-html-reporter`
 - [ ] Repo is **public**; the PDF and real env files never committed (`git log --all --name-only --format= | sort -u | grep -E 'pdf|\.env'` lists only `.env.example` and `.env.test`)
 
 ---
