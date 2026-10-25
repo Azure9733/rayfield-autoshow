@@ -140,6 +140,9 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 **Header**
 - [x] Below lg, the Menu button opens and closes the nav; choosing a link closes it
 
+**Not found**
+- [ ] Unknown routes show `///SIGNAL.LOST` with a link home
+
 **Inventory**
 - [x] Cards show make, model, year, category, USD price and stock
 - [x] Loading shows skeleton cards
