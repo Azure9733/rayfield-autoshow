@@ -15,14 +15,20 @@ function optionalFilter<T extends z.ZodType>(schema: T) {
 }
 
 /** Query string for GET /api/vehicles/search; every filter is optional. */
-export const searchQuerySchema = z.object({
-  make: optionalFilter(z.string()),
-  model: optionalFilter(z.string()),
-  category: optionalFilter(categorySchema),
-  // Query values arrive as strings; coerce turns "25000" into 25000 (and "abc" into a 400).
-  minPrice: optionalFilter(z.coerce.number()),
-  maxPrice: optionalFilter(z.coerce.number()),
-});
+export const searchQuerySchema = z
+  .object({
+    make: optionalFilter(z.string()),
+    model: optionalFilter(z.string()),
+    category: optionalFilter(categorySchema),
+    // Query values arrive as strings; coerce turns "25000" into 25000 (and "abc" into a 400).
+    minPrice: optionalFilter(z.coerce.number()),
+    maxPrice: optionalFilter(z.coerce.number()),
+  })
+  .refine(
+    ({ minPrice, maxPrice }) =>
+      minPrice === undefined || maxPrice === undefined || minPrice <= maxPrice,
+    { path: ['minPrice'], message: 'minPrice must not be greater than maxPrice' },
+  );
 
 /** Request body for POST /api/vehicles. Unknown keys (e.g. a client-sent `id`) are stripped. */
 export const createVehicleSchema = z.object({
