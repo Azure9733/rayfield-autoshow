@@ -141,6 +141,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 **Header**
 - [x] Below lg, the Menu button opens and closes the nav
 - [x] No INVENTORY link in the header (nav or menu); the logo links to `/`
+- [ ] Logged in, the nav and menu show a person icon + name (admins: a shield icon + ADMIN badge), with LOGOUT right-most
 
 **Not found**
 - [x] Unknown routes show `///SIGNAL.LOST` with a link home
