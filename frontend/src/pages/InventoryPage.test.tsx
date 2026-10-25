@@ -92,4 +92,15 @@ describe('inventory page', () => {
     expect(within(available).getByRole('button', { name: 'Purchase' })).toBeEnabled();
     expect(within(unavailable).getByRole('button', { name: 'Purchase' })).toBeDisabled();
   });
+
+  it('shows a Sold out stock badge at 0', async () => {
+    serveVehicles(inStock, soldOut);
+    renderApp('/');
+
+    const available = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+    const unavailable = screen.getByRole('article', { name: 'Porsche 911 Carrera' });
+
+    expect(badge(available, 'Stock')).toHaveTextContent('2');
+    expect(badge(unavailable, 'Stock')).toHaveTextContent('Sold out');
+  });
 });
