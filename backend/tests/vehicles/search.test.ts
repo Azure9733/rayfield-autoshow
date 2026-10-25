@@ -66,4 +66,13 @@ describe('GET /api/vehicles/search', () => {
     expect(idsOf(byMake)).toEqual([literal.id]);
     expect(idsOf(byModel)).toEqual([literal.id]);
   });
+
+  it('filters by category, case-insensitively', async () => {
+    const suv = await createVehicle({ category: 'SUV' });
+    await createVehicle({ category: 'SEDAN' });
+
+    const res = await search({ category: 'suv' });
+
+    expect(idsOf(res)).toEqual([suv.id]);
+  });
 });
