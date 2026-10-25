@@ -1,4 +1,4 @@
-import { act, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { badge, inStock, loginAs, makeVehicle, serveVehicles, soldOut } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
@@ -308,5 +308,21 @@ describe('inventory page', () => {
     await waitFor(() =>
       expect(screen.getByRole('alert')).toHaveTextContent('Something went wrong'),
     );
+  });
+
+  it('a card image loads lazily and falls back to the category icon if it fails', async () => {
+    serveVehicles({ ...inStock, imageUrl: 'https://cdn.example.com/missing.jpg' });
+    renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+    const image = within(card).getByRole('img', { name: 'Toyota Land Cruiser' });
+    expect(image).toHaveAttribute('loading', 'lazy');
+    expect(within(card).queryByTestId('category-icon')).not.toBeInTheDocument();
+
+    fireEvent.error(image);
+
+    expect(
+      within(card).queryByRole('img', { name: 'Toyota Land Cruiser' }),
+    ).not.toBeInTheDocument();
+    expect(within(card).getByTestId('category-icon')).toBeInTheDocument();
   });
 });
