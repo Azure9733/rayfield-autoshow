@@ -19,3 +19,8 @@ export interface Vehicle {
 export function listVehicles() {
   return api.get<Vehicle[]>('/api/vehicles');
 }
+
+/** POST /api/vehicles/:id/purchase: buys one unit; returns the updated vehicle. */
+export function purchaseVehicle(id: string) {
+  return api.post<Vehicle>(`/api/vehicles/${id}/purchase`);
+}

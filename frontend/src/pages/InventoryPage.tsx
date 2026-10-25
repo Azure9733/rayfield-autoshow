@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ApiError } from '../api/client';
-import { listVehicles, type Vehicle } from '../api/vehicles';
+import { listVehicles, purchaseVehicle, type Vehicle } from '../api/vehicles';
 import { SkeletonCard } from '../components/SkeletonCard';
 import { Toast } from '../components/Toast';
 import { VehicleCard } from '../components/VehicleCard';
@@ -29,6 +29,11 @@ export function InventoryPage() {
       active = false;
     };
   }, [attempt]);
+
+  async function purchase(vehicle: Vehicle) {
+    const updated = await purchaseVehicle(vehicle.id);
+    setVehicles((list) => list?.map((v) => (v.id === updated.id ? updated : v)) ?? null);
+  }
 
   function retry() {
     setError('');
@@ -61,7 +66,9 @@ export function InventoryPage() {
         >
           {loading
             ? Array.from({ length: 4 }, (_, i) => <SkeletonCard key={i} />)
-            : vehicles?.map((vehicle) => <VehicleCard key={vehicle.id} vehicle={vehicle} />)}
+            : vehicles?.map((vehicle) => (
+                <VehicleCard key={vehicle.id} vehicle={vehicle} onPurchase={purchase} />
+              ))}
         </div>
       </main>
       {error && <Toast tone="error" message={error} action={{ label: 'Retry', onClick: retry }} />}

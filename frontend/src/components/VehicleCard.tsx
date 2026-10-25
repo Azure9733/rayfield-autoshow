@@ -3,7 +3,13 @@ import type { Vehicle } from '../api/vehicles';
 import { formatPrice } from '../lib/format';
 
 /** One vehicle in the inventory grid (UI_PLAN.md §4). */
-export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
+export function VehicleCard({
+  vehicle,
+  onPurchase,
+}: {
+  vehicle: Vehicle;
+  onPurchase: (vehicle: Vehicle) => void;
+}) {
   const { make, model, year, category, price, quantity, imageUrl } = vehicle;
   const id = useId();
 
@@ -45,6 +51,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           className="btn-cyber mt-auto self-start"
           data-text="Purchase"
           disabled={quantity === 0}
+          onClick={() => onPurchase(vehicle)}
         >
           Purchase
         </button>
