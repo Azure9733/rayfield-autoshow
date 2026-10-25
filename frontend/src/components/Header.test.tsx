@@ -88,4 +88,23 @@ describe('header', () => {
       expect(within(header).getByRole('link', { name: /rayfield/i })).toHaveAttribute('href', '/');
     },
   );
+
+  it('"My Garage" comes first in the nav and sits above Logout in the menu, styled like them', async () => {
+    saveSession({ token: 'some.jwt.token', user: account });
+    const { user } = renderApp('/');
+    await user.click(screen.getByRole('button', { name: 'Menu' }));
+
+    const main = screen.getByRole('navigation', { name: 'Main' });
+    const garage = within(main).getByRole('button', { name: 'My Garage' });
+    expect(main.firstElementChild).toBe(garage);
+    expect(main.lastElementChild).toBe(within(main).getByRole('button', { name: 'Logout' }));
+    expect(garage).toHaveClass('cyber-nav-link');
+
+    const mobile = screen.getByRole('navigation', { name: 'Mobile' });
+    const mobileGarage = within(mobile).getByRole('button', { name: 'My Garage' });
+    expect(mobileGarage.nextElementSibling).toBe(
+      within(mobile).getByRole('button', { name: 'Logout' }),
+    );
+    expect(mobileGarage).toHaveClass('cyber-list-item');
+  });
 });
