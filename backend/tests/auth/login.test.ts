@@ -51,4 +51,15 @@ describe('POST /api/auth/login', () => {
     expect(res.body.user).not.toHaveProperty('password_hash');
     expect(JSON.stringify(res.body)).not.toMatch(/supersecret|\$2[aby]\$/);
   });
+
+  it('returns 401 with a generic message for a wrong password', async () => {
+    await registerAnn();
+
+    const res = await login({ password: 'wrong-password' });
+
+    expect(res.status).toBe(401);
+    expect(res.body).toEqual({
+      error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' },
+    });
+  });
 });
