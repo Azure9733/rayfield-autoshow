@@ -244,7 +244,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 
 ### 4.6 `GET /api/vehicles/search`
 - [x] `?make=Toyota` → only Toyotas (exact case first: the simplest test for a new endpoint)
-- [ ] Make matching is case-insensitive (`?make=toyota`)
+- [x] Make matching is case-insensitive (`?make=toyota`)
 - [ ] Make matching is partial (`?make=toy`)
 - [ ] `?model=cor` → partial, case-insensitive match
 - [ ] `%` and `_` match literally (`?make=%` doesn't return everything)

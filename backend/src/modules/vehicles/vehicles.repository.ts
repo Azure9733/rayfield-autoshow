@@ -1,4 +1,4 @@
-import { desc, eq } from 'drizzle-orm';
+import { desc, ilike } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { vehicles } from '../../db/schema';
 import type { Category } from './categories';
@@ -46,7 +46,7 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
       const rows = await db
         .select()
         .from(vehicles)
-        .where(make === undefined ? undefined : eq(vehicles.make, make))
+        .where(make === undefined ? undefined : ilike(vehicles.make, make))
         .orderBy(desc(vehicles.createdAt), desc(vehicles.id));
       return rows.map(toVehicle);
     },
