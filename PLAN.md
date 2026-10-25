@@ -329,7 +329,7 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 - [x] Auth: `AuthContext` (token + user in localStorage — know the XSS trade-off vs httpOnly cookies), register (logs in automatically on success), login, logout, `ProtectedRoute`, session-expired redirect
 - [x] Inventory page (`/`): vehicle grid, loading / empty / error states, purchase (1 unit)
 - [x] Search / filter panel, incl. the client-side "in stock only" filter
-- [ ] Admin controls on the same page, rendered by role (no `/admin` route): add / edit modal, delete confirmation, restock popover
+- [x] Admin controls on the same page, rendered by role (no `/admin` route): add / edit modal, delete confirmation, restock popover
 - [ ] Optional: debounce, sync filters to URL query string
 
 ### Design / UX (details in UI_PLAN.md)

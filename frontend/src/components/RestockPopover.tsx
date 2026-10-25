@@ -9,10 +9,17 @@ interface Props {
 /** Inline "units to add" form shown in a card (UI_PLAN.md §6). */
 export function RestockPopover({ onRestock, onCancel }: Props) {
   const [quantity, setQuantity] = useState('');
+  const [error, setError] = useState('');
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    await onRestock(Number(quantity));
+    const units = Number(quantity);
+    // Same rule and message as the backend's restock schema.
+    if (quantity.trim() === '' || !Number.isInteger(units) || units < 1 || units > 10_000) {
+      setError('Restock quantity must be a whole number from 1 to 10,000');
+      return;
+    }
+    await onRestock(units);
   }
 
   return (
@@ -24,6 +31,7 @@ export function RestockPopover({ onRestock, onCancel }: Props) {
         max="10000"
         value={quantity}
         onChange={setQuantity}
+        error={error}
         autoFocus
       />
       <div className="flex gap-2">
