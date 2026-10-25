@@ -65,4 +65,11 @@ describe('POST /api/vehicles/:id/restock', () => {
       expect(res.body.quantity).toBe(2 + quantity);
     });
   });
+
+  it('returns 404 for an id that does not exist', async () => {
+    const res = await restock('00000000-0000-4000-8000-000000000000', { quantity: 5 });
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe('NOT_FOUND');
+  });
 });
