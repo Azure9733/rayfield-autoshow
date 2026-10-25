@@ -16,6 +16,7 @@ export interface NewVehicle {
   price: number;
   /** Initial stock; the column defaults to 0 when omitted. */
   quantity?: number;
+  imageUrl?: string;
 }
 
 /** All SQL for the vehicles table lives behind this interface, so tests can swap in a fake. */

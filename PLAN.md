@@ -240,7 +240,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Quantity omitted → defaults to 0 (turned out to be a guard: the column default already did it)
 - [x] **(guard)** A client-sent `id` is ignored (the server generates it)
 - [x] **(guard)** Same make/model/year twice → both created
-- [ ] (stretch) imageUrl rule (`it.each`): `http://…` or not a URL → 400; omitted is fine
+- [x] (stretch) imageUrl rule (`it.each`): `http://…` or not a URL → 400; omitted is fine
 
 ### 4.6 `GET /api/vehicles/search`
 - [ ] `?make=Toyota` → only Toyotas (exact case first: the simplest test for a new endpoint)
