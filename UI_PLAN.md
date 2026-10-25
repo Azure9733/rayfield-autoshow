@@ -123,7 +123,7 @@ Grid: 1 col (< 640px) → 2 (sm) → 3 (lg) → 4 (xl). Header → hamburger bel
 The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behaviour; write the test first.
 
 **API client**
-- [ ] Attaches `Authorization: Bearer <token>` when logged in
+- [x] Attaches `Authorization: Bearer <token>` when logged in
 - [ ] Turns the error format into `{ code, message, details }`
 - [ ] A 401 from a non-auth call logs out and redirects to `/login` with a "session expired" message
 - [ ] A 401 from `/api/auth/*` does **not** trigger that redirect
