@@ -125,7 +125,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 **API client**
 - [x] Attaches `Authorization: Bearer <token>` when logged in
 - [x] Turns the error format into `{ code, message, details }`
-- [ ] A 401 from a non-auth call logs out and redirects to `/login` with a "session expired" message
+- [x] A 401 from a non-auth call logs out and redirects to `/login` with a "session expired" message
 - [ ] A 401 from `/api/auth/*` does **not** trigger that redirect
 
 **Auth**

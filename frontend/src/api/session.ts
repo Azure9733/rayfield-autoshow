@@ -20,6 +20,11 @@ export function saveSession(session: Session) {
   localStorage.setItem(KEY, JSON.stringify(session));
 }
 
+/** Forgets the stored session (logout, or the token was rejected). */
+export function clearSession() {
+  localStorage.removeItem(KEY);
+}
+
 /** The stored session, or null when logged out. */
 export function loadSession(): Session | null {
   return JSON.parse(localStorage.getItem(KEY) ?? 'null') as Session | null;

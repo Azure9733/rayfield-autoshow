@@ -1,4 +1,4 @@
-import { loadSession } from './session';
+import { clearSession, loadSession } from './session';
 
 export interface FieldError {
   field: string;
@@ -17,6 +17,20 @@ export class ApiError extends Error {
   }
 }
 
+let sessionExpiredHandler: (() => void) | null = null;
+
+/**
+ * Registers what happens when the backend rejects the stored token (AuthProvider redirects to
+ * /login). The client stays React-free, so it calls back instead of navigating itself.
+ * Returns an unsubscribe function.
+ */
+export function onSessionExpired(handler: () => void) {
+  sessionExpiredHandler = handler;
+  return () => {
+    if (sessionExpiredHandler === handler) sessionExpiredHandler = null;
+  };
+}
+
 async function request<T>(method: string, path: string): Promise<T> {
   const token = loadSession()?.token;
   const response = await fetch(path, {
@@ -25,6 +39,10 @@ async function request<T>(method: string, path: string): Promise<T> {
   });
   const body = await response.json();
   if (!response.ok) {
+    if (response.status === 401) {
+      clearSession();
+      sessionExpiredHandler?.();
+    }
     const { code, message, details } = body.error;
     throw new ApiError(response.status, code, message, details);
   }
