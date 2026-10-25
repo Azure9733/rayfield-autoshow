@@ -165,4 +165,27 @@ describe('inventory page', () => {
     await waitFor(() => expect(badge(card, 'Stock')).toHaveTextContent('1'));
     expect(button).toBeEnabled();
   });
+
+  it.each([
+    [
+      'a 404',
+      () =>
+        HttpResponse.json(
+          { error: { code: 'NOT_FOUND', message: 'Vehicle not found' } },
+          { status: 404 },
+        ),
+      'Vehicle not found',
+    ],
+    ['a network failure', () => HttpResponse.error(), "Can't reach the server. Please try again."],
+  ])('%s on purchase shows a red toast with the API message', async (_case, resolver, message) => {
+    serveVehicles(inStock);
+    server.use(http.post('/api/vehicles/a1/purchase', resolver));
+    const { user } = renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+
+    await user.click(within(card).getByRole('button', { name: 'Purchase' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(message);
+    expect(within(card).getByRole('button', { name: 'Purchase' })).toBeEnabled();
+  });
 });
