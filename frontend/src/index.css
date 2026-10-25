@@ -399,6 +399,53 @@
 }
 
 /* Respect users who turn off motion */
+/* ── MOBILE MENU (UI_PLAN.md §1): slides and fades in/out; the bars morph into a cross ──
+   Reduced motion: JS opens and closes instantly and the icon swaps without a transition. */
+.mobile-menu.is-opening {
+  animation: menu-in 200ms ease-out both;
+}
+.mobile-menu.is-closing {
+  animation: menu-out 160ms ease-in forwards;
+}
+.menu-icon line {
+  /* rotate about the icon's centre, not each line's own */
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  transition:
+    transform 200ms ease-out,
+    opacity 150ms ease-out;
+}
+/* move the outer bars to the middle, then turn them into the two strokes of the cross */
+.menu-icon.is-open .menu-icon-top {
+  transform: rotate(45deg) translateY(6px);
+}
+.menu-icon.is-open .menu-icon-middle {
+  opacity: 0;
+}
+.menu-icon.is-open .menu-icon-bottom {
+  transform: rotate(-45deg) translateY(-6px);
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes menu-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
 /* ── BOOT SPLASH (UI_PLAN.md §1): every full page load ──
    Timing lives in BootSplash.tsx; these are the looks and the short effects. Reduced motion:
    the splash isn't rendered at all. */
