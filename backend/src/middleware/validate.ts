@@ -1,5 +1,5 @@
-import type { RequestHandler } from 'express';
-import type { ZodType } from 'zod';
+import type { RequestHandler, RequestParamHandler } from 'express';
+import { z, type ZodType } from 'zod';
 import { ValidationError } from '../lib/errors';
 
 type Source = 'body' | 'query';
@@ -30,3 +30,17 @@ export const validateBody = (schema: ZodType) => validate('body', schema);
 
 /** Validates `req.query`; parsed data on `res.locals.query`. */
 export const validateQuery = (schema: ZodType) => validate('query', schema);
+
+const uuid = z.uuid();
+
+/**
+ * `router.param` handler shared by every `:id` route: rejects a malformed id with 400 before
+ * any handler runs, instead of letting Postgres fail on invalid uuid syntax (a 500).
+ */
+export const validateUuidParam: RequestParamHandler = (_req, _res, next, value: string, name) => {
+  if (uuid.safeParse(value).success) {
+    next();
+    return;
+  }
+  next(new ValidationError([{ field: String(name), message: 'Must be a valid UUID' }]));
+};

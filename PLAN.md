@@ -268,7 +268,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] An omitted `imageUrl` clears the stored image (`null`)
 - [x] **(guard)** `quantity` in the body is ignored; stock unchanged
 - [x] Unknown id → 404
-- [ ] Malformed id → 400 (builds the shared UUID check)
+- [x] Malformed id → 400 (builds the shared UUID check)
 - [ ] Non-admin → 403
 - [ ] **(guard)** No token → 401
 
