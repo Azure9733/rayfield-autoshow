@@ -49,4 +49,10 @@ describe('POST /api/vehicles', () => {
     expect(res.status).toBe(403);
     expect(res.body.error.code).toBe('FORBIDDEN');
   });
+
+  it('returns 401 without a token', async () => {
+    const res = await request(createApp()).post('/api/vehicles').send(validVehicle);
+
+    expect(res.status).toBe(401);
+  });
 });
