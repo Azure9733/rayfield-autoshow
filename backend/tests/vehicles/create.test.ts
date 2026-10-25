@@ -65,4 +65,30 @@ describe('POST /api/vehicles', () => {
       expect(res.body.error.details).toEqual([{ field, message: expect.any(String) }]);
     },
   );
+
+  describe('make and model rule: trimmed, 1–50 characters', () => {
+    it.each([
+      ['make', 'whitespace-only', '   '],
+      ['make', '51 characters', 'a'.repeat(51)],
+      ['model', 'whitespace-only', '   '],
+      ['model', '51 characters', 'a'.repeat(51)],
+    ])('rejects a %s that is %s with 400', async (field, _case, value) => {
+      const res = await postVehicle({ [field]: value });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field, message: expect.any(String) }]);
+    });
+
+    it.each([
+      ['make', '50 characters', 'a'.repeat(50), 'a'.repeat(50)],
+      ['make', 'surrounding spaces', '  Toyota  ', 'Toyota'],
+      ['model', '50 characters', 'a'.repeat(50), 'a'.repeat(50)],
+      ['model', 'surrounding spaces', '  Corolla  ', 'Corolla'],
+    ])('accepts a %s with %s and stores it trimmed', async (field, _case, value, stored) => {
+      const res = await postVehicle({ [field]: value });
+
+      expect(res.status).toBe(201);
+      expect(res.body[field]).toBe(stored);
+    });
+  });
 });
