@@ -189,7 +189,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] No purchases: `///GARAGE.EMPTY` and "Your purchased vehicles will appear here."
 - [x] An error shows its message with RETRY, which loads again
 - [x] Focus starts on ×; ×, Escape and a backdrop click close it
-- [ ] Tapping MY GARAGE in the mobile menu closes the menu and opens the garage
+- [x] Tapping MY GARAGE in the mobile menu closes the menu and opens the garage
 
 **Search / filter**
 - [x] The search bar has no visible label: placeholder "Search", accessible name "Search"

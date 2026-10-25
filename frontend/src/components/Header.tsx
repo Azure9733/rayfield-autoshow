@@ -39,6 +39,12 @@ export function Header() {
     closeTimer.current = window.setTimeout(finishClose, MENU_CLOSE_MS + 40);
   }
 
+  // From the mobile menu: close the menu first, so it isn't left open behind the dialog.
+  function openGarage() {
+    closeMenu();
+    setGarageOpen(true);
+  }
+
   function toggleMenu() {
     if (menuOpen) {
       closeMenu();
@@ -122,7 +128,7 @@ export function Header() {
               <p className="px-5 py-3">
                 <UserIdentity user={user} />
               </p>
-              <button type="button" className="cyber-list-item cursor-pointer">
+              <button type="button" className="cyber-list-item cursor-pointer" onClick={openGarage}>
                 My Garage
               </button>
               <button
