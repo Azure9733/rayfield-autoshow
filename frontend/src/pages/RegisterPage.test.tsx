@@ -91,4 +91,20 @@ describe('register page', () => {
     });
     expect(loadSession()).toEqual({ token: 'new.jwt.token', user: account });
   });
+
+  it('shows the API error, e.g. when the email is already registered', async () => {
+    server.use(
+      http.post('/api/auth/register', () =>
+        HttpResponse.json(
+          { error: { code: 'EMAIL_TAKEN', message: 'Email is already registered' } },
+          { status: 409 },
+        ),
+      ),
+    );
+    const { user } = renderApp('/register');
+
+    await fillAndSubmit(user);
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Email is already registered');
+  });
 });
