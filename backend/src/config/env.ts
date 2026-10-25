@@ -5,6 +5,10 @@ const envSchema = z.object({
   DATABASE_URL: z.url(),
   // bcrypt's valid range is 4–31; each step doubles the hashing time.
   BCRYPT_COST: z.coerce.number().int().min(4).max(31).default(10),
+  // HS256 needs a long random secret; 32+ characters rules out placeholder values.
+  JWT_SECRET: z.string().min(32),
+  // Any duration jsonwebtoken understands, e.g. "1h", "15m", "7d".
+  JWT_EXPIRES_IN: z.string().default('1h'),
 });
 
 /**

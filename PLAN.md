@@ -197,7 +197,7 @@ How to read this list:
 - [x] **(guard)** `role: "admin"` in body is ignored → user created as `"user"`
 
 ### 4.2 `POST /api/auth/login`
-- [ ] `unit:` `jwt.sign` then `jwt.verify` keeps `sub` and `role`; the token has an `exp`
+- [x] `unit:` `jwt.sign` then `jwt.verify` keeps `sub` and `role`; the token has an `exp`
 - [ ] Correct credentials → 200 with `{ token, user }`
 - [ ] **(guard)** Token is a valid JWT containing `sub` (user id), `role` and `exp`
 - [ ] **(guard)** `user` in the response never contains the password hash
