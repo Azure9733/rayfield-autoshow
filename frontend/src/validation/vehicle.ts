@@ -1,7 +1,7 @@
 // Client-side copies of the backend's vehicle rules and messages (backend/src/modules/vehicles/
 // vehicles.schemas.ts); the backend still validates everything.
 import { CATEGORIES } from '../constants/categories';
-import type { FieldErrors } from './auth';
+import type { FieldErrors } from './types';
 
 /** The vehicle form's raw input values (strings, as typed). */
 export interface VehicleFormValues {

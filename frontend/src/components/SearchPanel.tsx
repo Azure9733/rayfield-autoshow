@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react';
 import type { SearchFilters } from '../api/vehicles';
 import { CATEGORIES } from '../constants/categories';
+import { SelectField } from './SelectField';
 import { TextField } from './TextField';
 
 interface Props {
@@ -43,24 +44,13 @@ export function SearchPanel({
       <h2 className="text-xl font-bold uppercase tracking-[3px]">Search</h2>
       <TextField label="Make" value={values.make} onChange={set('make')} />
       <TextField label="Model" value={values.model} onChange={set('model')} />
-      <div>
-        <label className="cyber-label" htmlFor="search-category">
-          Category
-        </label>
-        <select
-          id="search-category"
-          className="cyber-input"
-          value={values.category}
-          onChange={(e) => set('category')(e.target.value)}
-        >
-          <option value="">All</option>
-          {CATEGORIES.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-      </div>
+      <SelectField
+        label="Category"
+        options={CATEGORIES}
+        emptyLabel="All"
+        value={values.category}
+        onChange={set('category')}
+      />
       <div className="grid grid-cols-2 gap-3">
         <TextField
           label="Min price"

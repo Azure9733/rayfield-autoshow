@@ -4,7 +4,8 @@ import { ApiError } from '../api/client';
 import { AuthForm } from '../components/AuthForm';
 import { TextField } from '../components/TextField';
 import { useAuth } from '../context/AuthContext';
-import { validateRegister, type FieldErrors, type RegisterValues } from '../validation/auth';
+import { validateRegister, type RegisterValues } from '../validation/auth';
+import type { FieldErrors } from '../validation/types';
 
 /** `/register`: create an account. */
 export function RegisterPage() {

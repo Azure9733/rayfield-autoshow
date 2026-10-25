@@ -1,6 +1,6 @@
 import { useId, useState, type FormEvent } from 'react';
 import { CATEGORIES } from '../constants/categories';
-import type { FieldErrors } from '../validation/auth';
+import type { FieldErrors } from '../validation/types';
 import { validateVehicle, type VehicleFormValues } from '../validation/vehicle';
 import { SelectField } from './SelectField';
 import { TextField } from './TextField';

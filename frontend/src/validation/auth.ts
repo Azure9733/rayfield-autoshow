@@ -1,5 +1,6 @@
 // Client-side copies of the backend's register rules and messages (backend/src/modules/auth/
 // auth.schemas.ts), so most mistakes show instantly; the backend still validates everything.
+import type { FieldErrors } from './types';
 
 export interface RegisterValues {
   name: string;
@@ -7,8 +8,6 @@ export interface RegisterValues {
   password: string;
   confirm: string;
 }
-
-export type FieldErrors<T> = Partial<Record<keyof T, string>>;
 
 // Deliberately loose: something@something.tld. The backend has the final say on format.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
