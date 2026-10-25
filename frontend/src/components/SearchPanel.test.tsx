@@ -34,4 +34,23 @@ describe('search panel', () => {
       ).not.toBeInTheDocument(),
     );
   });
+
+  it('"In stock only" hides sold-out vehicles without a new request', async () => {
+    serveVehicles(inStock, soldOut);
+    let searched = false;
+    server.use(
+      http.get('/api/vehicles/search', () => {
+        searched = true;
+        return HttpResponse.json([]);
+      }),
+    );
+    const { user } = renderApp('/');
+    await screen.findByRole('article', { name: 'Porsche 911 Carrera' });
+
+    await user.click(screen.getByLabelText('In stock only'));
+
+    expect(screen.queryByRole('article', { name: 'Porsche 911 Carrera' })).not.toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
+    expect(searched).toBe(false);
+  });
 });
