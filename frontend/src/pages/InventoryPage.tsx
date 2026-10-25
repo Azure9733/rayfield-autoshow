@@ -211,7 +211,7 @@ export function InventoryPage() {
           )}
           {shown?.length === 0 &&
             (filtering ? (
-              <div className="cyber-panel mx-auto max-w-xl space-y-6 p-10 text-center">
+              <div className="cyber-panel mx-auto flex max-w-xl flex-col items-center gap-6 p-10 text-center">
                 <p className="glitch text-3xl" data-text="///NO.MATCH">
                   ///NO.MATCH
                 </p>

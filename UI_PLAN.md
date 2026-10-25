@@ -17,7 +17,7 @@ Product/data decisions that affect the backend live in `PLAN.md` → "Product Sp
 - Black header bar, full width, sticky. The yellow module strip directly below doubles as its divider.
 - **Left:** brand lockup `[logo] | RAYFIELD AUTOSHOW`: Rayfield logo (white PNG, used as-is), thin vertical divider, name in white Rajdhani with wide tracking. Below `sm` the text shortens to `AUTOSHOW` (the logo already says RAYFIELD). Links to `/`.
 - **Right:** nav links (INVENTORY · LOGOUT) + signed-in user's name (from `xl`); hamburger below `lg`, since the longer name needs the room. On `/login` and `/register` only the brand shows.
-- Logo file: `Thumbnails-144.png` → `frontend/src/assets/rayfield-logo.png` (2314×611), `alt="Rayfield"`, ~36px tall on mobile, ~56px on desktop.
+- Logo file: `Thumbnails-144.png` → `frontend/src/assets/rayfield-logo.png` (2314×611), `alt="Rayfield"`, ~44px tall on phones, ~80px from md, ~112px from lg (about 2x the first version; phones can't fit 2x beside the name and Menu button).
 - Footer disclaimer: "Rayfield is a fictional brand from Cyberpunk 2077 © CD PROJEKT RED. Fan project, not affiliated." The README credits the logo as well.
 - Favicon: the shield "R" emblem cropped from the logo, white on a black square (`frontend/src/assets/rayfield-icon.png`).
 

@@ -334,9 +334,9 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 - [ ] Optional: debounce, sync filters to URL query string
 
 ### Design / UX (details in UI_PLAN.md)
-- [ ] Responsive: mobile (1 col) → tablet (2) → desktop (3–4)
-- [ ] Consistent colour palette, typography, spacing
-- [ ] Accessible: labels on inputs, focus states, buttons not divs, `aria-live` for toasts
+- [x] Responsive: mobile (1 col) → tablet (2) → desktop (3–4)
+- [x] Consistent colour palette, typography, spacing
+- [x] Accessible: labels on inputs, focus states, buttons not divs, `aria-live` for toasts
 - [x] Nice touches: skeleton loaders, stock badge ("Only 2 left", "Sold out"), category icons
 
 ---

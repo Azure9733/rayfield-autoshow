@@ -45,7 +45,8 @@ export function SearchPanel({
       className="cyber-panel space-y-4 p-4 md:p-5"
     >
       <div className="flex flex-wrap items-end gap-3">
-        <div className="min-w-48 flex-1">
+        {/* Full row on phones so Filters and Clear share the next one; inline from sm. */}
+        <div className="w-full sm:w-auto sm:flex-1">
           <TextField
             label="Make or model"
             type="search"
@@ -67,8 +68,9 @@ export function SearchPanel({
           Clear
         </button>
       </div>
+      {/* items-start: a field's error message mustn't push it out of line with the others */}
       {filtersOpen && (
-        <div id={filtersId} className="grid items-end gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div id={filtersId} className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <SelectField
             label="Category"
             options={CATEGORIES}
@@ -94,7 +96,8 @@ export function SearchPanel({
             onChange={set('maxPrice')}
             error={errors.maxPrice}
           />
-          <label className="flex h-11 cursor-pointer items-center gap-3 text-sm uppercase tracking-[2px]">
+          {/* sm:mt-[22px] lines the checkbox up with the inputs below their labels */}
+          <label className="flex h-11 cursor-pointer items-center gap-3 text-sm uppercase tracking-[2px] sm:mt-[22px]">
             <input
               type="checkbox"
               className="size-4 accent-cp-yellow"
