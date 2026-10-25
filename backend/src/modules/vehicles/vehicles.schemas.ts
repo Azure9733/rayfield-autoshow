@@ -19,5 +19,5 @@ export const createVehicleSchema = z.object({
   category: categorySchema,
   // multipleOf uses a float-safe remainder, so 19.99 passes (19.99 * 100 isn't an integer in JS).
   price: z.number().positive().max(100_000_000).multipleOf(0.01),
-  quantity: z.number().optional(),
+  quantity: z.number().int().min(0).max(10_000).optional(),
 });
