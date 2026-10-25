@@ -159,4 +159,24 @@ describe('POST /api/vehicles', () => {
       expect(res.body.price).toBe(price);
     });
   });
+
+  describe('quantity rule: integer from 0 to 10,000', () => {
+    it.each([
+      ['negative', -1],
+      ['a non-integer', 1.5],
+      ['over 10,000', 10_001],
+    ])('rejects a quantity that is %s with 400', async (_case, quantity) => {
+      const res = await postVehicle({ quantity });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field: 'quantity', message: expect.any(String) }]);
+    });
+
+    it.each([0, 10_000])('accepts a quantity of %d', async (quantity) => {
+      const res = await postVehicle({ quantity });
+
+      expect(res.status).toBe(201);
+      expect(res.body.quantity).toBe(quantity);
+    });
+  });
 });
