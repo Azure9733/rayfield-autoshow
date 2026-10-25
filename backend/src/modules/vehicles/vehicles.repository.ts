@@ -123,7 +123,7 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
     async restock(id, quantity) {
       const [row] = await db
         .update(vehicles)
-        .set({ quantity: sql`${vehicles.quantity} + ${quantity}` })
+        .set({ quantity: sql`${vehicles.quantity} + ${quantity}`, updatedAt: sql`now()` })
         .where(eq(vehicles.id, id))
         .returning();
       return row && toVehicle(row);
