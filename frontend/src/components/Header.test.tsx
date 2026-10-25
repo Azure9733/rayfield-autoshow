@@ -43,22 +43,21 @@ describe('header', () => {
   });
 
   it.each([
-    ['a user', 'user' as const, 'Vik', 'User account', 'Admin account'],
-    ['an admin', 'admin' as const, 'Ada', 'Admin account', 'User account'],
+    ['a user', 'user' as const, 'Vik'],
+    ['an admin', 'admin' as const, 'Ada'],
   ])(
-    'shows %s their icon and name, with Logout right-most, in the nav and the menu',
-    async (_case, role, name, icon, otherIcon) => {
+    'shows %s a person icon and their name (no role), with Logout right-most, in the nav and the menu',
+    async (_case, role, name) => {
       loginAs(role);
       const { user } = renderApp('/');
       await user.click(screen.getByRole('button', { name: 'Menu' }));
 
       for (const navName of ['Main', 'Mobile']) {
         const nav = screen.getByRole('navigation', { name: navName });
-        expect(within(nav).getByRole('img', { name: icon })).toBeInTheDocument();
-        expect(within(nav).queryByRole('img', { name: otherIcon })).not.toBeInTheDocument();
+        expect(within(nav).getByRole('img', { name: 'User account' })).toBeInTheDocument();
+        expect(within(nav).queryByRole('img', { name: 'Admin account' })).not.toBeInTheDocument();
         expect(within(nav).getByText(name)).toBeInTheDocument();
-        if (role === 'admin') expect(within(nav).getByText('Admin')).toBeInTheDocument();
-        else expect(within(nav).queryByText('Admin')).not.toBeInTheDocument();
+        expect(within(nav).queryByText(/admin/i)).not.toBeInTheDocument();
         expect(nav.lastElementChild).toBe(within(nav).getByRole('button', { name: 'Logout' }));
       }
     },
