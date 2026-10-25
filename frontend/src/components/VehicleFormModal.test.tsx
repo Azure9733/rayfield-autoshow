@@ -125,4 +125,22 @@ describe('vehicle form', () => {
       ),
     );
   });
+
+  it('shows a save error without field details above the fields', async () => {
+    server.use(
+      http.post('/api/vehicles', () =>
+        HttpResponse.json(
+          { error: { code: 'FORBIDDEN', message: 'Admin access required' } },
+          { status: 403 },
+        ),
+      ),
+    );
+    const { user } = renderApp('/');
+    const dialog = await openAddForm(user);
+
+    await fill(user, dialog, validForm);
+    await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+
+    expect(await within(dialog).findByRole('alert')).toHaveTextContent('Admin access required');
+  });
 });
