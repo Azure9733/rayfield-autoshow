@@ -221,4 +221,15 @@ describe('vehicle form', () => {
       price: 119999.99,
     });
   });
+
+  it('opens with focus in its first field, and Escape closes it', async () => {
+    const { user } = renderApp('/');
+    const dialog = await openAddForm(user);
+
+    expect(within(dialog).getByLabelText('Make')).toHaveFocus();
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
 });
