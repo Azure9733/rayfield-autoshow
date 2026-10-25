@@ -48,4 +48,11 @@ describe('inventory page', () => {
     expect(await screen.findByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
     expect(screen.queryByTestId('skeleton-card')).not.toBeInTheDocument();
   });
+
+  it('shows ///NO.UNITS.IN.STOCK when the inventory is empty', async () => {
+    serveVehicles();
+    renderApp('/');
+
+    expect(await screen.findByText('///NO.UNITS.IN.STOCK')).toBeInTheDocument();
+  });
 });
