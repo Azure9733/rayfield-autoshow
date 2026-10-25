@@ -1,6 +1,6 @@
 // Client-side copies of the backend's vehicle rules and messages (backend/src/modules/vehicles/
 // vehicles.schemas.ts); the backend still validates everything.
-import type { VehicleInput } from '../api/vehicles';
+import type { Vehicle, VehicleInput } from '../api/vehicles';
 import { CATEGORIES } from '../constants/categories';
 import type { FieldErrors } from './types';
 
@@ -94,5 +94,18 @@ export function toVehicleInput(
     price: Number(values.price),
     ...(imageUrl && { imageUrl }),
     ...(withQuantity && { quantity: Number(values.quantity) }),
+  };
+}
+
+/** Form values for editing an existing vehicle (quantity isn't edited, so it's left blank). */
+export function toFormValues(vehicle: Vehicle): VehicleFormValues {
+  return {
+    make: vehicle.make,
+    model: vehicle.model,
+    year: String(vehicle.year),
+    category: vehicle.category,
+    price: String(vehicle.price),
+    imageUrl: vehicle.imageUrl ?? '',
+    quantity: '',
   };
 }

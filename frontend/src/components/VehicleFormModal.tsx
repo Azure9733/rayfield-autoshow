@@ -19,6 +19,8 @@ const EMPTY: VehicleFormValues = {
 
 interface Props {
   title: string;
+  /** Prefilled values when editing; an empty form when adding. */
+  initial?: VehicleFormValues;
   /** Quantity is only asked for when adding (initial stock); edits leave stock alone. */
   withQuantity: boolean;
   /** Sends the vehicle; a rejected ApiError is shown in the form. */
@@ -27,13 +29,14 @@ interface Props {
 }
 
 /** Add / edit vehicle form in a modal panel (UI_PLAN.md §6); full-screen on mobile. */
-export function VehicleFormModal({ title, withQuantity, onSave, onClose }: Props) {
+export function VehicleFormModal({ title, initial = EMPTY, withQuantity, onSave, onClose }: Props) {
   const titleId = useId();
-  const [values, setValues] = useState(EMPTY);
+  const [values, setValues] = useState(initial);
   const [errors, setErrors] = useState<FieldErrors<VehicleFormValues>>({});
   const [formError, setFormError] = useState('');
 
   const field = (name: keyof VehicleFormValues) => ({
+    name,
     value: values[name],
     error: errors[name],
     onChange: (value: string) => setValues((v) => ({ ...v, [name]: value })),
@@ -68,7 +71,7 @@ export function VehicleFormModal({ title, withQuantity, onSave, onClose }: Props
         className="cyber-panel h-full w-full overflow-y-auto p-6 sm:h-auto sm:max-h-[90vh] sm:max-w-lg md:p-8"
       >
         {/* noValidate: our messages match the backend's, the browser's wouldn't */}
-        <form noValidate onSubmit={handleSubmit} className="space-y-4">
+        <form noValidate onSubmit={handleSubmit} aria-labelledby={titleId} className="space-y-4">
           <h2 id={titleId} className="text-2xl font-bold uppercase tracking-[3px]">
             {title}
           </h2>

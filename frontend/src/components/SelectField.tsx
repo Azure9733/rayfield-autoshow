@@ -2,6 +2,7 @@ import { useId } from 'react';
 
 interface Props {
   label: string;
+  name?: string;
   value: string;
   onChange: (value: string) => void;
   options: readonly string[];
@@ -11,7 +12,7 @@ interface Props {
 }
 
 /** Labelled select with its error message underneath (same wiring as TextField). */
-export function SelectField({ label, value, onChange, options, emptyLabel, error }: Props) {
+export function SelectField({ label, name, value, onChange, options, emptyLabel, error }: Props) {
   const id = useId();
   const errorId = `${id}-error`;
 
@@ -22,6 +23,7 @@ export function SelectField({ label, value, onChange, options, emptyLabel, error
       </label>
       <select
         id={id}
+        name={name}
         className="cyber-input"
         value={value}
         onChange={(e) => onChange(e.target.value)}

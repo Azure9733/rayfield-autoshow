@@ -6,11 +6,12 @@ import { formatPrice } from '../lib/format';
 export function VehicleCard({
   vehicle,
   onPurchase,
-  showAdminControls = false,
+  admin,
 }: {
   vehicle: Vehicle;
   onPurchase: (vehicle: Vehicle) => void;
-  showAdminControls?: boolean;
+  /** Admin actions; when absent (regular users) the admin buttons aren't rendered. */
+  admin?: { onEdit: (vehicle: Vehicle) => void };
 }) {
   const { make, model, year, category, price, quantity, imageUrl } = vehicle;
   const id = useId();
@@ -57,9 +58,9 @@ export function VehicleCard({
         >
           Purchase
         </button>
-        {showAdminControls && (
+        {admin && (
           <div className="flex flex-wrap gap-2 border-t border-cp-yellow/15 pt-3">
-            <button type="button" className="btn-ghost">
+            <button type="button" className="btn-ghost" onClick={() => admin.onEdit(vehicle)}>
               Edit
             </button>
             <button type="button" className="btn-ghost">
