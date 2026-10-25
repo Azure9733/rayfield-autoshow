@@ -251,7 +251,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] `?category=suv` → only SUVs (normalised to uppercase)
 - [x] **(guard)** Unknown category → 400 (reuses the category rule from 4.5)
 - [x] `?minPrice=` → inclusive lower bound (a vehicle priced exactly at `minPrice` is included)
-- [ ] `?maxPrice=` → inclusive upper bound
+- [x] `?maxPrice=` → inclusive upper bound
 - [ ] **(guard)** Filters combine with AND (e.g. `make` + `maxPrice`, `minPrice` + `maxPrice`)
 - [ ] **(guard)** No filters → returns all
 - [ ] **(guard)** No matches → 200 `[]`
