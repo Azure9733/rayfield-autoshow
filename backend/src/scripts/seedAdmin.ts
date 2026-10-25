@@ -30,6 +30,7 @@ export async function seedAdmin(
 }
 
 // CLI: `npm run db:seed:admin` (reads ADMIN_EMAIL and ADMIN_PASSWORD from .env).
+/* istanbul ignore next -- CLI entry point; the exported function above is what tests cover */
 if (require.main === module) {
   seedAdmin({ email: process.env.ADMIN_EMAIL ?? '', password: process.env.ADMIN_PASSWORD ?? '' })
     .then((admin) => console.info(`Admin ready: ${admin.email}`))

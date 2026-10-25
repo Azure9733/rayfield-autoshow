@@ -52,6 +52,7 @@ export async function seedDemo(
 }
 
 // CLI: `npm run db:seed:demo`.
+/* istanbul ignore next -- CLI entry point; the exported function above is what tests cover */
 if (require.main === module) {
   seedDemo()
     .then(() => console.info(`Demo inventory reset: ${DEMO_VEHICLES.length} vehicles`))
