@@ -97,4 +97,16 @@ describe('POST /api/auth/register', () => {
       expect(res.body.name).toBe(stored);
     });
   });
+
+  describe('email rule: required, valid format', () => {
+    it.each([
+      ['missing', undefined],
+      ['not an email address', 'not-an-email'],
+    ])('rejects an email that is %s with 400', async (_case, email) => {
+      const res = await register({ email });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field: 'email', message: expect.any(String) }]);
+    });
+  });
 });
