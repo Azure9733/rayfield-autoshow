@@ -1,13 +1,26 @@
 import request from 'supertest';
 import { createApp } from '../../src/app';
 import { pool } from '../../src/db/client';
-import { authHeader } from '../helpers/auth';
+import { createUser } from '../helpers/users';
 import { createVehicle } from '../helpers/vehicles';
 
+// A stored buyer: purchases reference users(id), so the token's user must exist.
+let buyer: { id: string; auth: string };
+beforeEach(async () => {
+  buyer = await createUser();
+});
+
 function purchase(id: string) {
-  return request(createApp())
-    .post(`/api/vehicles/${id}/purchase`)
-    .set('Authorization', authHeader('user'));
+  return request(createApp()).post(`/api/vehicles/${id}/purchase`).set('Authorization', buyer.auth);
+}
+
+/** The purchase rows in the database, oldest first. */
+async function purchaseRows() {
+  const { rows } = await pool.query(
+    `select user_id, vehicle_id, make, model, year, category, price
+       from purchases order by created_at, id`,
+  );
+  return rows;
 }
 
 async function stockOf(id: string): Promise<number> {
@@ -27,6 +40,31 @@ describe('POST /api/vehicles/:id/purchase', () => {
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ id, quantity: 2 });
     expect(await stockOf(id)).toBe(2);
+  });
+
+  it('records the purchase with the buyer and a snapshot of the vehicle', async () => {
+    const { id } = await createVehicle({
+      make: 'Toyota',
+      model: 'Supra',
+      year: 2023,
+      category: 'COUPE',
+      price: 55000.5,
+      quantity: 2,
+    });
+
+    await purchase(id);
+
+    expect(await purchaseRows()).toEqual([
+      {
+        user_id: buyer.id,
+        vehicle_id: id,
+        make: 'Toyota',
+        model: 'Supra',
+        year: 2023,
+        category: 'COUPE',
+        price: '55000.50',
+      },
+    ]);
   });
 
   it('returns 409 OUT_OF_STOCK when quantity is 0 and leaves stock at 0', async () => {

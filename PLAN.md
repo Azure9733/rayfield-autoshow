@@ -313,6 +313,18 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Message wording revised after review: year shows the actual upper year, password split into too-short / too-long, price range in dollars, price filters, min > max
 - [x] Jest coverage threshold (e.g. 90% lines) in `jest.config`; exclude `server.ts`, migrations and script entry points (moved from §3)
 
+### 4.13 Purchases — My Garage (purchase history)
+Table `purchases`: `id`, `user_id` (→ users, cascade), `vehicle_id` (→ vehicles, set null), a snapshot of make, model, year, category and the price paid, `created_at`; index on `user_id`; row-level security on (Supabase exposes public tables).
+- [ ] A purchase records a row with the buyer and a snapshot of the vehicle, in the same transaction as the stock decrement
+- [ ] **(guard)** A 409 or 404 purchase records nothing (`it.each`)
+- [ ] **(guard)** 10 parallel purchases at stock 5 leave exactly 5 purchase rows
+- [ ] `GET /api/purchases/me` → 200 with the caller's purchases `{ id, vehicleId, make, model, year, category, price, purchasedAt }`, price as a number
+- [ ] Newest first
+- [ ] Another user's purchases are never returned
+- [ ] **(guard)** `[]` when the caller has none
+- [ ] **(guard)** No token → 401
+- [ ] `seedDemo` also deletes all purchases
+
 ---
 
 ## 5. Phase 3 — Frontend
