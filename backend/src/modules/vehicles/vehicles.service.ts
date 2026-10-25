@@ -1,7 +1,7 @@
-import type { VehicleRow, VehiclesRepository } from './vehicles.repository';
+import type { Vehicle, VehiclesRepository } from './vehicles.repository';
 
 export interface VehiclesService {
-  list(): Promise<VehicleRow[]>;
+  list(): Promise<Vehicle[]>;
 }
 
 /** Vehicle and inventory rules; knows nothing about HTTP. */

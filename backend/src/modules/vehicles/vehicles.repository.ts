@@ -1,18 +1,27 @@
 import type { Database } from '../../db/client';
 import { vehicles } from '../../db/schema';
 
-export type VehicleRow = typeof vehicles.$inferSelect;
+type VehicleRow = typeof vehicles.$inferSelect;
+
+/** A vehicle as the rest of the app sees it: price is a number, not numeric's string. */
+export type Vehicle = Omit<VehicleRow, 'price'> & { price: number };
 
 /** All SQL for the vehicles table lives behind this interface, so tests can swap in a fake. */
 export interface VehiclesRepository {
-  list(): Promise<VehicleRow[]>;
+  list(): Promise<Vehicle[]>;
 }
 
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
 export function createVehiclesRepository(db: Database): VehiclesRepository {
   return {
-    list() {
-      return db.select().from(vehicles);
+    async list() {
+      const rows = await db.select().from(vehicles);
+      return rows.map(toVehicle);
     },
   };
+}
+
+// numeric(12,2) holds at most 10 integer digits, well inside a double's exact range.
+function toVehicle(row: VehicleRow): Vehicle {
+  return { ...row, price: Number(row.price) };
 }
