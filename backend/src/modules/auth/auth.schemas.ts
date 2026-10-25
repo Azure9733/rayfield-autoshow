@@ -3,7 +3,8 @@ import { z } from 'zod';
 /** Request body for POST /api/auth/register. Unknown keys (e.g. `role`) are stripped. */
 export const registerSchema = z.object({
   name: z.string().trim().min(1).max(60),
-  email: z.email(),
+  // Lowercased before it reaches the DB, so the unique constraint is effectively case-insensitive.
+  email: z.email().toLowerCase(),
   password: z
     .string()
     .min(8)
