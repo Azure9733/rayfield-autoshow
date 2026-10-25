@@ -6,6 +6,10 @@ export function createAuthController(service: AuthService) {
   return {
     async register(req: Request, res: Response) {
       const { name, email, password } = req.body;
+      if (name === undefined) {
+        res.status(400).end();
+        return;
+      }
       const user = await service.register({ name, email, password });
       res.status(201).json(user);
     },

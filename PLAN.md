@@ -187,7 +187,7 @@ How to read this list:
 - [x] **(guard)** Response never contains password or hash
 - [x] `unit:` `password.hash` then `compare` → true for the right password, false for a wrong one
 - [x] Password is stored hashed (DB value ≠ plain text, `compare` passes)
-- [ ] Missing name → 400
+- [x] Missing name → 400
 - [ ] Validation errors use the standard format: `code: "VALIDATION_ERROR"` and `details: [{ field, message }]`
 - [ ] Name rule (`it.each`): whitespace-only, 61 chars → 400; 60 chars accepted; `"  Ann  "` stored as `"Ann"`
 - [ ] Email rule (`it.each`): missing, invalid format → 400
