@@ -25,5 +25,9 @@ export function createVehiclesController(service: VehiclesService) {
       await service.remove(req.params.id);
       res.status(204).end();
     },
+
+    async purchase(req: Request<{ id: string }>, res: Response) {
+      res.json(await service.purchase(req.params.id));
+    },
   };
 }

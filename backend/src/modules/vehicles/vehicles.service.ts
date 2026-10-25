@@ -13,6 +13,7 @@ export interface VehiclesService {
   create(input: NewVehicle): Promise<Vehicle>;
   update(id: string, input: VehicleUpdate): Promise<Vehicle>;
   remove(id: string): Promise<void>;
+  purchase(id: string): Promise<Vehicle>;
 }
 
 /** Vehicle and inventory rules; knows nothing about HTTP. */
@@ -38,6 +39,10 @@ export function createVehiclesService(vehicles: VehiclesRepository): VehiclesSer
 
     async remove(id) {
       if (!(await vehicles.remove(id))) throw vehicleNotFound();
+    },
+
+    async purchase(id) {
+      return (await vehicles.purchaseOne(id))!;
     },
   };
 }

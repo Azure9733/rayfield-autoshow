@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, ilike, lte, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, gte, ilike, lte, sql } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { vehicles } from '../../db/schema';
 import type { Category } from './categories';
@@ -42,6 +42,11 @@ export interface VehiclesRepository {
   update(id: string, input: VehicleUpdate): Promise<Vehicle | undefined>;
   /** True if a vehicle was deleted, false if no vehicle has that id. */
   remove(id: string): Promise<boolean>;
+  /**
+   * Atomically takes one unit out of stock. Returns the updated vehicle, or undefined when
+   * nothing was sold (unknown id, or quantity already 0).
+   */
+  purchaseOne(id: string): Promise<Vehicle | undefined>;
 }
 
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
@@ -94,6 +99,17 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
         .where(eq(vehicles.id, id))
         .returning({ id: vehicles.id });
       return deleted.length > 0;
+    },
+
+    async purchaseOne(id) {
+      // One conditional UPDATE: Postgres row-locks it, so concurrent purchases can't both take
+      // the last unit (no read-then-write race).
+      const [row] = await db
+        .update(vehicles)
+        .set({ quantity: sql`${vehicles.quantity} - 1` })
+        .where(and(eq(vehicles.id, id), gt(vehicles.quantity, 0)))
+        .returning();
+      return row && toVehicle(row);
     },
   };
 }
