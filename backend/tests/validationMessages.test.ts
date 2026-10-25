@@ -12,6 +12,8 @@ const vehicle = {
   quantity: 3,
 };
 const anyId = '00000000-0000-4000-8000-000000000000';
+// Computed, never hard-coded, so the year message test doesn't break on 1 January.
+const nextYear = new Date().getFullYear() + 1;
 
 const register = (body: object) =>
   request(createApp())
@@ -37,10 +39,16 @@ it.each([
   ['register name', () => register({ name: '' }), 'name', 'Name must be 1–60 characters'],
   ['register email', () => register({ email: 'nope' }), 'email', 'Enter a valid email address'],
   [
-    'register password',
+    'register password (too short)',
     () => register({ password: 'short' }),
     'password',
-    'Password must be at least 8 characters (and at most 72 bytes)',
+    'Password must be at least 8 characters',
+  ],
+  [
+    'register password (too long)',
+    () => register({ password: 'a'.repeat(73) }),
+    'password',
+    'Password is too long (max 72 characters)',
   ],
   ['login email', () => login({ password: 'x' }), 'email', 'Email is required'],
   ['login password', () => login({ email: 'ann@example.com' }), 'password', 'Password is required'],
@@ -55,7 +63,7 @@ it.each([
     'vehicle year',
     () => createVehicle({ year: 1899 }),
     'year',
-    'Year must be a whole number from 1900 to next year',
+    `Year must be a whole number from 1900 to ${nextYear}`,
   ],
   [
     'vehicle category',
@@ -67,7 +75,7 @@ it.each([
     'vehicle price',
     () => createVehicle({ price: 0 }),
     'price',
-    'Price must be more than 0 and at most 100,000,000, with up to 2 decimals',
+    'Price must be between $0.01 and $100,000,000, with up to 2 decimals',
   ],
   [
     'vehicle quantity',
@@ -91,7 +99,13 @@ it.each([
     'search price',
     () => search({ minPrice: 'abc' }),
     'minPrice',
-    'Price filters must be numbers of 0 or more',
+    'Price filters must be 0 or more',
+  ],
+  [
+    'search price range',
+    () => search({ minPrice: '30000', maxPrice: '20000' }),
+    'minPrice',
+    "Min price can't be more than max price",
   ],
   [
     'restock quantity',
