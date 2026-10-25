@@ -275,7 +275,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 ### 4.8 `DELETE /api/vehicles/:id` (admin)
 - [x] Admin → 204, vehicle gone
 - [x] Unknown id → 404
-- [ ] **(guard)** Malformed id → 400 (shared UUID check)
+- [x] **(guard)** Malformed id → 400 (shared UUID check)
 - [ ] Non-admin → 403
 - [ ] **(guard)** No token → 401
 

@@ -30,4 +30,11 @@ describe('DELETE /api/vehicles/:id', () => {
     expect(res.status).toBe(404);
     expect(res.body.error.code).toBe('NOT_FOUND');
   });
+
+  it('returns 400 for a malformed id', async () => {
+    const res = await deleteVehicle('not-a-uuid');
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details).toEqual([{ field: 'id', message: expect.any(String) }]);
+  });
 });
