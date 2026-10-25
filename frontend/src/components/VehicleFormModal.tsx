@@ -73,6 +73,10 @@ export function VehicleFormModal({ title, initial = EMPTY, withQuantity, onSave,
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        // Focus starts inside (autoFocus below), so key presses land here.
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') onClose();
+        }}
         className="cyber-panel h-full w-full overflow-y-auto p-6 sm:h-auto sm:max-h-[90vh] sm:max-w-lg md:p-8"
       >
         {/* noValidate: our messages match the backend's, the browser's wouldn't */}
@@ -86,7 +90,7 @@ export function VehicleFormModal({ title, initial = EMPTY, withQuantity, onSave,
             </p>
           )}
           <div className="grid gap-4 sm:grid-cols-2">
-            <TextField label="Make" {...field('make')} />
+            <TextField label="Make" autoFocus {...field('make')} />
             <TextField label="Model" {...field('model')} />
             <TextField label="Year" type="number" inputMode="numeric" {...field('year')} />
             <SelectField

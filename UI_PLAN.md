@@ -180,7 +180,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] A save error without field details shows above the fields
 - [x] Adding a vehicle shows it in the grid
 - [x] Edit opens the form prefilled
-- [ ] The vehicle form opens with focus in its first field, and Escape closes it
+- [x] The vehicle form opens with focus in its first field, and Escape closes it
 - [x] Saving an edit updates the card
 - [x] Delete asks for in-page confirmation
 - [x] Confirming delete removes the card
