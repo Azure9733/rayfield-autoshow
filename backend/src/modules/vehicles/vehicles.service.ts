@@ -43,8 +43,11 @@ export function createVehiclesService(vehicles: VehiclesRepository): VehiclesSer
 
     async purchase(id) {
       const sold = await vehicles.purchaseOne(id);
-      if (!sold) throw new ConflictError('OUT_OF_STOCK', 'Out of stock');
-      return sold;
+      if (sold) return sold;
+      // The atomic update can't say why it changed nothing; a follow-up lookup tells
+      // "no such vehicle" (404) from "none left" (409).
+      if (!(await vehicles.exists(id))) throw vehicleNotFound();
+      throw new ConflictError('OUT_OF_STOCK', 'Out of stock');
     },
   };
 }

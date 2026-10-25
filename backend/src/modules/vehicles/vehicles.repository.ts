@@ -47,6 +47,7 @@ export interface VehiclesRepository {
    * nothing was sold (unknown id, or quantity already 0).
    */
   purchaseOne(id: string): Promise<Vehicle | undefined>;
+  exists(id: string): Promise<boolean>;
 }
 
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
@@ -110,6 +111,11 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
         .where(and(eq(vehicles.id, id), gt(vehicles.quantity, 0)))
         .returning();
       return row && toVehicle(row);
+    },
+
+    async exists(id) {
+      const rows = await db.select({ id: vehicles.id }).from(vehicles).where(eq(vehicles.id, id));
+      return rows.length > 0;
     },
   };
 }
