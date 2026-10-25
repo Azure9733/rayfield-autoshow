@@ -52,4 +52,22 @@ describe('api client', () => {
     expect(error).toBeInstanceOf(ApiError);
     expect(error).toMatchObject({ message: "Can't reach the server. Please try again." });
   });
+
+  it.each([
+    ['an empty object', {}],
+    ['a different error shape', { message: 'Bad gateway' }],
+    ['null', null],
+  ])('a JSON error body that is %s still becomes an ApiError', async (_case, body) => {
+    server.use(http.get('/api/vehicles', () => HttpResponse.json(body, { status: 502 })));
+
+    const error = await api.get('/api/vehicles').catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({
+      status: 502,
+      code: 'UNKNOWN_ERROR',
+      message: 'Something went wrong. Please try again.',
+      details: [],
+    });
+  });
 });
