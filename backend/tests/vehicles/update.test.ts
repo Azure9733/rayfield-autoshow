@@ -77,4 +77,11 @@ describe('PUT /api/vehicles/:id', () => {
     expect(res.status).toBe(200);
     expect(res.body.quantity).toBe(3);
   });
+
+  it('returns 404 for an id that does not exist', async () => {
+    const res = await putVehicle('00000000-0000-4000-8000-000000000000', replacement);
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe('NOT_FOUND');
+  });
 });
