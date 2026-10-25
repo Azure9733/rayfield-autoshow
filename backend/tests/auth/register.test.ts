@@ -16,9 +16,7 @@ function register(overrides: Record<string, unknown> = {}) {
 
 describe('POST /api/auth/register', () => {
   it('creates a user and returns 201 with exactly { id, name, email, role: "user" }', async () => {
-    const res = await request(createApp())
-      .post('/api/auth/register')
-      .send({ name: 'Ann Driver', email: 'ann@example.com', password: 'supersecret' });
+    const res = await register();
 
     expect(res.status).toBe(201);
     expect(res.body).toEqual({
@@ -30,9 +28,7 @@ describe('POST /api/auth/register', () => {
   });
 
   it('never returns the password or its hash', async () => {
-    const res = await request(createApp())
-      .post('/api/auth/register')
-      .send({ name: 'Ann Driver', email: 'ann@example.com', password: 'supersecret' });
+    const res = await register();
 
     expect(res.body).not.toHaveProperty('password');
     expect(res.body).not.toHaveProperty('passwordHash');
@@ -41,9 +37,7 @@ describe('POST /api/auth/register', () => {
   });
 
   it('stores the password as a bcrypt hash, not plain text', async () => {
-    await request(createApp())
-      .post('/api/auth/register')
-      .send({ name: 'Ann Driver', email: 'ann@example.com', password: 'supersecret' });
+    await register();
 
     const { rows } = await pool.query<{ password_hash: string }>(
       'select password_hash from users where email = $1',
@@ -55,17 +49,13 @@ describe('POST /api/auth/register', () => {
   });
 
   it('returns 400 when name is missing', async () => {
-    const res = await request(createApp())
-      .post('/api/auth/register')
-      .send({ email: 'ann@example.com', password: 'supersecret' });
+    const res = await register({ name: undefined });
 
     expect(res.status).toBe(400);
   });
 
   it('reports validation errors in the standard format', async () => {
-    const res = await request(createApp())
-      .post('/api/auth/register')
-      .send({ email: 'ann@example.com', password: 'supersecret' });
+    const res = await register({ name: undefined });
 
     expect(res.body).toEqual({
       error: {
