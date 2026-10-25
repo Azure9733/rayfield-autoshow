@@ -134,4 +134,18 @@ describe('GET /api/vehicles/search', () => {
     expect(res.status).toBe(200);
     expect(res.body).toEqual([]);
   });
+
+  // A search form submits blank fields as empty strings; they must mean "no filter".
+  it.each(['make', 'model', 'category', 'minPrice', 'maxPrice'])(
+    'treats an empty %s as absent',
+    async (param) => {
+      const a = await createVehicle({ make: 'Toyota', price: 25000 });
+      const b = await createVehicle({ make: 'Ford', price: 30000 });
+
+      const res = await search({ [param]: '' });
+
+      expect(res.status).toBe(200);
+      expect(idsOf(res)).toEqual([a.id, b.id].sort());
+    },
+  );
 });
