@@ -1,0 +1,59 @@
+import { screen, within } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event';
+import { http, HttpResponse } from 'msw';
+import type { Purchase } from '../api/purchases';
+import { badge, loginAs } from '../test/fixtures';
+import { renderApp } from '../test/renderApp';
+import { server } from '../test/server';
+
+function makePurchase(overrides: Partial<Purchase> = {}): Purchase {
+  return {
+    id: '3f6c1e0a-8b2d-4c7e-9a51-6d0f2b7c4e11',
+    vehicleId: 'a1',
+    make: 'Toyota',
+    model: 'Land Cruiser',
+    year: 2024,
+    category: 'SUV',
+    price: 125000,
+    // Noon UTC is 25 Oct in every timezone from UTC-11 to UTC+11, so the date part is stable.
+    purchasedAt: '2026-10-25T12:00:00.000Z',
+    ...overrides,
+  };
+}
+
+function serveGarage(...purchases: Purchase[]) {
+  server.use(http.get('/api/purchases/me', () => HttpResponse.json(purchases)));
+}
+
+/** Opens My Garage from the desktop nav and returns the dialog. */
+async function openGarage(user: UserEvent) {
+  const nav = screen.getByRole('navigation', { name: 'Main' });
+  await user.click(within(nav).getByRole('button', { name: 'My Garage' }));
+  return screen.getByRole('dialog', { name: 'My Garage' });
+}
+
+describe('my garage', () => {
+  beforeEach(() => loginAs('user'));
+
+  it('lists each purchase with make, model, year, category, price, date and order id', async () => {
+    // The same car bought twice is two rows.
+    const later = makePurchase({ id: 'b7e4d2c9-1a3f-4e6b-8d20-5c9f7a1e3b44' });
+    const earlier = makePurchase({ purchasedAt: '2026-10-24T12:00:00.000Z' });
+    serveGarage(later, earlier);
+    const { user } = renderApp('/');
+
+    const dialog = await openGarage(user);
+
+    const rows = await within(dialog).findAllByRole('listitem');
+    expect(rows).toHaveLength(2);
+    const [first, second] = rows;
+    expect(within(first).getByText('Toyota Land Cruiser')).toBeInTheDocument();
+    expect(within(first).getByText('2024')).toBeInTheDocument();
+    expect(badge(first, 'Category')).toHaveTextContent('SUV');
+    expect(within(first).getByText('$125,000.00')).toBeInTheDocument();
+    expect(within(first).getByText(/^25 Oct 2026, \d{2}:\d{2}$/)).toBeInTheDocument();
+    expect(badge(first, 'Order ID')).toHaveTextContent(later.id);
+    expect(within(second).getByText(/^24 Oct 2026, \d{2}:\d{2}$/)).toBeInTheDocument();
+    expect(badge(second, 'Order ID')).toHaveTextContent(earlier.id);
+  });
+});
