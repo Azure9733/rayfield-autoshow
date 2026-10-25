@@ -309,7 +309,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 
 ### 4.12 End of backend
 - [x] Friendlier validation messages for every schema, replacing Zod's defaults (one cycle; the UI shows them under form fields)
-- [ ] Message wording revised after review: year shows the actual upper year, password split into too-short / too-long, price range in dollars, price filters, min > max
+- [x] Message wording revised after review: year shows the actual upper year, password split into too-short / too-long, price range in dollars, price filters, min > max
 - [x] Jest coverage threshold (e.g. 90% lines) in `jest.config`; exclude `server.ts`, migrations and script entry points (moved from §3)
 
 ---

@@ -27,7 +27,7 @@ function optionalFilter<T extends z.ZodType>(schema: T) {
   return z.preprocess((value) => (value === '' ? undefined : value), schema.optional());
 }
 
-const priceFilterMessage = 'Price filters must be numbers of 0 or more';
+const priceFilterMessage = 'Price filters must be 0 or more';
 
 // Query values arrive as strings; coerce turns "25000" into 25000 (and "abc" into a 400).
 const priceFilter = z.coerce.number({ error: priceFilterMessage }).nonnegative(priceFilterMessage);
@@ -44,11 +44,13 @@ export const searchQuerySchema = z
   .refine(
     ({ minPrice, maxPrice }) =>
       minPrice === undefined || maxPrice === undefined || minPrice <= maxPrice,
-    { path: ['minPrice'], message: 'minPrice must not be greater than maxPrice' },
+    { path: ['minPrice'], message: "Min price can't be more than max price" },
   );
 
-const yearMessage = 'Year must be a whole number from 1900 to next year';
-const priceMessage = 'Price must be more than 0 and at most 100,000,000, with up to 2 decimals';
+/** Built per validation (not at startup), so the year in the message rolls over on 1 January. */
+const lastValidYear = () => new Date().getFullYear() + 1;
+const yearError = { error: () => `Year must be a whole number from 1900 to ${lastValidYear()}` };
+const priceMessage = 'Price must be between $0.01 and $100,000,000, with up to 2 decimals';
 const quantityMessage = 'Quantity must be a whole number from 0 to 10,000';
 const imageUrlMessage = 'Image URL must be a valid https:// address';
 
@@ -58,10 +60,10 @@ export const createVehicleSchema = z.object({
   model: nameField('Model'),
   // The upper bound is computed per request, not at startup, so it rolls over on 1 January.
   year: z
-    .number({ error: yearMessage })
-    .int(yearMessage)
-    .min(1900, yearMessage)
-    .refine((y) => y <= new Date().getFullYear() + 1, yearMessage),
+    .number(yearError)
+    .int(yearError)
+    .min(1900, yearError)
+    .refine((y) => y <= lastValidYear(), yearError),
   category: categorySchema,
   // multipleOf uses a float-safe remainder, so 19.99 passes (19.99 * 100 isn't an integer in JS).
   price: z

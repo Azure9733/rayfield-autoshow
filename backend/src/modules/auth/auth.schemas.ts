@@ -15,7 +15,8 @@ export const loginSchema = z.object({
 
 const nameMessage = 'Name must be 1–60 characters';
 const emailMessage = 'Enter a valid email address';
-const passwordMessage = 'Password must be at least 8 characters (and at most 72 bytes)';
+const passwordTooShort = 'Password must be at least 8 characters';
+const passwordTooLong = 'Password is too long (max 72 characters)';
 
 /** Request body for POST /api/auth/register. Unknown keys (e.g. `role`) are stripped. */
 export const registerSchema = z.object({
@@ -23,8 +24,9 @@ export const registerSchema = z.object({
   // Lowercased before it reaches the DB, so the unique constraint is effectively case-insensitive.
   email: z.email({ error: emailMessage }).toLowerCase(),
   password: z
-    .string({ error: passwordMessage })
-    .min(8, passwordMessage)
-    // bcrypt silently ignores everything after byte 72, so cap bytes, not characters.
-    .refine((p) => Buffer.byteLength(p, 'utf8') <= 72, passwordMessage),
+    .string({ error: passwordTooShort })
+    .min(8, passwordTooShort)
+    // bcrypt silently ignores everything after byte 72, so cap bytes, not characters (the
+    // message says characters because that's what users count; they match for ASCII).
+    .refine((p) => Buffer.byteLength(p, 'utf8') <= 72, passwordTooLong),
 });
