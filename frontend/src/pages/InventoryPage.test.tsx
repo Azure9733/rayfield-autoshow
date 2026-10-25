@@ -143,4 +143,26 @@ describe('inventory page', () => {
     await waitFor(() => expect(badge(card, 'Stock')).toHaveTextContent('Sold out'));
     expect(within(card).getByRole('button', { name: 'Purchase' })).toBeDisabled();
   });
+
+  it('disables Purchase while its request is in flight', async () => {
+    serveVehicles(inStock);
+    let respond = () => {};
+    const responded = new Promise<void>((resolve) => (respond = resolve));
+    server.use(
+      http.post('/api/vehicles/a1/purchase', async () => {
+        await responded;
+        return HttpResponse.json({ ...inStock, quantity: 1 });
+      }),
+    );
+    const { user } = renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+    const button = within(card).getByRole('button', { name: 'Purchase' });
+
+    await user.click(button);
+
+    expect(button).toBeDisabled();
+    respond();
+    await waitFor(() => expect(badge(card, 'Stock')).toHaveTextContent('1'));
+    expect(button).toBeEnabled();
+  });
 });
