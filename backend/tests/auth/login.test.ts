@@ -62,4 +62,14 @@ describe('POST /api/auth/login', () => {
       error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' },
     });
   });
+
+  it('returns the same 401 for an unknown email, so it does not reveal which emails exist', async () => {
+    await registerAnn();
+    const wrongPassword = await login({ password: 'wrong-password' });
+
+    const unknownEmail = await login({ email: 'nobody@example.com' });
+
+    expect(unknownEmail.status).toBe(401);
+    expect(unknownEmail.body).toEqual(wrongPassword.body);
+  });
 });
