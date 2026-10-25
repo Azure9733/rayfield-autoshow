@@ -55,4 +55,27 @@ describe('inventory page', () => {
 
     expect(await screen.findByText('///NO.UNITS.IN.STOCK')).toBeInTheDocument();
   });
+
+  it('shows the red error toast on an API error, and Retry loads again', async () => {
+    let calls = 0;
+    server.use(
+      http.get('/api/vehicles', () =>
+        ++calls === 1
+          ? HttpResponse.json(
+              { error: { code: 'INTERNAL_ERROR', message: 'Something went wrong' } },
+              { status: 500 },
+            )
+          : HttpResponse.json([makeVehicle()]),
+      ),
+    );
+    const { user } = renderApp('/');
+
+    const toast = await screen.findByRole('alert');
+    expect(toast).toHaveTextContent('Something went wrong');
+
+    await user.click(within(toast).getByRole('button', { name: 'Retry' }));
+
+    expect(await screen.findByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
 });
