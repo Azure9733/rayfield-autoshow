@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { AuthProvider } from '../context/AuthContext';
 import { LoginPage } from '../pages/LoginPage';
+import { loginAs } from '../test/fixtures';
+import { renderApp } from '../test/renderApp';
 import { server } from '../test/server';
 import { api } from './client';
 import { loadSession, saveSession } from './session';
@@ -75,5 +77,22 @@ describe('session expiry', () => {
     expect(await screen.findByText('Login error: Invalid email or password')).toBeInTheDocument();
     expect(screen.queryByText(/your session expired/i)).not.toBeInTheDocument();
     expect(loadSession()).not.toBeNull();
+  });
+
+  it('session expiry also logs the header out', async () => {
+    server.use(
+      http.get('/api/vehicles', () =>
+        HttpResponse.json(
+          { error: { code: 'UNAUTHENTICATED', message: 'Invalid or expired token' } },
+          { status: 401 },
+        ),
+      ),
+    );
+    loginAs('user');
+
+    renderApp('/');
+
+    expect(await screen.findByText(/your session expired/i)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Logout' })).not.toBeInTheDocument();
   });
 });
