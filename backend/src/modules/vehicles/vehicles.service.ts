@@ -1,4 +1,4 @@
-import { NotFoundError } from '../../lib/errors';
+import { ConflictError, NotFoundError } from '../../lib/errors';
 import type {
   NewVehicle,
   Vehicle,
@@ -42,7 +42,9 @@ export function createVehiclesService(vehicles: VehiclesRepository): VehiclesSer
     },
 
     async purchase(id) {
-      return (await vehicles.purchaseOne(id))!;
+      const sold = await vehicles.purchaseOne(id);
+      if (!sold) throw new ConflictError('OUT_OF_STOCK', 'Out of stock');
+      return sold;
     },
   };
 }

@@ -281,7 +281,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 
 ### 4.9 `POST /api/vehicles/:id/purchase` (always 1 unit)
 - [x] In stock → 200 with the updated vehicle, quantity decreased by 1
-- [ ] Quantity 0 → 409 "Out of stock", quantity unchanged
+- [x] Quantity 0 → 409 "Out of stock", quantity unchanged
 - [ ] Unknown id → 404 (the atomic UPDATE returns no row for both "not found" and "out of stock", so check existence after a miss)
 - [ ] **(guard)** Malformed id → 400
 - [ ] **(guard)** **Concurrency**: 10 parallel purchases at quantity 5 → five 200s, five 409s, final quantity 0
