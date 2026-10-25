@@ -9,6 +9,9 @@ const envSchema = z.object({
     .enum(['true', 'false'])
     .default('false')
     .transform((value) => value === 'true'),
+  // Max connections in the pg pool. On Vercel each function instance has its own pool, and
+  // Supabase's pooler caps the total, so production may want this lower than the default.
+  DATABASE_POOL_MAX: z.coerce.number().int().positive().default(10),
   // bcrypt's valid range is 4–31; each step doubles the hashing time.
   BCRYPT_COST: z.coerce.number().int().min(4).max(31).default(10),
   // HS256 needs a long random secret; 32+ characters rules out placeholder values.
