@@ -31,25 +31,31 @@ export function onSessionExpired(handler: () => void) {
   };
 }
 
-async function request<T>(method: string, path: string): Promise<T> {
+async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
   const token = loadSession()?.token;
+  const headers: Record<string, string> = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (body !== undefined) headers['Content-Type'] = 'application/json';
   const response = await fetch(path, {
     method,
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    headers,
+    body: body === undefined ? undefined : JSON.stringify(body),
   });
-  const body = await response.json();
+  const data = await response.json();
   if (!response.ok) {
-    if (response.status === 401) {
+    // On /api/auth/* a 401 means wrong credentials, not an expired session: the form shows it.
+    if (response.status === 401 && !path.startsWith('/api/auth/')) {
       clearSession();
       sessionExpiredHandler?.();
     }
-    const { code, message, details } = body.error;
+    const { code, message, details } = data.error;
     throw new ApiError(response.status, code, message, details);
   }
-  return body as T;
+  return data as T;
 }
 
 /** Fetch wrapper for the backend; paths are relative (`/api/...`), proxied in dev and prod. */
 export const api = {
   get: <T>(path: string) => request<T>('GET', path),
+  post: <T>(path: string, body?: unknown) => request<T>('POST', path, body),
 };

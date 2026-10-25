@@ -322,7 +322,7 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 - [x] Vite React-TS in `frontend/`, Tailwind, React Router, ESLint/Prettier
 - [x] Vitest + React Testing Library + `@testing-library/user-event` + MSW
 - [x] Vite dev proxy `/api` → local backend; production uses the Vercel rewrite, so the app always calls relative `/api/...` (no `VITE_API_URL`)
-- [ ] `src/api/client.ts`: attaches the token, parses the error format, global 401 handler that skips `/api/auth/*`
+- [x] `src/api/client.ts`: attaches the token, parses the error format, global 401 handler that skips `/api/auth/*`
 - [x] `src/constants/categories.ts`: copy of the backend category list with a "keep in sync" comment
 
 ### Build order
