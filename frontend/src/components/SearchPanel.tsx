@@ -76,12 +76,14 @@ export function SearchPanel({
       <div className="flex flex-wrap items-end gap-3">
         {/* Full row on phones so Filters and Clear share the next one; inline from sm. */}
         <div className="w-full sm:w-auto sm:flex-1">
-          <TextField
-            label="Make or model"
+          {/* No visible label: the placeholder says it, aria-label names it for screen readers */}
+          <input
             type="search"
-            placeholder="e.g. Land Cruiser"
+            aria-label="Search"
+            placeholder="Search"
+            className="cyber-input"
             value={values.q}
-            onChange={set('q')}
+            onChange={(e) => set('q')(e.target.value)}
           />
         </div>
         <button
