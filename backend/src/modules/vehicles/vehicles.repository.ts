@@ -40,7 +40,8 @@ export interface VehiclesRepository {
   create(input: NewVehicle): Promise<Vehicle>;
   /** The updated vehicle, or undefined if no vehicle has that id. */
   update(id: string, input: VehicleUpdate): Promise<Vehicle | undefined>;
-  remove(id: string): Promise<void>;
+  /** True if a vehicle was deleted, false if no vehicle has that id. */
+  remove(id: string): Promise<boolean>;
 }
 
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
@@ -88,7 +89,11 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
     },
 
     async remove(id) {
-      await db.delete(vehicles).where(eq(vehicles.id, id));
+      const deleted = await db
+        .delete(vehicles)
+        .where(eq(vehicles.id, id))
+        .returning({ id: vehicles.id });
+      return deleted.length > 0;
     },
   };
 }

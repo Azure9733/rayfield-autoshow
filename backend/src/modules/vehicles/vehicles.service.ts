@@ -36,8 +36,8 @@ export function createVehiclesService(vehicles: VehiclesRepository): VehiclesSer
       return updated;
     },
 
-    remove(id) {
-      return vehicles.remove(id);
+    async remove(id) {
+      if (!(await vehicles.remove(id))) throw vehicleNotFound();
     },
   };
 }
