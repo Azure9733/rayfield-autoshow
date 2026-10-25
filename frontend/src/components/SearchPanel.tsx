@@ -1,12 +1,15 @@
 import { useId, useState } from 'react';
 import type { SearchFilters } from '../api/vehicles';
 import { CATEGORIES } from '../constants/categories';
+import type { FieldErrors } from '../validation/types';
 import { SelectField } from './SelectField';
 import { TextField } from './TextField';
 
 interface Props {
   values: Required<SearchFilters>;
   onChange: (values: Required<SearchFilters>) => void;
+  /** Messages for invalid filters, shown under their fields. */
+  errors: FieldErrors<SearchFilters>;
   onClear: () => void;
   /** Client-side filter (the API has none): applies as soon as it's toggled. */
   inStockOnly: boolean;
@@ -20,6 +23,7 @@ interface Props {
 export function SearchPanel({
   values,
   onChange,
+  errors,
   onClear,
   inStockOnly,
   onInStockOnlyChange,
@@ -79,6 +83,7 @@ export function SearchPanel({
             step="0.01"
             value={values.minPrice}
             onChange={set('minPrice')}
+            error={errors.minPrice}
           />
           <TextField
             label="Max price"
@@ -87,6 +92,7 @@ export function SearchPanel({
             step="0.01"
             value={values.maxPrice}
             onChange={set('maxPrice')}
+            error={errors.maxPrice}
           />
           <label className="flex h-11 cursor-pointer items-center gap-3 text-sm uppercase tracking-[2px]">
             <input

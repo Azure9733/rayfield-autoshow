@@ -21,6 +21,7 @@ import { Toast } from '../components/Toast';
 import { VehicleCard } from '../components/VehicleCard';
 import { VehicleFormModal } from '../components/VehicleFormModal';
 import { useDebouncedValue } from '../lib/useDebouncedValue';
+import { validateFilters } from '../validation/search';
 import { toFormValues } from '../validation/vehicle';
 import { useAuth } from '../context/AuthContext';
 
@@ -86,6 +87,8 @@ export function InventoryPage() {
   // Settled form changes go into the URL (replacing the entry, so typing doesn't flood the
   // history). "In stock only" is client-side but kept there too, so links restore it.
   useEffect(() => {
+    // An invalid price range stays in the form (with its message) but isn't searched.
+    if (Object.keys(validateFilters(debouncedForm)).length > 0) return;
     const next = new URLSearchParams(filledFilters(debouncedForm) as Record<string, string>);
     if (inStockOnly) next.set('inStock', '1');
     // Only navigate on a real change; setSearchParams itself changes with every navigation.
@@ -158,6 +161,7 @@ export function InventoryPage() {
         <SearchPanel
           values={form}
           onChange={setForm}
+          errors={validateFilters(form)}
           onClear={clearFilters}
           inStockOnly={inStockOnly}
           onInStockOnlyChange={setInStockOnly}

@@ -160,7 +160,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Requests carry only the filled filters
 - [x] The Filters button shows and hides the other filters (category, price range, in stock only)
 - [x] Filters live in the URL: a link restores them, changes update it
-- [ ] Price filters are checked client-side (min ≤ max, ≥ 0): the message shows under the field and nothing is sent
+- [x] Price filters are checked client-side (min ≤ max, ≥ 0): the message shows under the field and nothing is sent
 - [x] "In stock only" hides sold-out vehicles (client-side)
 - [x] Clear resets the filters and the list
 - [x] No search results show `///NO.MATCH` with a clear-filters button (§7)
