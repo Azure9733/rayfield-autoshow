@@ -142,7 +142,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 **Inventory**
 - [x] Cards show make, model, year, category, USD price and stock
 - [x] Loading shows skeleton cards
-- [ ] Empty inventory shows `///NO.UNITS.IN.STOCK`
+- [x] Empty inventory shows `///NO.UNITS.IN.STOCK`
 - [ ] API error shows the red toast with retry
 - [ ] Purchase button disabled when quantity is 0 (required)
 - [ ] Sold-out badge shown at 0

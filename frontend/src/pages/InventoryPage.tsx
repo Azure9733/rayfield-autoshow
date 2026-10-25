@@ -34,6 +34,13 @@ export function InventoryPage() {
         )}
       </div>
       <main className="flex-1 px-4 md:px-8 py-8">
+        {vehicles?.length === 0 && (
+          <div className="cyber-panel mx-auto max-w-xl p-10 text-center">
+            <p className="glitch text-3xl" data-text="///NO.UNITS.IN.STOCK">
+              ///NO.UNITS.IN.STOCK
+            </p>
+          </div>
+        )}
         <div
           className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           aria-busy={vehicles === null}
