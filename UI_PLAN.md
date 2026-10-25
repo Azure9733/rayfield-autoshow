@@ -149,6 +149,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 **Inventory**
 - [x] Cards show make, model, year, category, USD price and stock
 - [x] Loading shows skeleton cards
+- [ ] The `///INVENTORY.MODULE` strip is gone: skeletons alone show loading
 - [x] Empty inventory shows `///NO.UNITS.IN.STOCK`
 - [x] API error shows the red toast with retry
 - [x] Purchase button disabled when quantity is 0 (required)

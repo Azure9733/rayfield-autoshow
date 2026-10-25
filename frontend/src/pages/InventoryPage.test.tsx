@@ -20,7 +20,7 @@ describe('inventory page', () => {
     expect(badge(card, 'Stock')).toHaveTextContent('3');
   });
 
-  it('shows skeleton cards while loading', async () => {
+  it('shows only skeleton cards while loading (no module strip)', async () => {
     let respond = () => {};
     const responded = new Promise<void>((resolve) => (respond = resolve));
     server.use(
@@ -32,7 +32,11 @@ describe('inventory page', () => {
     renderApp('/');
 
     expect(await screen.findAllByTestId('skeleton-card')).not.toHaveLength(0);
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    // The skeletons are the whole loading state: no ///INVENTORY.MODULE strip or "loading..."
+    // text. The page keeps its (screen-reader-only) Inventory heading.
+    expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+    expect(screen.queryByText('///INVENTORY.MODULE')).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Inventory' })).toBeInTheDocument();
 
     respond();
 
