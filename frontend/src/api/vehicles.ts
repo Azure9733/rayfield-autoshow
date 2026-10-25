@@ -29,8 +29,6 @@ export function purchaseVehicle(id: string) {
 export interface SearchFilters {
   /** Part of the make or the model (the search bar). */
   q?: string;
-  make?: string;
-  model?: string;
   category?: string;
   minPrice?: string;
   maxPrice?: string;
@@ -39,8 +37,6 @@ export interface SearchFilters {
 /** A cleared search form. */
 export const EMPTY_FILTERS: Required<SearchFilters> = {
   q: '',
-  make: '',
-  model: '',
   category: '',
   minPrice: '',
   maxPrice: '',

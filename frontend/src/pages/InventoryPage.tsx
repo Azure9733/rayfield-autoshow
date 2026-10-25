@@ -135,16 +135,15 @@ export function InventoryPage() {
           </span>
         )}
       </div>
-      <main className="flex-1 gap-8 px-4 py-8 md:px-8 lg:grid lg:grid-cols-[17rem_1fr] lg:items-start">
+      <main className="flex-1 space-y-6 px-4 py-8 md:px-8">
         <SearchPanel
           values={form}
           onChange={setForm}
-          onSearch={() => {}}
           onClear={clearFilters}
           inStockOnly={inStockOnly}
           onInStockOnlyChange={setInStockOnly}
         />
-        <div className="mt-8 lg:mt-0">
+        <div>
           {isAdmin && (
             <div className="mb-6 flex justify-end">
               <button
@@ -175,7 +174,7 @@ export function InventoryPage() {
               </div>
             ))}
           <div
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             aria-busy={loading}
           >
             {loading

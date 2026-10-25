@@ -37,18 +37,16 @@ Guests are redirected to `/login`. There is no `/admin` route: admin controls re
 ```
 ┌───────────────────────────────────────────────┐
 │ [R] | RAYFIELD AUTOSHOW       INVENTORY LOGOUT│  ← black header, [R] = logo (hamburger < lg)
-│ ///INVENTORY.MODULE  24 UNITS ▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮│  ← yellow module strip (header divider)
-├────────────┬──────────────────────────────────┤
-│ SEARCH     │  [card] [card] [card]             │
-│ make       │  [card] [card] [card]             │
-│ model      │                                   │
-│ category ▾ │                                   │
-│ price min–max                                  │
-│ [x] in stock only                              │
-│ [SEARCH_] [CLEAR]                              │
-└────────────┴──────────────────────────────────┘
+│ ///INVENTORY.MODULE  loading... ▮▮▮▮▮▮▮▮▮▮▮▮▮│  ← yellow module strip (header divider)
+├───────────────────────────────────────────────┤
+│ [ make or model…            ] [FILTERS] [CLEAR]│  ← search bar: results update as you type
+│  category ▾ │ min price │ max price │ [x] in stock  ← shown by FILTERS
+│                                [ADD VEHICLE]  │  ← admins only
+│  [card] [card] [card] [card]                  │
+│  [card] [card] [card] [card]                  │
+└───────────────────────────────────────────────┘
 ```
-Mobile: filters collapse into a "FILTERS" toggle above the grid. Admins get an "ADD VEHICLE" button above the grid.
+Same on every width: the filters stay folded behind FILTERS until opened. Changes apply live (debounced) and are kept in the URL, so a reload or shared link restores them.
 
 ## 4. Vehicle Card
 
@@ -160,7 +158,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 **Search / filter**
 - [x] Typing in the search bar loads matching vehicles live (`?q=`, make or model), debounced to one request
 - [x] Requests carry only the filled filters
-- [ ] The Filters button shows and hides the other filters (category, price range, in stock only)
+- [x] The Filters button shows and hides the other filters (category, price range, in stock only)
 - [x] "In stock only" hides sold-out vehicles (client-side)
 - [x] Clear resets the filters and the list
 - [x] No search results show `///NO.MATCH` with a clear-filters button (§7)
