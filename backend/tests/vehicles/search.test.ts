@@ -33,4 +33,13 @@ describe('GET /api/vehicles/search', () => {
 
     expect(idsOf(res)).toEqual([toyota.id]);
   });
+
+  it('matches part of the make', async () => {
+    const toyota = await createVehicle({ make: 'Toyota' });
+    await createVehicle({ make: 'Ford' });
+
+    const res = await search({ make: 'yot' });
+
+    expect(idsOf(res)).toEqual([toyota.id]);
+  });
 });
