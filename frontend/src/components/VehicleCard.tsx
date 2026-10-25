@@ -1,6 +1,7 @@
 import { useId, useState } from 'react';
 import type { Vehicle } from '../api/vehicles';
 import { formatPrice } from '../lib/format';
+import { CategoryIcon } from './CategoryIcon';
 import { ConfirmDialog } from './ConfirmDialog';
 import { RestockPopover } from './RestockPopover';
 
@@ -46,7 +47,7 @@ export function VehicleCard({
         {imageUrl ? (
           <img src={imageUrl} alt="" className="h-full w-full object-cover" />
         ) : (
-          <span className="font-mono text-cp-yellow/60">[ {category} ]</span>
+          <CategoryIcon category={category} className="h-20 w-40 text-cp-yellow/70" />
         )}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5">

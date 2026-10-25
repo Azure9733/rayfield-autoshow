@@ -336,7 +336,7 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 - [ ] Responsive: mobile (1 col) → tablet (2) → desktop (3–4)
 - [ ] Consistent colour palette, typography, spacing
 - [ ] Accessible: labels on inputs, focus states, buttons not divs, `aria-live` for toasts
-- [ ] Nice touches: skeleton loaders, stock badge ("Only 2 left", "Sold out"), category icons
+- [x] Nice touches: skeleton loaders, stock badge ("Only 2 left", "Sold out"), category icons
 
 ---
 
