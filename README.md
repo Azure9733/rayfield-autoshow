@@ -1,12 +1,14 @@
 # Rayfield Autoshow
 
-A car dealership inventory system built test-first for the Incubyte TDD kata: an Express +
-TypeScript API on Postgres with its own JWT auth, and a React + Tailwind single-page app in a
-cyberpunk theme. Users browse, search and buy vehicles; admins add, edit, delete and restock
-them.
+A car dealership inventory system built with TDD methodology for the Incubyte Takehome assignment.  
 
-**Live:** https://incubyte.somvanshi.dev
-**API:** https://rayfield-sable.vercel.app/api/health
+ExpressJS + TypeScript API on Postgres with its own JWT auth, and a React + Tailwind single-page app in a
+cyberpunk theme. Users can browse, search and buy vehicles while admins can also add, edit, delete and restock
+them.  
+
+**Live:** https://incubyte.somvanshi.dev  
+**API:** https://rayfield-sable.vercel.app/api/health  
+
 | Login | Search and filters | Purchase |
 |---|---|---|
 | ![Login page](docs/Screenshots/login.png) | ![Search bar with the filters open](docs/Screenshots/SearchFilter.png) | ![Purchase confirmation dialog](docs/Screenshots/purchase.png) |
@@ -16,11 +18,6 @@ them.
 | ![Admin editing a vehicle](docs/Screenshots/Inventory_Mangement.png) | ![My Garage purchase history](docs/Screenshots/Garage.png) |
 
 
-**Login Credentials:**  
-ADMIN_EMAIL= `admin@rayfield.dev ` 
-ADMIN_PASSWORD=`DemoAdmin#2026 ` 
-
-Just Register for Normal User  
 
 ## Contents
 
@@ -71,8 +68,8 @@ Just Register for Normal User
 <!-- TODO: fill in the demo accounts before submitting. -->
 | Role | Email | Password |
 |---|---|---|
-| User | `<demo-user-email>` | `<demo-user-password>` |
-| Admin | `<demo-admin-email>` | `<demo-admin-password>` |
+| User | `azure@somvanshi.dev` | `BatCat77` |
+| Admin | `admin@rayfield.dev` | `DemoAdmin#2026` |
 
 You can also register your own account (always a regular user). The demo data is shared:
 anyone can buy, add or delete vehicles. `npm run db:seed:demo` resets it to the sample set and
@@ -304,12 +301,12 @@ Every AI session is in [PROMPTS.md](PROMPTS.md), unedited. Every AI-assisted com
 
 - **Claude Code** (Anthropic, Claude Opus), as the VS Code extension on my Linux machine. It
   wrote almost all the code, tests and commits in this repo, working in the repo itself.
-- **A separate Claude chat** for planning, which drafted the first versions of
-  [PLAN.md](docs/PLAN.md) and [UI_PLAN.md](docs/UI_PLAN.md) before any code. <!-- TODO: say where it ran (e.g. claude.ai) and make sure PROMPTS.md links it. -->
+- **A separate Claude chat** for planning, which helped me draft the first versions of
+  [PLAN.md](docs/PLAN.md) and [UI_PLAN.md](docs/UI_PLAN.md) before any code.
 
 ### How I used it
 
-- **Planning and review before code.** I wrote the plans with the planning chat, then had Claude
+- **Planning and review before code.** I wrote the plans, then had Claude
   Code review them against the assignment. It listed gaps, contradictions and behaviours too big
   for one TDD cycle; I decided each point, and it rewrote the plans to match.
 - **Test lists as the contract.** [PLAN.md](docs/PLAN.md) §4 (API) and
@@ -372,6 +369,6 @@ Every AI session is in [PROMPTS.md](PROMPTS.md), unedited. Every AI-assisted com
 
 ### Reflection
 
-<!-- TODO: write this part yourself, in your own words: how AI affected your speed and the
-quality of the code, what you learned about TDD, and what you'd do differently. -->
-_To be written._
+- This was my first time developing a project using the TDD methodology. And I absolutely loved learning this. Thanks to TDD AI Agents have a predictable and easy to notice & self correct pipeline for development.
+- Thanks to TDD i was able to let Claude develop features in batches after the outputs kept satisfying tests.
+- Creating a dedailed Plan for the project can be a superpower for the development cycle and well made instructions can allow LLMs to really take over a huge chunk of development pipeline with me just monitoring and making decisions.
