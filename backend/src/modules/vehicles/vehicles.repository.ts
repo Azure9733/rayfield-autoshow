@@ -1,15 +1,27 @@
 import { desc } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { vehicles } from '../../db/schema';
+import type { Category } from './categories';
 
 type VehicleRow = typeof vehicles.$inferSelect;
 
 /** A vehicle as the rest of the app sees it: price is a number, not numeric's string. */
 export type Vehicle = Omit<VehicleRow, 'price'> & { price: number };
 
+export interface NewVehicle {
+  make: string;
+  model: string;
+  year: number;
+  category: Category;
+  price: number;
+  /** Initial stock; the column defaults to 0 when omitted. */
+  quantity?: number;
+}
+
 /** All SQL for the vehicles table lives behind this interface, so tests can swap in a fake. */
 export interface VehiclesRepository {
   list(): Promise<Vehicle[]>;
+  create(input: NewVehicle): Promise<Vehicle>;
 }
 
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
@@ -21,6 +33,14 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
         .from(vehicles)
         .orderBy(desc(vehicles.createdAt), desc(vehicles.id));
       return rows.map(toVehicle);
+    },
+
+    async create(input) {
+      const [row] = await db
+        .insert(vehicles)
+        .values({ ...input, price: String(input.price) })
+        .returning();
+      return toVehicle(row);
     },
   };
 }

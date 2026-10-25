@@ -9,5 +9,6 @@ export function createVehiclesRouter(service: VehiclesService): Router {
   const router = Router();
   router.use(authenticate);
   router.get('/', controller.list);
+  router.post('/', controller.create);
   return router;
 }

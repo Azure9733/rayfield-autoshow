@@ -7,5 +7,10 @@ export function createVehiclesController(service: VehiclesService) {
     async list(_req: Request, res: Response) {
       res.json(await service.list());
     },
+
+    async create(req: Request, res: Response) {
+      const { make, model, year, category, price, quantity } = req.body;
+      res.status(201).json(await service.create({ make, model, year, category, price, quantity }));
+    },
   };
 }

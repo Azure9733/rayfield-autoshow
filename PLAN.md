@@ -227,7 +227,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 `requireAdmin` gets built in 4.5, driven by "Non-admin → 403".
 
 ### 4.5 `POST /api/vehicles` (admin)
-- [ ] Admin with valid body → 201 with vehicle incl. generated `id`
+- [x] Admin with valid body → 201 with vehicle incl. generated `id`
 - [ ] Persists in DB (follow-up `GET /api/vehicles` finds it)
 - [ ] Non-admin → 403 (builds `requireAdmin`; the admin 201 above already shows admins pass)
 - [ ] **(guard)** No token → 401 (if `authenticate` covers the whole vehicles router)
