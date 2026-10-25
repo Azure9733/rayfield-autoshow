@@ -84,6 +84,16 @@ describe('POST /api/vehicles/:id/purchase', () => {
     expect(res.body.error.code).toBe('NOT_FOUND');
   });
 
+  it.each([
+    ['a sold-out vehicle (409)', 409, async () => (await createVehicle({ quantity: 0 })).id],
+    ['an unknown vehicle (404)', 404, async () => '00000000-0000-4000-8000-000000000000'],
+  ])('records nothing for %s', async (_case, status, vehicleId) => {
+    const res = await purchase(await vehicleId());
+
+    expect(res.status).toBe(status);
+    expect(await purchaseRows()).toEqual([]);
+  });
+
   it('returns 400 for a malformed id', async () => {
     const res = await purchase('not-a-uuid');
 
@@ -118,5 +128,13 @@ describe('POST /api/vehicles/:id/purchase', () => {
     const res = await purchase(id);
 
     expect(new Date(res.body.updatedAt).getTime()).toBeGreaterThan(seededAt.getTime());
+  });
+
+  it('10 parallel purchases at stock 5 leave exactly 5 purchase rows', async () => {
+    const { id } = await createVehicle({ quantity: 5 });
+
+    await Promise.all(Array.from({ length: 10 }, () => purchase(id)));
+
+    expect(await purchaseRows()).toHaveLength(5);
   });
 });
