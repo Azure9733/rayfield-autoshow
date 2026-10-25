@@ -2,8 +2,10 @@
  * Cyberpunk theme for the Car Inventory frontend (Tailwind CSS v4).
  * Adapted from my portfolio, somvanshi.dev (assets/css/azure.css).
  *
- * Copied from ui-reference/cyberpunk-theme.css (compiled as-is with Tailwind v4 via
+ * Based on ui-reference/cyberpunk-theme.css (compiles as-is with Tailwind v4 via
  * @tailwindcss/vite). Fonts (Rajdhani, Share Tech Mono) are loaded in index.html.
+ * Difference from the reference: the page background is the signature yellow with black
+ * text; only the header (and the dark panels on top of the page) stay black.
  *
  * Blender Pro (used on the portfolio) is a commercial font and is NOT shipped here;
  * Rajdhani is the free stand-in.
@@ -69,7 +71,8 @@
   }
 
   body {
-    @apply bg-cp-black text-cp-text font-display antialiased;
+    /* Signature yellow page; black text on it is 14.7:1. Panels and the header are dark. */
+    @apply bg-cp-yellow text-black font-display antialiased;
     min-height: 100vh;
   }
 
@@ -191,7 +194,8 @@
 
   /* ── PANEL (vehicle card, modal, form) ── */
   .cyber-panel {
-    @apply chamfer bg-cp-panel border border-cp-yellow/20;
+    /* Own text colour: the page text is black (on yellow), panels are dark. */
+    @apply chamfer bg-cp-panel border border-cp-yellow/20 text-cp-text;
   }
 
   /* ── SCREEN (image area: dot grid + scanlines) ──

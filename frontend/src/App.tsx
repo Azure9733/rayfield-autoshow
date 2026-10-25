@@ -17,7 +17,7 @@ export default function App() {
       </div>
 
       <main className="flex-1 px-4 md:px-8 py-10 space-y-10">
-        <h1 className="glitch text-5xl text-cp-yellow" data-text="Rayfield Autoshow">
+        <h1 className="glitch text-5xl text-black" data-text="Rayfield Autoshow">
           Rayfield Autoshow
         </h1>
 
