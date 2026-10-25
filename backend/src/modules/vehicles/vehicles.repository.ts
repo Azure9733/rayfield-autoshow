@@ -46,7 +46,7 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
       const rows = await db
         .select()
         .from(vehicles)
-        .where(make === undefined ? undefined : ilike(vehicles.make, make))
+        .where(make === undefined ? undefined : ilike(vehicles.make, `%${make}%`))
         .orderBy(desc(vehicles.createdAt), desc(vehicles.id));
       return rows.map(toVehicle);
     },
