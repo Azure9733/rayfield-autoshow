@@ -166,6 +166,9 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Success toasts auto-dismiss after ~4s; the load-error toast with Retry stays
 - [x] Error toasts have a close button (they never auto-dismiss), the load-error one included
 
+**Purchase dialog**
+- [ ] Purchase opens a confirmation dialog (make + model, year, price; focus on CONFIRM PURCHASE); Cancel, Escape and the backdrop close it without buying
+
 **Search / filter**
 - [x] Typing in the search bar loads matching vehicles live (`?q=`, make or model), debounced to one request
 - [x] Requests carry only the filled filters
