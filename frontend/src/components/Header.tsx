@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import logo from '../assets/rayfield-logo.png';
 import { useAuth } from '../context/AuthContext';
@@ -13,6 +13,17 @@ export function Header() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
+  const headerRef = useRef<HTMLElement>(null);
+
+  // While the menu is open, a tap anywhere outside the header closes it.
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onPointerDown(event: PointerEvent) {
+      if (!headerRef.current?.contains(event.target as Node)) setMenuOpen(false);
+    }
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [menuOpen]);
 
   function handleLogout() {
     setMenuOpen(false);
@@ -21,7 +32,7 @@ export function Header() {
   }
 
   return (
-    <header className="cyber-header">
+    <header ref={headerRef} className="cyber-header">
       <Link to="/" className="brand">
         <img src={logo} alt="Rayfield" className="brand-logo" />
         <span className="brand-name">
