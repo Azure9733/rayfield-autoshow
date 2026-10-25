@@ -21,7 +21,8 @@ export function VehicleCard({
   admin?: {
     onEdit: (vehicle: Vehicle) => void;
     onDelete: (vehicle: Vehicle) => void;
-    onRestock: (vehicle: Vehicle, quantity: number) => Promise<void>;
+    /** Resolves true when restocked; false keeps the popover open. */
+    onRestock: (vehicle: Vehicle, quantity: number) => Promise<boolean>;
   };
 }) {
   const { make, model, year, category, price, quantity, imageUrl } = vehicle;
@@ -102,8 +103,7 @@ export function VehicleCard({
           <div className="border-t border-cp-yellow/15 pt-3">
             <RestockPopover
               onRestock={async (units) => {
-                await admin.onRestock(vehicle, units);
-                setPanel('none');
+                if (await admin.onRestock(vehicle, units)) setPanel('none');
               }}
               onCancel={() => setPanel('none')}
             />

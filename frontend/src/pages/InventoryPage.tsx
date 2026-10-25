@@ -112,13 +112,32 @@ export function InventoryPage() {
     setVehicles((list) => list?.map((v) => (v.id === updated.id ? updated : v)) ?? null);
   }
 
+  /** Shows an API failure as a red toast; anything else is a bug and is rethrown. */
+  function showError(e: unknown) {
+    if (!(e instanceof ApiError)) throw e;
+    setNotice({ tone: 'error', message: e.message });
+  }
+
+  // On failure the card keeps its confirmation open, so the admin can retry or cancel.
   async function remove(vehicle: Vehicle) {
-    await deleteVehicle(vehicle.id);
+    try {
+      await deleteVehicle(vehicle.id);
+    } catch (e) {
+      showError(e);
+      return;
+    }
     setVehicles((list) => list?.filter((v) => v.id !== vehicle.id) ?? null);
   }
 
+  /** True when restocked; false (with a toast) when the API refused, so the popover stays. */
   async function restock(vehicle: Vehicle, quantity: number) {
-    replaceVehicle(await restockVehicle(vehicle.id, quantity));
+    try {
+      replaceVehicle(await restockVehicle(vehicle.id, quantity));
+      return true;
+    } catch (e) {
+      showError(e);
+      return false;
+    }
   }
 
   async function purchase(vehicle: Vehicle) {
