@@ -21,8 +21,8 @@ export const searchQuerySchema = z
     model: optionalFilter(z.string()),
     category: optionalFilter(categorySchema),
     // Query values arrive as strings; coerce turns "25000" into 25000 (and "abc" into a 400).
-    minPrice: optionalFilter(z.coerce.number()),
-    maxPrice: optionalFilter(z.coerce.number()),
+    minPrice: optionalFilter(z.coerce.number().nonnegative()),
+    maxPrice: optionalFilter(z.coerce.number().nonnegative()),
   })
   .refine(
     ({ minPrice, maxPrice }) =>
