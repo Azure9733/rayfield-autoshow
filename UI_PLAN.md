@@ -64,6 +64,13 @@ Same on every width: the filters stay folded behind FILTERS until opened. Change
 ```
 - Low stock (1–3): cyan "ONLY 2 LEFT" badge.
 
+### Purchase dialog
+- PURCHASE opens a centred `cyber-panel` modal over a dark backdrop: make + model, year, price, CONFIRM PURCHASE (`btn-cyber`, focused) and CANCEL (`btn-ghost`). Cancel, Escape or a backdrop click closes it without buying.
+- CONFIRM PURCHASE reads PROCESSING... and is disabled while the request runs.
+- Success: the panel switches to a check mark + UNIT ACQUIRED. Motion (about 1.2 s): UNIT ACQUIRED glitches in sharply, the check draws in, and a yellow scan line sweeps across once. The dialog closes itself 1.6 s after success (a click closes it sooner); the card's stock updates behind it.
+- 409: OUT OF STOCK in red with CLOSE, and the card refreshes. Other errors: the API message in red with CLOSE. 401: the usual session-expired redirect.
+- Reduced motion: no glitch, draw or sweep; the success state appears at once, same 1.6 s auto-close.
+
 ## 5. Actions by Role
 
 | Action | Guest | User | Admin |

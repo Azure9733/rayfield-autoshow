@@ -75,7 +75,12 @@ export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
           </div>
         ) : phase === 'success' ? (
           <div role="status" className="flex flex-col items-center gap-4 py-6 text-center">
-            <svg viewBox="0 0 48 48" className="size-16 text-cp-cyan" aria-hidden="true">
+            <span className="purchase-scan" aria-hidden="true" />
+            <svg
+              viewBox="0 0 48 48"
+              className="purchase-success-check size-16 text-cp-cyan"
+              aria-hidden="true"
+            >
               <path
                 d="M10 25l9 9 19-20"
                 fill="none"
@@ -84,7 +89,9 @@ export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
                 strokeLinecap="square"
               />
             </svg>
-            <p className="text-3xl font-bold uppercase tracking-[3px]">UNIT ACQUIRED</p>
+            <p className="purchase-success-title text-3xl font-bold uppercase tracking-[3px]">
+              UNIT ACQUIRED
+            </p>
           </div>
         ) : (
           <>
