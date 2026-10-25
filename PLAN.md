@@ -170,7 +170,7 @@ frontend/
 - [x] Add `zod`, `drizzle-orm`, `pg`, `drizzle-kit`; DB client + migration setup (empty bootstrap migration; each table arrives with the cycle whose first test needs it: `users` in 4.1, `vehicles` in 4.3)
 - [x] Test helpers: load `.env.test`, run migrations once before all tests, truncate tables before each test, close the pg pool after all tests (otherwise Jest hangs)
 - [x] `npm test` runs with `--runInBand` (tests share one DB)
-- [ ] Jest coverage threshold (e.g. 90% lines) in `jest.config`; exclude `server.ts`, migrations and script entry points
+- Jest coverage threshold: moved to §4.12 (end of backend)
 
 ---
 
@@ -300,6 +300,10 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [ ] Re-running `seedAdmin` resets the admin's password and role from env, including when that email already belongs to a normal user
 - [ ] `seedDemo` replaces all vehicles with the sample set (safe to re-run)
 - [ ] Optional, only if time allows: `helmet` (responses carry its security headers). No rate limiting: it would 429 the auth tests, and an in-memory limit doesn't hold across Vercel instances.
+
+### 4.12 End of backend
+- [ ] Friendlier validation messages for every schema, replacing Zod's defaults (one cycle; the UI shows them under form fields)
+- [ ] Jest coverage threshold (e.g. 90% lines) in `jest.config`; exclude `server.ts`, migrations and script entry points (moved from §3)
 
 ---
 
