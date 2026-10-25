@@ -151,7 +151,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Purchase 409 shows the "OUT OF STOCK" toast and refreshes the card
 
 **Search / filter**
-- [ ] Search submits only filled params
+- [x] Search submits only filled params
 - [ ] "In stock only" hides sold-out vehicles (client-side)
 - [ ] Clear resets the filters and the list
 
