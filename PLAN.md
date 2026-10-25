@@ -319,11 +319,11 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 Lighter TDD: write component tests first for **behaviour** (not styling). The frontend test list lives in **UI_PLAN.md §10** (single source); this section is the build order.
 
 ### Setup
-- [ ] Vite React-TS in `frontend/`, Tailwind, React Router, ESLint/Prettier
-- [ ] Vitest + React Testing Library + `@testing-library/user-event` + MSW
-- [ ] Vite dev proxy `/api` → local backend; production uses the Vercel rewrite, so the app always calls relative `/api/...` (no `VITE_API_URL`)
+- [x] Vite React-TS in `frontend/`, Tailwind, React Router, ESLint/Prettier
+- [x] Vitest + React Testing Library + `@testing-library/user-event` + MSW
+- [x] Vite dev proxy `/api` → local backend; production uses the Vercel rewrite, so the app always calls relative `/api/...` (no `VITE_API_URL`)
 - [ ] `src/api/client.ts`: attaches the token, parses the error format, global 401 handler that skips `/api/auth/*`
-- [ ] `src/constants/categories.ts`: copy of the backend category list with a "keep in sync" comment
+- [x] `src/constants/categories.ts`: copy of the backend category list with a "keep in sync" comment
 
 ### Build order
 - [ ] Auth: `AuthContext` (token + user in localStorage — know the XSS trade-off vs httpOnly cookies), register (logs in automatically on success), login, logout, `ProtectedRoute`, session-expired redirect
