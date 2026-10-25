@@ -196,4 +196,12 @@ describe('POST /api/vehicles', () => {
     expect(res.body.id).toMatch(UUID);
     expect(res.body.id).not.toBe(clientId);
   });
+
+  it('allows two vehicles with the same make, model and year (e.g. different trims)', async () => {
+    const first = await postVehicle();
+    const second = await postVehicle();
+
+    expect([first.status, second.status]).toEqual([201, 201]);
+    expect(second.body.id).not.toBe(first.body.id);
+  });
 });

@@ -239,7 +239,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Quantity rule (`it.each`): −1, 1.5, 10,001 → 400; 0 and 10,000 accepted
 - [x] Quantity omitted → defaults to 0 (turned out to be a guard: the column default already did it)
 - [x] **(guard)** A client-sent `id` is ignored (the server generates it)
-- [ ] **(guard)** Same make/model/year twice → both created
+- [x] **(guard)** Same make/model/year twice → both created
 - [ ] (stretch) imageUrl rule (`it.each`): `http://…` or not a URL → 400; omitted is fine
 
 ### 4.6 `GET /api/vehicles/search`
