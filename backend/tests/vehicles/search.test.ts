@@ -163,6 +163,19 @@ describe('GET /api/vehicles/search', () => {
     expect(res.body.error.details).toEqual([{ field: param, message: expect.any(String) }]);
   });
 
+  it.each(['minPrice', 'maxPrice'])('returns 400 for a negative %s', async (param) => {
+    const res = await search({ [param]: '-5' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details).toEqual([{ field: param, message: expect.any(String) }]);
+  });
+
+  it('accepts 0 as a price bound', async () => {
+    const res = await search({ minPrice: '0' });
+
+    expect(res.status).toBe(200);
+  });
+
   it('returns 401 without a token', async () => {
     const res = await request(createApp()).get('/api/vehicles/search');
 
