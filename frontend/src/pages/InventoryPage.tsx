@@ -152,7 +152,12 @@ export function InventoryPage() {
       }
       // Someone bought the last unit first: our list is stale, so reload it quietly.
       setNotice({ tone: 'error', message: 'OUT OF STOCK' });
-      setVehicles(await fetchVehicles(query));
+      try {
+        setVehicles(await fetchVehicles(query));
+      } catch (reloadError) {
+        // The stale card stays; say why it couldn't be refreshed instead.
+        showError(reloadError);
+      }
       return;
     }
     replaceVehicle(updated);
