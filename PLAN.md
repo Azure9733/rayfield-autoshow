@@ -188,7 +188,7 @@ How to read this list:
 - [x] `unit:` `password.hash` then `compare` → true for the right password, false for a wrong one
 - [x] Password is stored hashed (DB value ≠ plain text, `compare` passes)
 - [x] Missing name → 400
-- [ ] Validation errors use the standard format: `code: "VALIDATION_ERROR"` and `details: [{ field, message }]`
+- [x] Validation errors use the standard format: `code: "VALIDATION_ERROR"` and `details: [{ field, message }]`
 - [ ] Name rule (`it.each`): whitespace-only, 61 chars → 400; 60 chars accepted; `"  Ann  "` stored as `"Ann"`
 - [ ] Email rule (`it.each`): missing, invalid format → 400
 - [ ] Password rule (`it.each`): missing, 7 chars, 73 ASCII chars, 19 emoji (passes a 72-character check but is 76 bytes) → 400; exactly 8 chars and exactly 72 bytes accepted

@@ -1,16 +1,11 @@
 import type { Request, Response } from 'express';
-import type { AuthService } from './auth.service';
+import type { AuthService, RegisterInput } from './auth.service';
 
 /** Translates HTTP requests into auth service calls and back; no business rules here. */
 export function createAuthController(service: AuthService) {
   return {
-    async register(req: Request, res: Response) {
-      const { name, email, password } = req.body;
-      if (name === undefined) {
-        res.status(400).end();
-        return;
-      }
-      const user = await service.register({ name, email, password });
+    async register(_req: Request, res: Response) {
+      const user = await service.register(res.locals.body as RegisterInput);
       res.status(201).json(user);
     },
   };

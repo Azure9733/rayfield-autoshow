@@ -1,5 +1,6 @@
 import express, { type Express } from 'express';
 import { db } from './db/client';
+import { errorHandler } from './middleware/errorHandler';
 import { createAuthRouter } from './modules/auth/auth.routes';
 import { createAuthService } from './modules/auth/auth.service';
 import { createUsersRepository, type UsersRepository } from './modules/auth/users.repository';
@@ -25,6 +26,9 @@ export function createApp(
   });
 
   app.use('/api/auth', createAuthRouter(createAuthService(repos.users)));
+
+  // Registered last: Express treats 4-argument middleware as the error handler.
+  app.use(errorHandler);
 
   return app;
 }
