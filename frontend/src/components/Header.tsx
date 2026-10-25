@@ -1,5 +1,5 @@
 import { useId, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import logo from '../assets/rayfield-logo.png';
 import { useAuth } from '../context/AuthContext';
 import { UserIdentity } from './UserIdentity';
@@ -11,7 +11,6 @@ import { UserIdentity } from './UserIdentity';
 export function Header() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
 
@@ -71,17 +70,6 @@ export function Header() {
           )}
         </>
       )}
-      {!user &&
-        // Guests only see /login and /register (and the 404): offer the other one.
-        (pathname === '/login' ? (
-          <Link to="/register" className="btn-ghost">
-            Register
-          </Link>
-        ) : (
-          <Link to="/login" className="btn-ghost">
-            Login
-          </Link>
-        ))}
     </header>
   );
 }
