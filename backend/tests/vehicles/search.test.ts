@@ -42,4 +42,13 @@ describe('GET /api/vehicles/search', () => {
 
     expect(idsOf(res)).toEqual([toyota.id]);
   });
+
+  it('filters by part of the model, case-insensitively', async () => {
+    const corolla = await createVehicle({ make: 'Toyota', model: 'Corolla' });
+    await createVehicle({ make: 'Toyota', model: 'Camry' });
+
+    const res = await search({ model: 'COR' });
+
+    expect(idsOf(res)).toEqual([corolla.id]);
+  });
 });
