@@ -158,6 +158,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Success toasts auto-dismiss after ~4s; the load-error toast with Retry stays
 
 **Search / filter**
+- [ ] Typing in the search bar loads matching vehicles live (`?q=`, make or model), debounced to one request
 - [x] Search submits only filled params
 - [x] "In stock only" hides sold-out vehicles (client-side)
 - [x] Clear resets the filters and the list

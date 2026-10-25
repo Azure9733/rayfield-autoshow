@@ -7,6 +7,29 @@ import { server } from '../test/server';
 describe('search panel', () => {
   beforeEach(() => loginAs('user'));
 
+  it('typing in the search bar loads matching vehicles, debounced to one request', async () => {
+    serveVehicles(inStock, soldOut);
+    const requests: Record<string, string>[] = [];
+    server.use(
+      http.get('/api/vehicles/search', ({ request }) => {
+        requests.push(Object.fromEntries(new URL(request.url).searchParams));
+        return HttpResponse.json([inStock]);
+      }),
+    );
+    const { user } = renderApp('/');
+    await screen.findByRole('article', { name: 'Porsche 911 Carrera' });
+
+    await user.type(screen.getByRole('searchbox', { name: 'Make or model' }), 'cruis');
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('article', { name: 'Porsche 911 Carrera' }),
+      ).not.toBeInTheDocument(),
+    );
+    // Without the debounce there'd be one request per keystroke ("c", "cr", …).
+    expect(requests).toEqual([{ q: 'cruis' }]);
+  });
+
   it('submits only the filled params', async () => {
     serveVehicles(inStock, soldOut);
     let params: Record<string, string> | undefined;
