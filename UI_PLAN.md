@@ -153,7 +153,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Purchase button disabled when quantity is 0 (required)
 - [x] Sold-out badge shown at 0
 - [x] Low stock (1–3) shows an "Only N left" badge (§4)
-- [ ] A card image loads lazily and falls back to the category icon if it fails to load
+- [x] A card image loads lazily and falls back to the category icon if it fails to load
 - [x] Purchase click calls the API and updates the stock shown
 - [x] Purchase success shows the "UNIT ACQUIRED" toast
 - [x] Purchase 409 shows the "OUT OF STOCK" toast and refreshes the card

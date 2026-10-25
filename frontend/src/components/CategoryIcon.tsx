@@ -24,6 +24,7 @@ export function CategoryIcon({ category, className }: { category: Category; clas
       strokeLinejoin="round"
       className={className}
       aria-hidden="true"
+      data-testid="category-icon"
     >
       <path d={BODIES[category]} />
       <path d="M4 24h7M21 24h22M53 24h7" />

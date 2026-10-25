@@ -29,6 +29,8 @@ export function VehicleCard({
   const id = useId();
   // Which admin panel replaces the admin buttons, if any.
   const [purchasing, setPurchasing] = useState(false);
+  // The URL that failed to load; keyed by URL so an edited image gets a fresh try.
+  const [failedImage, setFailedImage] = useState<string | null>(null);
   const [panel, setPanel] = useState<'none' | 'delete' | 'restock'>('none');
 
   // Disabled while in flight, so a double-click can't buy two units.
@@ -45,8 +47,14 @@ export function VehicleCard({
     // Named "<make> <model>" so tests and screen readers can tell cards apart.
     <article className="cyber-panel flex flex-col" aria-labelledby={`${id}-make ${id}-model`}>
       <div className="cyber-screen h-40">
-        {imageUrl ? (
-          <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+        {imageUrl && imageUrl !== failedImage ? (
+          <img
+            src={imageUrl}
+            alt={`${make} ${model}`}
+            loading="lazy"
+            className="h-full w-full object-cover"
+            onError={() => setFailedImage(imageUrl)}
+          />
         ) : (
           <CategoryIcon category={category} className="h-20 w-40 text-cp-yellow/70" />
         )}
