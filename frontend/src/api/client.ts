@@ -57,8 +57,17 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
       clearSession();
       sessionExpiredHandler?.();
     }
-    const { code, message, details } = data.error;
-    throw new ApiError(response.status, code, message, details);
+    // Our backend always sends { error: { code, message } }; anything else (a proxy, a
+    // platform error page as JSON) still becomes an ApiError so callers handle one type.
+    const error = data?.error;
+    if (typeof error?.code !== 'string' || typeof error.message !== 'string') {
+      throw new ApiError(
+        response.status,
+        'UNKNOWN_ERROR',
+        'Something went wrong. Please try again.',
+      );
+    }
+    throw new ApiError(response.status, error.code, error.message, error.details);
   }
   return data as T;
 }
