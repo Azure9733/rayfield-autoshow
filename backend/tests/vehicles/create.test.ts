@@ -34,4 +34,12 @@ describe('POST /api/vehicles', () => {
       updatedAt: expect.any(String),
     });
   });
+
+  it('persists the vehicle, so a follow-up GET /api/vehicles finds it', async () => {
+    const created = await postVehicle();
+
+    const list = await request(createApp()).get('/api/vehicles').set('Authorization', authHeader());
+
+    expect(list.body).toEqual([created.body]);
+  });
 });
