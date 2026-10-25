@@ -126,6 +126,8 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] A 401 from a non-auth call logs out and redirects to `/login` with a "session expired" message
 - [x] A 401 from `/api/auth/*` does **not** trigger that redirect
 - [x] A non-JSON response or a network failure becomes an `ApiError` with a friendly message ("Can't reach the server. Please try again.")
+- [ ] A corrupt stored session counts as logged out instead of crashing
+- [ ] An error response without the `{ error }` shape still becomes an `ApiError`
 
 **Auth**
 - [x] Register form shows validation messages
