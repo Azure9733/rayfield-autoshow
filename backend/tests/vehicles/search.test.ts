@@ -82,4 +82,14 @@ describe('GET /api/vehicles/search', () => {
     expect(res.status).toBe(400);
     expect(res.body.error.details).toEqual([{ field: 'category', message: expect.any(String) }]);
   });
+
+  it('treats minPrice as an inclusive lower bound', async () => {
+    await createVehicle({ price: 24999.99 });
+    const atMin = await createVehicle({ price: 25000 });
+    const above = await createVehicle({ price: 30000 });
+
+    const res = await search({ minPrice: '25000' });
+
+    expect(idsOf(res)).toEqual([atMin.id, above.id].sort());
+  });
 });
