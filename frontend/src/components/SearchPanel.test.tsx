@@ -53,4 +53,28 @@ describe('search panel', () => {
     expect(screen.getByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
     expect(searched).toBe(false);
   });
+
+  it('Clear resets the filters and the list', async () => {
+    serveVehicles(inStock, soldOut);
+    server.use(http.get('/api/vehicles/search', () => HttpResponse.json([soldOut])));
+    const { user } = renderApp('/');
+    await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+    await user.type(screen.getByLabelText('Make'), 'por');
+    await user.selectOptions(screen.getByLabelText('Category'), 'COUPE');
+    await user.click(screen.getByRole('button', { name: 'Search' }));
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('article', { name: 'Toyota Land Cruiser' }),
+      ).not.toBeInTheDocument(),
+    );
+    await user.click(screen.getByLabelText('In stock only'));
+
+    await user.click(screen.getByRole('button', { name: 'Clear' }));
+
+    expect(screen.getByLabelText('Make')).toHaveValue('');
+    expect(screen.getByLabelText('Category')).toHaveValue('');
+    expect(screen.getByLabelText('In stock only')).not.toBeChecked();
+    expect(await screen.findByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'Porsche 911 Carrera' })).toBeInTheDocument();
+  });
 });
