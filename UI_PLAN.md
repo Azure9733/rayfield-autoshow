@@ -146,6 +146,9 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Protected route redirects a guest to `/login`
 - [x] A logged-in user visiting `/login` or `/register` goes to `/`
 
+**Boot splash**
+- [ ] On a full page load the splash types its six lines in order (one every 333 ms), shows the welcome after 2 s, then the app; a key press skips it (reduced motion: no splash)
+
 **Header**
 - [x] Below lg, the Menu button opens and closes the nav
 - [x] No INVENTORY link in the header (nav or menu); the logo links to `/`
