@@ -46,4 +46,17 @@ describe('PUT /api/vehicles/:id', () => {
     expect(new Date(res.body.updatedAt).getTime()).toBeGreaterThan(seededAt.getTime());
     expect(new Date(res.body.createdAt).getTime()).toBe(seededAt.getTime());
   });
+
+  it.each([
+    ['a missing make', { ...replacement, make: undefined }, 'make'],
+    ['an invalid price', { ...replacement, price: 0 }, 'price'],
+    ['an unknown category', { ...replacement, category: 'BOAT' }, 'category'],
+  ])('returns 400 for %s, using the same rules as create', async (_case, body, field) => {
+    const { id } = await createVehicle();
+
+    const res = await putVehicle(id, body);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details).toEqual([{ field, message: expect.any(String) }]);
+  });
 });
