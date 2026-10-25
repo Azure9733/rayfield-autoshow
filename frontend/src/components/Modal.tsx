@@ -10,6 +10,8 @@ interface Props {
   className?: string;
   /** A click anywhere in the panel (e.g. "click to dismiss" states). */
   onPanelClick?: () => void;
+  /** Playing the exit animation (see useModalClose): already inert and hidden from assistive tech. */
+  closing?: boolean;
   children: ReactNode;
 }
 
@@ -22,12 +24,16 @@ export function Modal({
   onRequestClose,
   className = '',
   onPanelClick,
+  closing = false,
   children,
 }: Props) {
+  const state = closing ? 'is-closing' : 'is-opening';
   return createPortal(
     <div
       data-testid="dialog-backdrop"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+      aria-hidden={closing || undefined}
+      inert={closing}
+      className={`modal-backdrop ${state} fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4`}
       // Only a click on the backdrop itself closes; clicks inside the panel bubble up too.
       onClick={(e) => {
         if (e.target === e.currentTarget) onRequestClose();
@@ -41,7 +47,7 @@ export function Modal({
           if (e.key === 'Escape') onRequestClose();
         }}
         onClick={onPanelClick}
-        className={`cyber-panel relative w-full overflow-hidden ${className}`}
+        className={`modal-panel ${state} cyber-panel relative w-full overflow-hidden ${className}`}
       >
         {children}
       </div>

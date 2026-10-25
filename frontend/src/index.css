@@ -611,6 +611,56 @@
   }
 }
 
+/* ── MODAL (purchase dialog, My Garage): open / close ──
+   The backdrop fades; the panel scales up from 96% with a one-frame glitch offset, and does the
+   reverse on close (JS waits for it, see useModalClose). Reduced motion: none of it. */
+.modal-backdrop.is-opening {
+  animation: modal-fade-in 160ms ease-out both;
+}
+.modal-backdrop.is-closing {
+  animation: modal-fade-out 160ms ease-in forwards;
+}
+.modal-panel.is-opening {
+  animation: modal-panel-in 200ms ease-out both;
+}
+.modal-panel.is-closing {
+  animation: modal-panel-out 160ms ease-in forwards;
+}
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes modal-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes modal-panel-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  /* the glitch frame */
+  30% {
+    opacity: 1;
+    transform: scale(0.99) translateX(4px);
+  }
+  40% {
+    transform: scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes modal-panel-out {
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
 /* ── PURCHASE SUCCESS (UI_PLAN.md §4): about 1.2 s in all ──
    Each element's resting style is its final state, so under prefers-reduced-motion (which
    turns animations off below) the success state simply appears. */

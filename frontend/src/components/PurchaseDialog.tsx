@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from 'react';
 import type { Vehicle } from '../api/vehicles';
 import { formatPrice } from '../lib/format';
+import { useModalClose } from '../lib/useModalClose';
 import { Modal } from './Modal';
 
 /** What a purchase attempt came to; `message` is shown in the dialog. */
@@ -22,6 +23,8 @@ export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
   const [phase, setPhase] = useState<'confirm' | 'processing' | 'success' | 'error'>('confirm');
   const [error, setError] = useState('');
   const processing = phase === 'processing';
+  // Every close goes through `animatedClose`, so the exit animation always plays.
+  const { closing, close: animatedClose } = useModalClose(onClose);
 
   async function confirm() {
     setPhase('processing');
@@ -37,20 +40,21 @@ export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
   // The success state is a moment, not a stop: it closes itself (a click closes it sooner).
   useEffect(() => {
     if (phase !== 'success') return;
-    const timer = setTimeout(onClose, SUCCESS_CLOSE_MS);
+    const timer = setTimeout(animatedClose, SUCCESS_CLOSE_MS);
     return () => clearTimeout(timer);
-  }, [phase, onClose]);
+  }, [phase, animatedClose]);
 
   // While the request runs the dialog stays put: closing it wouldn't cancel the purchase.
   function close() {
-    if (!processing) onClose();
+    if (!processing) animatedClose();
   }
 
   return (
     <Modal
       labelledBy={`${kickerId} ${titleId}`}
       onRequestClose={close}
-      onPanelClick={phase === 'success' ? onClose : undefined}
+      onPanelClick={phase === 'success' ? animatedClose : undefined}
+      closing={closing}
       className="max-w-md p-6 md:p-8"
     >
       {phase === 'error' ? (
@@ -58,7 +62,7 @@ export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
           <p role="alert" className="text-2xl font-bold uppercase tracking-[2px] text-cp-red">
             {error}
           </p>
-          <button type="button" className="btn-ghost" autoFocus onClick={onClose}>
+          <button type="button" className="btn-ghost" autoFocus onClick={animatedClose}>
             Close
           </button>
         </div>

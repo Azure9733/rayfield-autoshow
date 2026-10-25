@@ -2,6 +2,7 @@ import { useEffect, useId, useState } from 'react';
 import { ApiError } from '../api/client';
 import { listMyPurchases, type Purchase } from '../api/purchases';
 import { formatDateTime, formatPrice } from '../lib/format';
+import { useModalClose } from '../lib/useModalClose';
 import { Modal } from './Modal';
 
 /** "My Garage" (UI_PLAN.md §1): the caller's purchase history, fetched fresh on every open. */
@@ -13,6 +14,7 @@ export function GarageDialog({ onClose }: { onClose: () => void }) {
   // Bumped by Retry to load again.
   const [attempt, setAttempt] = useState(0);
   const loading = purchases === null && !error;
+  const { closing, close } = useModalClose(onClose);
 
   useEffect(() => {
     // Ignore a response that lands after the dialog closed.
@@ -37,7 +39,7 @@ export function GarageDialog({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <Modal labelledBy={titleId} onRequestClose={onClose} className="max-w-2xl">
+    <Modal labelledBy={titleId} onRequestClose={close} closing={closing} className="max-w-2xl">
       <div className="flex max-h-[80vh] flex-col">
         <div className="flex items-center justify-between gap-4 p-6 pb-4">
           <h2 id={titleId} className="text-2xl font-bold uppercase tracking-[3px]">
@@ -48,7 +50,7 @@ export function GarageDialog({ onClose }: { onClose: () => void }) {
             aria-label="Close"
             // Focus starts here: the garage is read-only, so closing is the likeliest action.
             autoFocus
-            onClick={onClose}
+            onClick={close}
             className="flex size-10 shrink-0 cursor-pointer items-center justify-center text-2xl text-cp-muted transition-colors hover:text-cp-yellow"
           >
             ×
