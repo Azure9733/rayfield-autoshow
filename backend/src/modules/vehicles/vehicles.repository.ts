@@ -72,7 +72,14 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
     async update(id, input) {
       const [row] = await db
         .update(vehicles)
-        .set({ ...input, price: String(input.price), updatedAt: sql`now()` })
+        // A PUT replaces the whole record: an omitted imageUrl must become NULL, but set()
+        // skips undefined fields, so map it explicitly.
+        .set({
+          ...input,
+          price: String(input.price),
+          imageUrl: input.imageUrl ?? null,
+          updatedAt: sql`now()`,
+        })
         .where(eq(vehicles.id, id))
         .returning();
       return toVehicle(row);
