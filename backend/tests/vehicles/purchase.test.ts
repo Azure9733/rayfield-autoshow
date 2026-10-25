@@ -63,4 +63,13 @@ describe('POST /api/vehicles/:id/purchase', () => {
     expect(statuses).toEqual([200, 200, 200, 200, 200, 409, 409, 409, 409, 409]);
     expect(await stockOf(id)).toBe(0);
   });
+
+  it('returns 401 without a token and sells nothing', async () => {
+    const { id } = await createVehicle({ quantity: 3 });
+
+    const res = await request(createApp()).post(`/api/vehicles/${id}/purchase`);
+
+    expect(res.status).toBe(401);
+    expect(await stockOf(id)).toBe(3);
+  });
 });
