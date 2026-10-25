@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
+import { loadSession } from '../api/session';
 import { renderApp } from '../test/renderApp';
 import { server } from '../test/server';
 
@@ -64,5 +65,30 @@ describe('register page', () => {
       "Passwords don't match",
     );
     expect(sent).toBe(false);
+  });
+
+  it('logs in automatically after a successful register and lands on /', async () => {
+    const account = { id: 'u1', name: 'Vik', email: 'vik@example.com', role: 'user' };
+    const requests: Record<string, unknown> = {};
+    server.use(
+      http.post('/api/auth/register', async ({ request }) => {
+        requests.register = await request.json();
+        return HttpResponse.json(account, { status: 201 });
+      }),
+      http.post('/api/auth/login', async ({ request }) => {
+        requests.login = await request.json();
+        return HttpResponse.json({ token: 'new.jwt.token', user: account });
+      }),
+    );
+    const { user } = renderApp('/register');
+
+    await fillAndSubmit(user);
+
+    expect(await screen.findByRole('heading', { name: 'Inventory' })).toBeInTheDocument();
+    expect(requests).toEqual({
+      register: { name: 'Vik', email: 'vik@example.com', password: 'correct-horse' },
+      login: { email: 'vik@example.com', password: 'correct-horse' },
+    });
+    expect(loadSession()).toEqual({ token: 'new.jwt.token', user: account });
   });
 });
