@@ -2,8 +2,9 @@
  * Cyberpunk theme for the Car Inventory frontend (Tailwind CSS v4).
  * Adapted from my portfolio, somvanshi.dev (assets/css/azure.css).
  *
- * Based on ui-reference/cyberpunk-theme.css (compiles as-is with Tailwind v4 via
- * @tailwindcss/vite). Fonts (Rajdhani, Share Tech Mono) are loaded in index.html.
+ * Started from a cyberpunk-theme.css reference file (since removed from the repo), which
+ * compiled as-is with Tailwind v4 via @tailwindcss/vite. Fonts (Rajdhani, Share Tech Mono)
+ * are loaded in index.html.
  * Difference from the reference: the page background is the signature yellow with black
  * text; only the header (and the dark panels on top of the page) stay black.
  *
