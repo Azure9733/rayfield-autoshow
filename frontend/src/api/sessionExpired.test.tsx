@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { AuthProvider } from '../context/AuthContext';
 import { LoginPage } from '../pages/LoginPage';
@@ -47,5 +47,33 @@ describe('session expiry', () => {
 
     expect(await screen.findByText(/your session expired/i)).toBeInTheDocument();
     expect(loadSession()).toBeNull();
+  });
+
+  it('a 401 from /api/auth/* does not trigger that redirect', async () => {
+    server.use(
+      http.post('/api/auth/login', () =>
+        HttpResponse.json(
+          { error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' } },
+          { status: 401 },
+        ),
+      ),
+    );
+    saveSession({ token: 'still.valid', user });
+
+    /** Stands in for a form that posts to an auth endpoint and shows the error itself. */
+    function TriesLogin() {
+      const [error, setError] = useState('');
+      useEffect(() => {
+        api
+          .post('/api/auth/login', { email: 'vik@example.com', password: 'wrong-password' })
+          .catch((e: Error) => setError(e.message));
+      }, []);
+      return <p>Login error: {error}</p>;
+    }
+    renderAt('/somewhere', <TriesLogin />);
+
+    expect(await screen.findByText('Login error: Invalid email or password')).toBeInTheDocument();
+    expect(screen.queryByText(/your session expired/i)).not.toBeInTheDocument();
+    expect(loadSession()).not.toBeNull();
   });
 });
