@@ -59,4 +59,13 @@ describe('PUT /api/vehicles/:id', () => {
     expect(res.status).toBe(400);
     expect(res.body.error.details).toEqual([{ field, message: expect.any(String) }]);
   });
+
+  it('clears the stored image when imageUrl is omitted (full replacement)', async () => {
+    const { id } = await createVehicle({ imageUrl: 'https://example.com/old.jpg' });
+
+    const res = await putVehicle(id, { ...replacement, imageUrl: undefined });
+
+    expect(res.status).toBe(200);
+    expect(res.body.imageUrl).toBeNull();
+  });
 });
