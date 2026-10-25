@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { useNavigate } from 'react-router';
 import * as authApi from '../api/auth';
 import { onSessionExpired } from '../api/client';
-import { loadSession, saveSession, type Session, type User } from '../api/session';
+import { clearSession, loadSession, saveSession, type Session, type User } from '../api/session';
 
 const SESSION_EXPIRED = 'Your session expired. Please log in again.';
 
@@ -11,6 +11,7 @@ interface AuthValue {
   login: (email: string, password: string) => Promise<void>;
   /** Creates the account, then logs in with the same credentials. */
   register: (input: authApi.RegisterInput) => Promise<void>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthValue | null>(null);
@@ -39,8 +40,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await login(input.email, input.password);
   }
 
+  function logout() {
+    clearSession();
+    setSession(null);
+  }
+
   return (
-    <AuthContext.Provider value={{ user: session?.user ?? null, login, register }}>
+    <AuthContext.Provider value={{ user: session?.user ?? null, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
