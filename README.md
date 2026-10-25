@@ -43,6 +43,9 @@ them.
 - Purchase one unit through a confirmation dialog; sold-out vehicles can't be bought, and a
   double-click can't buy twice. If someone else bought the last unit first, the dialog says so
   and the card refreshes.
+- My Garage: your own purchase history from the header (or the mobile menu): every unit bought,
+  newest first, with what you paid, when, and an order id. It reloads each time it opens, so a
+  car you just bought is there.
 
 **Admins**
 - Add, edit (full replacement), delete (with an in-page confirmation) and restock vehicles,
@@ -66,7 +69,8 @@ them.
 | Admin | `<demo-admin-email>` | `<demo-admin-password>` |
 
 You can also register your own account (always a regular user). The demo data is shared:
-anyone can buy, add or delete vehicles. `npm run db:seed:demo` resets it to the sample set.
+anyone can buy, add or delete vehicles. `npm run db:seed:demo` resets it to the sample set and
+empties everyone's garage.
 
 ## Tech stack
 
@@ -92,7 +96,10 @@ anyone can buy, add or delete vehicles. `npm run db:seed:demo` resets it to the 
   any logged-in user can view, search and purchase.
 - **Stock only changes through purchase and restock.** Purchase is always one unit, done with a
   single conditional `UPDATE ... WHERE quantity > 0`, so two buyers can't take the last unit;
-  the loser gets a 409. Restock adds 1–10,000. `PUT` ignores `quantity`, and is a full
+  the loser gets a 409. Each sale also records a purchase (who bought it, plus a snapshot of
+  make, model, year, category and the price paid) in the same transaction, so the history can't
+  disagree with the stock and survives later edits or deletion of the vehicle. Restock adds
+  1–10,000. `PUT` ignores `quantity`, and is a full
   replacement of the editable fields (an omitted `imageUrl` clears the image).
 - **Money is `numeric(12,2)`**, converted to a JSON number in one place (the repository). Prices
   are 0.01–100,000,000 with at most 2 decimals; display uses `Intl.NumberFormat` in USD.
@@ -151,14 +158,15 @@ backend/
     middleware/              authenticate, requireAdmin, validate, errorHandler
     modules/auth/            routes, controller, service, schemas, users repository
     modules/vehicles/        routes, controller, service, schemas, vehicles repository, categories
+    modules/purchases/       purchase history (My Garage): routes, controller, service, repository
     scripts/                 seedAdmin, seedDemo
-  tests/                     auth/, vehicles/, middleware/, scripts/, unit/, helpers/
+  tests/                     auth/, vehicles/, purchases/, middleware/, scripts/, unit/, helpers/
   docker-compose.yml         db-dev (5432) and db-test (5433, tmpfs)
 frontend/
   src/
     api/                     fetch client (token, error format, 401 handling), endpoints, session
     context/AuthContext.tsx  session state, login/register/logout
-    components/              Header, SearchPanel, VehicleCard, PurchaseDialog, VehicleFormModal, ...
+    components/              Header, SearchPanel, VehicleCard, Modal, PurchaseDialog, GarageDialog, ...
     pages/                   Inventory, Login, Register, NotFound
     routes/                  ProtectedRoute, GuestRoute
     validation/              client-side copies of the API's rules
@@ -169,7 +177,8 @@ PLAN.md, UI_PLAN.md          the plan and both TDD test lists, ticked as built
 
 ## API
 
-All responses are JSON. Every `/api/vehicles` endpoint needs `Authorization: Bearer <token>`.
+All responses are JSON. Every `/api/vehicles` and `/api/purchases` endpoint needs
+`Authorization: Bearer <token>`.
 
 | Method | Path | Who | Success | Notes |
 |---|---|---|---|---|
@@ -183,11 +192,14 @@ All responses are JSON. Every `/api/vehicles` endpoint needs `Authorization: Bea
 | DELETE | `/api/vehicles/:id` | admin | 204 | |
 | POST | `/api/vehicles/:id/purchase` | user | 200 `Vehicle` | one unit; 409 when out of stock |
 | POST | `/api/vehicles/:id/restock` | admin | 200 `Vehicle` | body `{ quantity }`, 1–10,000 |
+| GET | `/api/purchases/me` | user | 200 `Purchase[]` | only the caller's, newest first |
 
 Common errors: 400 validation (with `details`), 401 missing/invalid token, 403 not an admin,
 404 unknown vehicle or route, 500 unexpected (generic message).
 
 A vehicle: `{ id, make, model, year, category, price, quantity, imageUrl, createdAt, updatedAt }`.
+A purchase: `{ id, vehicleId, make, model, year, category, price, purchasedAt }` (a snapshot taken
+at purchase time; `vehicleId` is `null` once the vehicle is deleted).
 Categories: `SEDAN, SUV, HATCHBACK, COUPE, CONVERTIBLE, TRUCK, VAN`.
 
 ## Run it locally
@@ -228,9 +240,9 @@ Environment variables (`backend/.env`, see `.env.example`):
 ## Tests
 
 ```bash
-cd backend  && npm test            # 206 tests; needs the Docker test DB (npm run db:up)
+cd backend  && npm test            # 216 tests; needs the Docker test DB (npm run db:up)
 cd backend  && npm run test:coverage
-cd frontend && npm test            # 101 tests; no backend needed
+cd frontend && npm test            # 109 tests; no backend needed
 cd frontend && npm run test:coverage
 ```
 
@@ -240,7 +252,7 @@ cd frontend && npm run test:coverage
   tables. The test env refuses to run unless the database name ends in `_test`.
 - The frontend tests render real components in jsdom and mock the API at the network level with
   MSW, so the real fetch client is exercised.
-- Coverage: backend 99.65% lines (a 90% threshold is enforced), frontend 96.81% lines. Full output
+- Coverage: backend 99.09% lines (a 90% threshold is enforced), frontend 96.48% lines. Full output
   in [docs/test-report.md](docs/test-report.md).
 
 Every behaviour was built red → green: the history has a `test:` commit with the failing test,
@@ -259,8 +271,8 @@ Two Vercel projects from this repo:
   `incubyte.somvanshi.dev`.
 
 Supabase holds the database; migrations and seeds run from a laptop with `DATABASE_SSL=true`.
-Row-level security is enabled on both tables with no policies, so Supabase's public Data API
-can't read them (the backend connects as the owner).
+Row-level security is enabled on every table with no policies, so Supabase's public Data API
+can't read them (the backend connects as the owner); the purchases migration enables it itself.
 
 ## Credits
 

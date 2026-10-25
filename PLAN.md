@@ -58,6 +58,7 @@ backend/
         vehicles.repository.ts  # all vehicles SQL lives here; converts price to a number
         vehicles.schemas.ts
         categories.ts      # category list (frontend keeps a copy)
+      purchases/           # purchase history (My Garage): routes, controller, service, repository
     middleware/
       authenticate.ts      # verifies JWT → res.locals.user
       requireAdmin.ts      # 403 if not admin
@@ -145,7 +146,7 @@ frontend/
 - API fields are camelCase; DB columns are snake_case (Drizzle maps them).
 - Unknown fields in a request body are ignored (Zod strips them).
 - Register → 201 `{ id, name, email, role }`; login → 200 `{ token, user }`. The frontend logs in right after a successful register.
-- Purchase = always 1 unit; any request body is ignored. Purchase and restock return 200 with the updated vehicle. Stock changes count as updates: purchase and restock move `updatedAt` forward too.
+- Purchase = always 1 unit; any request body is ignored. Purchase and restock return 200 with the updated vehicle. Each purchase also records a `purchases` row (buyer + snapshot of the vehicle and price paid) in the same transaction as the stock decrement; `GET /api/purchases/me` lists the caller's, newest first. Stock changes count as updates: purchase and restock move `updatedAt` forward too.
 - `PUT /api/vehicles/:id` replaces make, model, year, category, price and imageUrl (same validation as create); `quantity` is ignored; an omitted `imageUrl` clears the image (stored as `null`).
 - `GET /api/vehicles` returns all vehicles, newest first, including sold-out ones.
 - Search params: `q` (make **or** model, case-insensitive partial; the UI's search bar), `make`, `model` (case-insensitive partial; `%` and `_` match literally), `category` (case-insensitive exact; unknown → 400), `minPrice`, `maxPrice` (inclusive). Empty params (`?make=`) count as absent; filters combine with AND. "In stock only" is a frontend filter.
@@ -157,6 +158,7 @@ frontend/
 ### Data model
 **users**: `id uuid pk`, `name text`, `email text unique (lowercased)`, `password_hash text`, `role text check in ('user','admin') default 'user'`, `created_at`
 **vehicles**: `id uuid pk`, `make text`, `model text`, `year int`, `category text check in (...)`, `price numeric(12,2) check > 0`, `quantity int check >= 0 default 0`, `image_url text null`, `created_at`, `updated_at`
+**purchases**: `id uuid pk`, `user_id uuid → users (on delete cascade)`, `vehicle_id uuid null → vehicles (on delete set null)`, `make`, `model`, `year`, `category`, `price numeric(12,2)` (paid), `created_at`; index on `user_id`; row-level security enabled
 
 ---
 

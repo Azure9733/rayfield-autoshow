@@ -16,7 +16,7 @@ Product/data decisions that affect the backend live in `PLAN.md` → "Product Sp
 ### Header & Logo
 - Black header bar, full width, sticky.
 - **Left:** brand lockup `[logo] | RAYFIELD AUTOSHOW`: Rayfield logo (white PNG, used as-is), thin vertical divider, name in white Rajdhani with wide tracking. Below `sm` the text shortens to `AUTOSHOW` (the logo already says RAYFIELD). Links to `/`.
-- **Right:** a person icon + the signed-in user's name (no role shown), then LOGOUT right-most (no INVENTORY link: the logo goes to `/`); hamburger below `lg`: the menu slides and fades in (200 ms) and out (160 ms), its bars morph into a cross while open, and a tap outside the header closes it (reduced motion: instant). Guests see only the brand (the login and register pages link to each other).
+- **Right:** MY GARAGE (`cyber-nav-link`), a person icon + the signed-in user's name (no role shown), then LOGOUT right-most; in the hamburger menu MY GARAGE is a `cyber-list-item` above LOGOUT and tapping it closes the menu (no INVENTORY link: the logo goes to `/`); hamburger below `lg`: the menu slides and fades in (200 ms) and out (160 ms), its bars morph into a cross while open, and a tap outside the header closes it (reduced motion: instant). Guests see only the brand (the login and register pages link to each other).
 - Logo file: `Thumbnails-144.png` → `frontend/src/assets/rayfield-logo.png` (resized from 2314×611 to 424×112, 2x the largest display size), `alt="Rayfield"`, ~36px tall on mobile, ~56px on desktop.
 - Boot splash, on every full page load or reload (any route; not on in-app navigation or after login): 0–2 s a solid yellow screen, with lines typed in the top-left corner (24px in, left-aligned, black Share Tech Mono ~11px), one every 333 ms, blinking block cursor after the newest: INITIATE STARTUP... / RESOLVE DNS... / REVERSE PROXY... / SECURE CONNECTION... / SECURED / LOADING...; 2–2.3 s the lines flicker out; 2.3–3.5 s "Welcome to Rayfield Autoshow" centred (black Rajdhani bold, clamp(2rem, 6vw, 4rem), 100 ms glitch-in); 3.5–3.8 s it fades, revealing the app, which has loaded underneath. Any key or click skips. `role="status"`, label "Loading Rayfield Autoshow". Reduced motion: no splash.
 - Login transition: right after a successful login or register (not on reload or other navigation), a full-screen black panel wipes away left to right (sharp clip-path, 350 ms, one glitch frame), then the inventory rises 8px and fades in (200 ms). Reduced motion: none.
@@ -38,7 +38,7 @@ Guests are redirected to `/login`. There is no `/admin` route: admin controls re
 
 ```
 ┌───────────────────────────────────────────────┐
-│ [R] | RAYFIELD AUTOSHOW            VIK  LOGOUT│  ← black header, [R] = logo (hamburger < lg)
+│ [R] | RAYFIELD AUTOSHOW  MY GARAGE VIK LOGOUT│  ← black header, [R] = logo (hamburger < lg)
 ├───────────────────────────────────────────────┤
 │ [ Search                    ] [FILTERS] [CLEAR]│  ← search bar: results update as you type
 │  category ▾ │ min price │ max price │ [x] in stock  ← shown by FILTERS
@@ -71,7 +71,14 @@ Same on every width: the filters stay folded behind FILTERS until opened. Openin
 - CONFIRM PURCHASE reads PROCESSING... and is disabled while the request runs.
 - Success: the panel switches to a check mark + UNIT ACQUIRED. Motion (about 1.2 s): UNIT ACQUIRED glitches in sharply, the check draws in, and a yellow scan line sweeps across once. The dialog closes itself 1.6 s after success (a click closes it sooner); the card's stock updates behind it.
 - 409: OUT OF STOCK in red with CLOSE, and the card refreshes. Other errors: the API message in red with CLOSE. 401: the usual session-expired redirect.
-- Reduced motion: no glitch, draw or sweep; the success state appears at once, same 1.6 s auto-close.
+- Opening and closing animate (shared `Modal`): the backdrop fades, the panel scales up from 96% with a one-frame glitch (200 ms) and reverses on close (160 ms).
+- Reduced motion: no open/close animation, glitch, draw or sweep; the success state appears at once, same 1.6 s auto-close.
+
+### My Garage (purchase history)
+- MY GARAGE opens a centred modal on the same panel, backdrop and open/close animation as the purchase dialog (the shared `Modal`). Title MY GARAGE; focus starts on the × button; ×, Escape or a backdrop click closes it. Reduced motion: no animation.
+- It fetches `GET /api/purchases/me` every time it opens, so a car just bought is there.
+- One row per purchase, newest first (the same car bought twice is two rows): MAKE MODEL, the price paid (USD), year, the category badge, the date and time in local format ("25 Oct 2026, 20:41"), and ORDER ID with the purchase UUID in small muted Share Tech Mono. Long lists scroll inside the panel (max 80vh).
+- Loading: skeleton rows. Empty: `///GARAGE.EMPTY` and "Your purchased vehicles will appear here." Error: the message with RETRY.
 
 ## 5. Actions by Role
 
@@ -119,6 +126,8 @@ Grid: 1 col (< 640px) → 2 (sm) → 3 (lg) → 4 (xl). Header → hamburger bel
 | `SearchPanel` | `cyber-input`, `cyber-label`, `btn-cyber`, `btn-ghost` |
 | `VehicleFormModal` | `cyber-panel`, `cyber-input`, `cyber-error` |
 | `ConfirmDialog`, `RestockPopover` | `cyber-panel`, `btn-danger`, `btn-ghost` |
+| `Modal` (shared by `PurchaseDialog` and `GarageDialog`) | `cyber-panel`, `modal-backdrop`, `modal-panel` |
+| `GarageDialog` | `cyber-badge`, `btn-ghost`, `glitch` (empty state) |
 | `Toast` | `cyber-toast` |
 | `CategoryIcon` | inline SVG per category, yellow stroke |
 | `NotFound` (page) | `cyber-panel`, glitch heading `///SIGNAL.LOST` |
