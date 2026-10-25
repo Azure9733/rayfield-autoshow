@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { inStock, loginAs, serveVehicles } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
@@ -33,5 +33,16 @@ describe('admin card actions', () => {
 
     expect(within(card).queryByRole('alertdialog')).not.toBeInTheDocument();
     expect(sent).toBe(false);
+  });
+
+  it('confirming delete removes the card', async () => {
+    server.use(http.delete('/api/vehicles/a1', () => new HttpResponse(null, { status: 204 })));
+    const { user, card } = await renderAsAdmin();
+
+    await user.click(within(card).getByRole('button', { name: 'Delete' }));
+    await user.click(within(card).getByRole('button', { name: 'Confirm' }));
+
+    await waitFor(() => expect(card).not.toBeInTheDocument());
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 });
