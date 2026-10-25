@@ -17,6 +17,7 @@ export const createVehicleSchema = z.object({
     .min(1900)
     .refine((y) => y <= new Date().getFullYear() + 1, 'Year must be no later than next year'),
   category: categorySchema,
-  price: z.number(),
+  // multipleOf uses a float-safe remainder, so 19.99 passes (19.99 * 100 isn't an integer in JS).
+  price: z.number().positive().max(100_000_000).multipleOf(0.01),
   quantity: z.number().optional(),
 });

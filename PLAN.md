@@ -235,7 +235,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Make/model rule (`it.each`): whitespace-only, 51 chars → 400; 50 chars accepted; surrounding spaces trimmed
 - [x] Category rule (`it.each`): `BOAT` → 400; `suv` → 201, stored as `SUV`
 - [x] Year rule (`it.each`): 1899, current year + 2 → 400; 1900, current year + 1 accepted (compute the year in the test, never hard-code it)
-- [ ] Price rule (`it.each`): 0, −1, `"abc"`, 1.234, 100,000,000.01 → 400; 0.01, 19.99, 100,000,000 accepted (in JS `19.99 * 100` isn't an integer, so don't check decimals that way)
+- [x] Price rule (`it.each`): 0, −1, `"abc"`, 1.234, 100,000,000.01 → 400; 0.01, 19.99, 100,000,000 accepted (in JS `19.99 * 100` isn't an integer, so don't check decimals that way)
 - [ ] Quantity rule (`it.each`): −1, 1.5, 10,001 → 400; 0 and 10,000 accepted
 - [ ] Quantity omitted → defaults to 0
 - [ ] **(guard)** A client-sent `id` is ignored (the server generates it)
