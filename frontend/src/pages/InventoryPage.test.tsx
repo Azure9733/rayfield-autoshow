@@ -118,4 +118,17 @@ describe('inventory page', () => {
 
     await waitFor(() => expect(badge(card, 'Stock')).toHaveTextContent('1'));
   });
+
+  it('a successful purchase shows the UNIT ACQUIRED toast', async () => {
+    serveVehicles(inStock);
+    server.use(
+      http.post('/api/vehicles/a1/purchase', () => HttpResponse.json({ ...inStock, quantity: 1 })),
+    );
+    const { user } = renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+
+    await user.click(within(card).getByRole('button', { name: 'Purchase' }));
+
+    expect(await screen.findByRole('status')).toHaveTextContent('UNIT ACQUIRED');
+  });
 });
