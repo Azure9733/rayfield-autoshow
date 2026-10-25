@@ -257,7 +257,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] **(guard)** No matches → 200 `[]`
 - [x] Empty params count as absent (`it.each`: `?make=`, `?model=`, `?category=`, `?minPrice=`, `?maxPrice=`; an empty `maxPrice` would otherwise coerce to 0)
 - [x] `minPrice > maxPrice` → 400
-- [ ] Non-numeric price (`it.each`: `minPrice`, `maxPrice`) → 400
+- [x] Non-numeric price (`it.each`: `minPrice`, `maxPrice`) → 400 (turned out to be a guard: `z.coerce.number()` rejects NaN)
 - [ ] **(guard)** No token → 401
 
 ### 4.7 `PUT /api/vehicles/:id` (admin; full replacement)

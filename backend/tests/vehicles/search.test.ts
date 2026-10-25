@@ -155,4 +155,11 @@ describe('GET /api/vehicles/search', () => {
     expect(res.status).toBe(400);
     expect(res.body.error.details).toEqual([{ field: 'minPrice', message: expect.any(String) }]);
   });
+
+  it.each(['minPrice', 'maxPrice'])('returns 400 for a non-numeric %s', async (param) => {
+    const res = await search({ [param]: 'abc' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details).toEqual([{ field: param, message: expect.any(String) }]);
+  });
 });
