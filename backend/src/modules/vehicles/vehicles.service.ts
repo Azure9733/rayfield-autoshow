@@ -12,6 +12,7 @@ export interface VehiclesService {
   search(filters: VehicleFilters): Promise<Vehicle[]>;
   create(input: NewVehicle): Promise<Vehicle>;
   update(id: string, input: VehicleUpdate): Promise<Vehicle>;
+  remove(id: string): Promise<void>;
 }
 
 /** Vehicle and inventory rules; knows nothing about HTTP. */
@@ -33,6 +34,10 @@ export function createVehiclesService(vehicles: VehiclesRepository): VehiclesSer
       const updated = await vehicles.update(id, input);
       if (!updated) throw vehicleNotFound();
       return updated;
+    },
+
+    remove(id) {
+      return vehicles.remove(id);
     },
   };
 }

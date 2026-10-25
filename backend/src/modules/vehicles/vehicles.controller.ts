@@ -20,5 +20,10 @@ export function createVehiclesController(service: VehiclesService) {
     async update(req: Request<{ id: string }>, res: Response) {
       res.json(await service.update(req.params.id, res.locals.body as VehicleUpdate));
     },
+
+    async remove(req: Request<{ id: string }>, res: Response) {
+      await service.remove(req.params.id);
+      res.status(204).end();
+    },
   };
 }
