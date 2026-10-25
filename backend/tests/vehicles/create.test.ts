@@ -186,4 +186,14 @@ describe('POST /api/vehicles', () => {
       expect(res.body.quantity).toBe(0);
     });
   });
+
+  it('ignores a client-sent id and generates its own', async () => {
+    const clientId = '00000000-0000-4000-8000-000000000000';
+
+    const res = await postVehicle({ id: clientId });
+
+    expect(res.status).toBe(201);
+    expect(res.body.id).toMatch(UUID);
+    expect(res.body.id).not.toBe(clientId);
+  });
 });
