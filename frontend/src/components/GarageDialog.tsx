@@ -40,6 +40,14 @@ export function GarageDialog({ onClose }: { onClose: () => void }) {
             ))}
           </div>
         )}
+        {purchases?.length === 0 && (
+          <div className="flex flex-col items-center gap-3 px-6 pt-4 pb-10 text-center">
+            <p className="glitch text-3xl" data-text="///GARAGE.EMPTY">
+              ///GARAGE.EMPTY
+            </p>
+            <p className="text-cp-muted">Your purchased vehicles will appear here.</p>
+          </div>
+        )}
         <ul className="space-y-3 overflow-y-auto px-6 pb-6">
           {purchases?.map((p) => (
             <li key={p.id} className="space-y-2 border border-cp-yellow/15 p-4">
