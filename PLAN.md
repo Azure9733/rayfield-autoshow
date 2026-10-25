@@ -294,7 +294,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] A restock moves `updatedAt` forward
 - [x] Quantity rule (`it.each`): missing, 0, −1, 1.5, 10,001 → 400; 1 and 10,000 accepted
 - [x] Unknown id → 404
-- [ ] **(guard)** Malformed id → 400
+- [x] **(guard)** Malformed id → 400
 - [ ] Non-admin → 403
 - [ ] **(guard)** No token → 401
 
