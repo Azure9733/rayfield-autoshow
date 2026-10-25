@@ -4,6 +4,7 @@ import { Header } from './components/Header';
 import { InventoryPage } from './pages/InventoryPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { ProtectedRoute } from './routes/ProtectedRoute';
 
 /** Root layout: header, the routed page, footer. */
 export default function App() {
@@ -13,7 +14,14 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/" element={<InventoryPage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <InventoryPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <Footer />
     </div>

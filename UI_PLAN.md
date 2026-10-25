@@ -137,7 +137,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Login shows the API error on 401
 - [x] Successful login redirects to `/`
 - [x] Logout clears the token and returns to `/login`
-- [ ] Protected route redirects a guest to `/login`
+- [x] Protected route redirects a guest to `/login`
 
 **Inventory**
 - [ ] Cards show make, model, year, category, USD price and stock
