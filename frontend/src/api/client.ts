@@ -36,12 +36,20 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
   const headers: Record<string, string> = {};
   if (token) headers.Authorization = `Bearer ${token}`;
   if (body !== undefined) headers['Content-Type'] = 'application/json';
-  const response = await fetch(path, {
-    method,
-    headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
-  const data = await response.json();
+  let response: Response;
+  let data;
+  try {
+    response = await fetch(path, {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+    data = await response.json();
+  } catch {
+    // The backend always answers JSON, so no answer or a non-JSON one (e.g. the proxy's HTML
+    // 502 when the backend is down) means it wasn't reached.
+    throw new ApiError(0, 'NETWORK_ERROR', "Can't reach the server. Please try again.");
+  }
   if (!response.ok) {
     // On /api/auth/* a 401 means wrong credentials, not an expired session: the form shows it.
     if (response.status === 401 && !path.startsWith('/api/auth/')) {
