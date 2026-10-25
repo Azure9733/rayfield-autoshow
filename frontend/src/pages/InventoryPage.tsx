@@ -35,6 +35,8 @@ export function InventoryPage() {
   const [attempt, setAttempt] = useState(0);
   const loading = vehicles === null && !error;
   const shown = inStockOnly ? vehicles?.filter((v) => v.quantity > 0) : vehicles;
+  // An empty result means "no match" when filters are on, "empty inventory" otherwise.
+  const filtering = inStockOnly || Object.keys(query).length > 0;
 
   useEffect(() => {
     // Ignore a response that lands after unmount (or StrictMode's dev re-run).
@@ -106,13 +108,23 @@ export function InventoryPage() {
           onInStockOnlyChange={setInStockOnly}
         />
         <div className="mt-8 lg:mt-0">
-          {vehicles?.length === 0 && (
-            <div className="cyber-panel mx-auto max-w-xl p-10 text-center">
-              <p className="glitch text-3xl" data-text="///NO.UNITS.IN.STOCK">
-                ///NO.UNITS.IN.STOCK
-              </p>
-            </div>
-          )}
+          {shown?.length === 0 &&
+            (filtering ? (
+              <div className="cyber-panel mx-auto max-w-xl space-y-6 p-10 text-center">
+                <p className="glitch text-3xl" data-text="///NO.MATCH">
+                  ///NO.MATCH
+                </p>
+                <button type="button" className="btn-ghost" onClick={clearFilters}>
+                  Clear filters
+                </button>
+              </div>
+            ) : (
+              <div className="cyber-panel mx-auto max-w-xl p-10 text-center">
+                <p className="glitch text-3xl" data-text="///NO.UNITS.IN.STOCK">
+                  ///NO.UNITS.IN.STOCK
+                </p>
+              </div>
+            ))}
           <div
             className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
             aria-busy={loading}
