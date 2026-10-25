@@ -246,7 +246,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] `?make=Toyota` → only Toyotas (exact case first: the simplest test for a new endpoint)
 - [x] Make matching is case-insensitive (`?make=toyota`)
 - [x] Make matching is partial (`?make=toy`)
-- [ ] `?model=cor` → partial, case-insensitive match
+- [x] `?model=cor` → partial, case-insensitive match
 - [ ] `%` and `_` match literally (`?make=%` doesn't return everything)
 - [ ] `?category=suv` → only SUVs (normalised to uppercase)
 - [ ] **(guard)** Unknown category → 400 (reuses the category rule from 4.5)

@@ -10,8 +10,8 @@ export function createVehiclesController(service: VehiclesService) {
     },
 
     async search(req: Request, res: Response) {
-      const make = typeof req.query.make === 'string' ? req.query.make : undefined;
-      res.json(await service.search({ make }));
+      const text = (v: unknown) => (typeof v === 'string' ? v : undefined);
+      res.json(await service.search({ make: text(req.query.make), model: text(req.query.model) }));
     },
 
     async create(_req: Request, res: Response) {
