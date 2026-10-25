@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { loginAs, makeVehicle } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
@@ -102,5 +102,20 @@ describe('inventory page', () => {
 
     expect(badge(available, 'Stock')).toHaveTextContent('2');
     expect(badge(unavailable, 'Stock')).toHaveTextContent('Sold out');
+  });
+
+  it('Purchase calls the API and updates the stock shown', async () => {
+    serveVehicles(inStock, soldOut);
+    server.use(
+      http.post('/api/vehicles/a1/purchase', () =>
+        HttpResponse.json({ ...inStock, quantity: inStock.quantity - 1 }),
+      ),
+    );
+    const { user } = renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+
+    await user.click(within(card).getByRole('button', { name: 'Purchase' }));
+
+    await waitFor(() => expect(badge(card, 'Stock')).toHaveTextContent('1'));
   });
 });
