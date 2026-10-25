@@ -366,21 +366,21 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 ## 7. Phase 5 — Documentation & Deliverables
 
 ### README.md
-- [ ] Project overview + feature list
-- [ ] Tech stack + **design decisions** (from section 0, incl. admin-only choices, quantity via purchase/restock)
-- [ ] Architecture diagram / folder overview
-- [ ] Local setup: prerequisites (Node, Docker), `.env` setup, `docker compose up` (dev + test DBs), migrate, seed admin, seed demo vehicles, run backend, run frontend (Vite proxies `/api`)
-- [ ] How to run tests + coverage
-- [ ] API endpoint table
+- [x] Project overview + feature list
+- [x] Tech stack + **design decisions** (from section 0, incl. admin-only choices, quantity via purchase/restock)
+- [x] Architecture diagram / folder overview
+- [x] Local setup: prerequisites (Node, Docker), `.env` setup, `docker compose up` (dev + test DBs), migrate, seed admin, seed demo vehicles, run backend, run frontend (Vite proxies `/api`)
+- [x] How to run tests + coverage
+- [x] API endpoint table
 - [ ] Screenshots (`docs/screenshots/`): login, inventory, search, sold-out card, admin form, mobile view — taken with the demo data
 - [ ] Live link + demo logins (user and admin); say that anyone can change the demo data and `seedDemo` resets it
-- [ ] Credits: Rayfield logo (Cyberpunk 2077 © CD PROJEKT RED; fan project) and the CodePen glitch effects (author + link)
-- [ ] Note: tests use a real Postgres in Docker (tmpfs for speed); production uses Supabase — not an in-memory DB
+- [x] Credits: Rayfield logo (Cyberpunk 2077 © CD PROJEKT RED; fan project) and the CodePen glitch effects (author + link)
+- [x] Note: tests use a real Postgres in Docker (tmpfs for speed); production uses Supabase — not an in-memory DB
 
 ### "My AI Usage" (mandatory)
 - [ ] Tools: Claude Code (Opus) and the Claude planning chat — say where each ran; the list must match PROMPTS.md
-- [ ] How: planning & test lists, scaffolding, writing tests, implementation, reviews — with concrete examples
-- [ ] What I did: stack choice, decisions, reviewing every diff, edge cases I added, places AI was wrong and I corrected it
+- [x] How: planning & test lists, scaffolding, writing tests, implementation, reviews — with concrete examples
+- [x] What I did: stack choice, decisions, reviewing every diff, edge cases I added, places AI was wrong and I corrected it
 - [ ] Reflection: honest impact on speed, quality, learning TDD
 
 ### Other deliverables
