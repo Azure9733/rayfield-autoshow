@@ -204,7 +204,7 @@ How to read this list:
 - [x] Wrong password → 401 (generic message)
 - [x] Unknown email → 401 (same message — don't leak which emails exist)
 - [x] Email is case-insensitive (register `a@x.com`, log in as `A@X.com` → 200)
-- [ ] Missing fields (`it.each`: email, password) → 400
+- [x] Missing fields (`it.each`: email, password) → 400
 
 ### 4.3 `GET /api/vehicles` (comes before the middleware, so 4.4 has a real route to protect)
 Seed rows with the `createVehicle` helper, and send a valid token in every test from the start; it's ignored until 4.4 adds the middleware.

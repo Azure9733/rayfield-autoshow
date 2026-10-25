@@ -80,4 +80,11 @@ describe('POST /api/auth/login', () => {
 
     expect(res.status).toBe(200);
   });
+
+  it.each(['email', 'password'])('returns 400 when %s is missing', async (field) => {
+    const res = await login({ [field]: undefined });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details).toEqual([{ field, message: expect.any(String) }]);
+  });
 });
