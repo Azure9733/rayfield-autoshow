@@ -4,6 +4,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { createAuthRouter } from './modules/auth/auth.routes';
 import { createAuthService } from './modules/auth/auth.service';
 import { createUsersRepository, type UsersRepository } from './modules/auth/users.repository';
+import { createVehiclesRouter } from './modules/vehicles/vehicles.routes';
 
 /** Everything the app needs from the outside world; tests can pass fakes (PLAN.md §1). */
 export interface AppDeps {
@@ -26,6 +27,7 @@ export function createApp(
   });
 
   app.use('/api/auth', createAuthRouter(createAuthService(repos.users)));
+  app.use('/api/vehicles', createVehiclesRouter());
 
   // Registered last: Express treats 4-argument middleware as the error handler.
   app.use(errorHandler);
