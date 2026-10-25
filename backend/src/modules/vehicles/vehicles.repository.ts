@@ -32,7 +32,7 @@ export interface VehicleFilters {
 
 /** All SQL for the vehicles table lives behind this interface, so tests can swap in a fake. */
 export interface VehiclesRepository {
-  list(): Promise<Vehicle[]>;
+  /** Vehicles matching the filters, newest first; `{}` returns every vehicle. */
   search(filters: VehicleFilters): Promise<Vehicle[]>;
   create(input: NewVehicle): Promise<Vehicle>;
 }
@@ -40,14 +40,6 @@ export interface VehiclesRepository {
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
 export function createVehiclesRepository(db: Database): VehiclesRepository {
   return {
-    async list() {
-      const rows = await db
-        .select()
-        .from(vehicles)
-        .orderBy(desc(vehicles.createdAt), desc(vehicles.id));
-      return rows.map(toVehicle);
-    },
-
     async search({ make, model, category, minPrice, maxPrice }) {
       // Each filter adds a condition; and() of the defined ones, ignoring undefined.
       const where = and(
