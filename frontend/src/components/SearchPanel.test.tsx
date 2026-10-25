@@ -140,4 +140,40 @@ describe('search panel', () => {
     expect(await screen.findByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
     expect(searchBar()).toHaveValue('');
   });
+
+  it('a URL with filters restores them', async () => {
+    serveVehicles(inStock, soldOut);
+    let params: Record<string, string> | undefined;
+    server.use(
+      http.get('/api/vehicles/search', ({ request }) => {
+        params = Object.fromEntries(new URL(request.url).searchParams);
+        return HttpResponse.json([inStock, soldOut]);
+      }),
+    );
+
+    renderApp('/?q=a&category=SUV&inStock=1');
+
+    expect(await screen.findByRole('article', { name: 'Toyota Land Cruiser' })).toBeInTheDocument();
+    expect(params).toEqual({ q: 'a', category: 'SUV' });
+    expect(searchBar()).toHaveValue('a');
+    // Hidden filters that are active open the Filters panel, so they're visible.
+    expect(screen.getByLabelText('Category')).toHaveValue('SUV');
+    expect(screen.getByLabelText('In stock only')).toBeChecked();
+    expect(screen.queryByRole('article', { name: 'Porsche 911 Carrera' })).not.toBeInTheDocument();
+  });
+
+  it('changing the filters updates the URL', async () => {
+    serveVehicles(inStock);
+    server.use(http.get('/api/vehicles/search', () => HttpResponse.json([inStock])));
+    const { user } = renderApp('/');
+    await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+
+    await user.type(searchBar(), 'toy');
+    await openFilters(user);
+    await user.click(screen.getByLabelText('In stock only'));
+
+    await waitFor(() =>
+      expect(screen.getByTestId('location')).toHaveTextContent('/?q=toy&inStock=1'),
+    );
+  });
 });
