@@ -1,7 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
-import { loginAs, serveVehicles, inStock } from '../test/fixtures';
+import { inStock, loginAs, makeVehicle, serveVehicles } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
 import { server } from '../test/server';
 
@@ -142,5 +142,34 @@ describe('vehicle form', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Save' }));
 
     expect(await within(dialog).findByRole('alert')).toHaveTextContent('Admin access required');
+  });
+
+  it('adding a vehicle sends it and shows it in the grid', async () => {
+    let body: unknown;
+    server.use(
+      http.post('/api/vehicles', async ({ request }) => {
+        body = await request.json();
+        return HttpResponse.json(
+          makeVehicle({ id: 'c3', model: 'Supra', category: 'COUPE', price: 55000, quantity: 4 }),
+          { status: 201 },
+        );
+      }),
+    );
+    const { user } = renderApp('/');
+    const dialog = await openAddForm(user);
+
+    await fill(user, dialog, validForm);
+    await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+
+    expect(await screen.findByRole('article', { name: 'Toyota Supra' })).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(body).toEqual({
+      make: 'Toyota',
+      model: 'Supra',
+      year: 2024,
+      category: 'COUPE',
+      price: 55000,
+      quantity: 4,
+    });
   });
 });
