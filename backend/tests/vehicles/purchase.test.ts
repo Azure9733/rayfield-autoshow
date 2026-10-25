@@ -52,4 +52,15 @@ describe('POST /api/vehicles/:id/purchase', () => {
     expect(res.status).toBe(400);
     expect(res.body.error.details).toEqual([{ field: 'id', message: expect.any(String) }]);
   });
+
+  it('never oversells: 10 parallel purchases of 5 in stock give five 200s and five 409s', async () => {
+    // Ten requests, not two: two might never overlap, so a race could go unnoticed.
+    const { id } = await createVehicle({ quantity: 5 });
+
+    const results = await Promise.all(Array.from({ length: 10 }, () => purchase(id)));
+    const statuses = results.map((r) => r.status).sort();
+
+    expect(statuses).toEqual([200, 200, 200, 200, 200, 409, 409, 409, 409, 409]);
+    expect(await stockOf(id)).toBe(0);
+  });
 });
