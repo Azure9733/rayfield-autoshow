@@ -63,4 +63,17 @@ describe('header', () => {
       }
     },
   );
+
+  it.each([
+    ['/register', 'Login', 'Log in'],
+    ['/login', 'Register', 'Register'],
+  ])('a guest on %s gets a %s button in the corner and no Menu', async (path, label, heading) => {
+    const { user } = renderApp(path);
+    const header = screen.getByRole('banner');
+    expect(within(header).queryByRole('button', { name: 'Menu' })).not.toBeInTheDocument();
+
+    await user.click(within(header).getByRole('link', { name: label }));
+
+    expect(await screen.findByRole('heading', { name: heading })).toBeInTheDocument();
+  });
 });
