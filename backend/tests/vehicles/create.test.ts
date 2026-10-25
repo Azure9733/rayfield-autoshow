@@ -178,5 +178,12 @@ describe('POST /api/vehicles', () => {
       expect(res.status).toBe(201);
       expect(res.body.quantity).toBe(quantity);
     });
+
+    it('defaults quantity to 0 when it is omitted', async () => {
+      const res = await postVehicle({ quantity: undefined });
+
+      expect(res.status).toBe(201);
+      expect(res.body.quantity).toBe(0);
+    });
   });
 });

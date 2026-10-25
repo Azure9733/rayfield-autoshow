@@ -237,7 +237,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Year rule (`it.each`): 1899, current year + 2 → 400; 1900, current year + 1 accepted (compute the year in the test, never hard-code it)
 - [x] Price rule (`it.each`): 0, −1, `"abc"`, 1.234, 100,000,000.01 → 400; 0.01, 19.99, 100,000,000 accepted (in JS `19.99 * 100` isn't an integer, so don't check decimals that way)
 - [x] Quantity rule (`it.each`): −1, 1.5, 10,001 → 400; 0 and 10,000 accepted
-- [ ] Quantity omitted → defaults to 0
+- [x] Quantity omitted → defaults to 0 (turned out to be a guard: the column default already did it)
 - [ ] **(guard)** A client-sent `id` is ignored (the server generates it)
 - [ ] **(guard)** Same make/model/year twice → both created
 - [ ] (stretch) imageUrl rule (`it.each`): `http://…` or not a URL → 400; omitted is fine
