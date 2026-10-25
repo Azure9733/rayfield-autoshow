@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  startTransition,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import { useNavigate } from 'react-router';
 import * as authApi from '../api/auth';
 import { onSessionExpired } from '../api/client';
@@ -23,9 +30,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(
     () =>
-      onSessionExpired(() =>
-        navigate('/login', { replace: true, state: { notice: SESSION_EXPIRED } }),
-      ),
+      onSessionExpired(() => {
+        // The client already cleared storage; drop the in-memory user too. React Router applies
+        // navigations as transitions, so clear the user in one as well: otherwise it commits
+        // first and ProtectedRoute redirects to /login without the notice.
+        startTransition(() => setSession(null));
+        navigate('/login', { replace: true, state: { notice: SESSION_EXPIRED } });
+      }),
     [navigate],
   );
 

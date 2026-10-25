@@ -9,9 +9,12 @@ export function InventoryPage() {
   useEffect(() => {
     // Ignore a response that lands after unmount (or StrictMode's dev re-run).
     let active = true;
-    listVehicles().then((list) => {
-      if (active) setVehicles(list);
-    });
+    listVehicles()
+      .then((list) => {
+        if (active) setVehicles(list);
+      })
+      // Placeholder until the error state (UI_PLAN.md §10, "API error shows the red toast").
+      .catch(() => {});
     return () => {
       active = false;
     };

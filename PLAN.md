@@ -326,7 +326,7 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 - [x] `src/constants/categories.ts`: copy of the backend category list with a "keep in sync" comment
 
 ### Build order
-- [ ] Auth: `AuthContext` (token + user in localStorage — know the XSS trade-off vs httpOnly cookies), register (logs in automatically on success), login, logout, `ProtectedRoute`, session-expired redirect
+- [x] Auth: `AuthContext` (token + user in localStorage — know the XSS trade-off vs httpOnly cookies), register (logs in automatically on success), login, logout, `ProtectedRoute`, session-expired redirect
 - [ ] Inventory page (`/`): vehicle grid, loading / empty / error states, purchase (1 unit)
 - [ ] Search / filter panel, incl. the client-side "in stock only" filter
 - [ ] Admin controls on the same page, rendered by role (no `/admin` route): add / edit modal, delete confirmation, restock popover
