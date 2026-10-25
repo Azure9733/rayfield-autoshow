@@ -107,7 +107,7 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
       // the last unit (no read-then-write race).
       const [row] = await db
         .update(vehicles)
-        .set({ quantity: sql`${vehicles.quantity} - 1` })
+        .set({ quantity: sql`${vehicles.quantity} - 1`, updatedAt: sql`now()` })
         .where(and(eq(vehicles.id, id), gt(vehicles.quantity, 0)))
         .returning();
       return row && toVehicle(row);

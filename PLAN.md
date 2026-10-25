@@ -287,7 +287,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] **(guard)** **Concurrency**: 10 parallel purchases at quantity 5 → five 200s, five 409s, final quantity 0
   - Implementation: single atomic `UPDATE vehicles SET quantity = quantity - 1 WHERE id = $id AND quantity > 0 RETURNING *`. A guard if you write it this way from the first test; two requests alone might not overlap, hence 10.
 - [x] **(guard)** No token → 401
-- [ ] A purchase moves `updatedAt` forward (stock changes count as updates)
+- [x] A purchase moves `updatedAt` forward (stock changes count as updates)
 
 ### 4.10 `POST /api/vehicles/:id/restock` (admin)
 - [ ] Admin, `{ quantity: 5 }` → 200 with the updated vehicle, quantity increased by 5
