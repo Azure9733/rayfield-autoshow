@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useLocation } from 'react-router';
 import { ApiError } from '../api/client';
+import { AuthForm } from '../components/AuthForm';
 import { TextField } from '../components/TextField';
 import { useAuth } from '../context/AuthContext';
 
@@ -25,49 +26,37 @@ export function LoginPage() {
   }
 
   return (
-    <main className="flex-1 flex justify-center px-4 py-10 md:py-16">
-      <form
-        noValidate
-        onSubmit={handleSubmit}
-        className="cyber-panel w-full max-w-md p-6 md:p-8 space-y-5 self-start"
-      >
-        <h1 className="glitch text-3xl uppercase" data-text="Log in">
-          Log in
-        </h1>
-        {notice && (
-          <p role="status" className="text-cp-cyan">
-            {notice}
-          </p>
-        )}
-        {formError && (
-          <p role="alert" className="cyber-error">
-            {formError}
-          </p>
-        )}
-        <TextField
-          label="Email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          onChange={setEmail}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={setPassword}
-        />
-        <button type="submit" className="btn-cyber w-full" data-text="Log in">
-          Log in
-        </button>
-        <p className="text-sm text-cp-muted">
+    <AuthForm
+      title="Log in"
+      onSubmit={handleSubmit}
+      error={formError}
+      notice={notice}
+      footer={
+        <>
           New here?{' '}
           <Link to="/register" className="text-cp-cyan underline underline-offset-4">
             Create an account
           </Link>
-        </p>
-      </form>
-    </main>
+        </>
+      }
+    >
+      <TextField
+        label="Email"
+        type="email"
+        autoComplete="email"
+        value={email}
+        onChange={setEmail}
+      />
+      <TextField
+        label="Password"
+        type="password"
+        autoComplete="current-password"
+        value={password}
+        onChange={setPassword}
+      />
+      <button type="submit" className="btn-cyber w-full" data-text="Log in">
+        Log in
+      </button>
+    </AuthForm>
   );
 }
