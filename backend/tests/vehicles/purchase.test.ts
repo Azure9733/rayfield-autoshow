@@ -38,4 +38,11 @@ describe('POST /api/vehicles/:id/purchase', () => {
     expect(res.body.error).toEqual({ code: 'OUT_OF_STOCK', message: 'Out of stock' });
     expect(await stockOf(id)).toBe(0);
   });
+
+  it('returns 404 for an id that does not exist', async () => {
+    const res = await purchase('00000000-0000-4000-8000-000000000000');
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe('NOT_FOUND');
+  });
 });
