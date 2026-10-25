@@ -32,8 +32,9 @@ export function createAuthService(users: UsersRepository): AuthService {
     },
 
     async login({ email, password }) {
-      const found = (await users.findByEmail(email))!;
-      if (!(await comparePassword(password, found.passwordHash))) {
+      const found = await users.findByEmail(email);
+      // Same error for both cases, so the response never reveals which emails are registered.
+      if (!found || !(await comparePassword(password, found.passwordHash))) {
         throw new UnauthorizedError('INVALID_CREDENTIALS', 'Invalid email or password');
       }
       const user: PublicUser = {

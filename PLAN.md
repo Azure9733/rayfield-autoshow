@@ -202,7 +202,7 @@ How to read this list:
 - [x] **(guard)** Token is a valid JWT containing `sub` (user id), `role` and `exp`
 - [x] **(guard)** `user` in the response never contains the password hash
 - [x] Wrong password → 401 (generic message)
-- [ ] Unknown email → 401 (same message — don't leak which emails exist)
+- [x] Unknown email → 401 (same message — don't leak which emails exist)
 - [ ] Email is case-insensitive (register `a@x.com`, log in as `A@X.com` → 200)
 - [ ] Missing fields (`it.each`: email, password) → 400
 
