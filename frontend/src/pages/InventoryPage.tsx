@@ -21,6 +21,8 @@ import { VehicleFormModal } from '../components/VehicleFormModal';
 import { toFormValues } from '../validation/vehicle';
 import { useAuth } from '../context/AuthContext';
 
+const SUCCESS_TOAST_MS = 4000;
+
 /** All vehicles, or the search results when any filter is filled. */
 function fetchVehicles(query: SearchFilters) {
   return Object.keys(query).length > 0 ? searchVehicles(query) : listVehicles();
@@ -63,6 +65,13 @@ export function InventoryPage() {
       active = false;
     };
   }, [attempt, query]);
+
+  // Success toasts clear themselves; error toasts stay until the next action replaces them.
+  useEffect(() => {
+    if (notice?.tone !== 'success') return;
+    const timer = setTimeout(() => setNotice(null), SUCCESS_TOAST_MS);
+    return () => clearTimeout(timer);
+  }, [notice]);
 
   /** Swaps an updated vehicle (from purchase, edit, restock) into the list in place. */
   function replaceVehicle(updated: Vehicle) {
