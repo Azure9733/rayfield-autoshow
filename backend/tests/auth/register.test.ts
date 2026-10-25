@@ -44,4 +44,12 @@ describe('POST /api/auth/register', () => {
     expect(rows[0].password_hash).not.toBe('supersecret');
     await expect(comparePassword('supersecret', rows[0].password_hash)).resolves.toBe(true);
   });
+
+  it('returns 400 when name is missing', async () => {
+    const res = await request(createApp())
+      .post('/api/auth/register')
+      .send({ email: 'ann@example.com', password: 'supersecret' });
+
+    expect(res.status).toBe(400);
+  });
 });
