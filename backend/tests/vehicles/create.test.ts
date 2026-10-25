@@ -42,4 +42,11 @@ describe('POST /api/vehicles', () => {
 
     expect(list.body).toEqual([created.body]);
   });
+
+  it('returns 403 for a logged-in user who is not an admin', async () => {
+    const res = await postVehicle({}, 'user');
+
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('FORBIDDEN');
+  });
 });
