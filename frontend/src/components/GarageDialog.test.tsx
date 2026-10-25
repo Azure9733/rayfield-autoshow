@@ -88,4 +88,27 @@ describe('my garage', () => {
     ).toBeInTheDocument();
     expect(within(dialog).queryByRole('listitem')).not.toBeInTheDocument();
   });
+
+  it('shows the error with Retry, which loads again', async () => {
+    let calls = 0;
+    server.use(
+      http.get('/api/purchases/me', () =>
+        ++calls === 1
+          ? HttpResponse.json(
+              { error: { code: 'INTERNAL_ERROR', message: 'Something went wrong' } },
+              { status: 500 },
+            )
+          : HttpResponse.json([makePurchase()]),
+      ),
+    );
+    const { user } = renderApp('/');
+    const dialog = await openGarage(user);
+
+    expect(await within(dialog).findByRole('alert')).toHaveTextContent('Something went wrong');
+
+    await user.click(within(dialog).getByRole('button', { name: 'Retry' }));
+
+    expect(await within(dialog).findByRole('listitem')).toBeInTheDocument();
+    expect(within(dialog).queryByRole('alert')).not.toBeInTheDocument();
+  });
 });

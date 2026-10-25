@@ -187,6 +187,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Opening it fetches `/api/purchases/me` and lists each purchase (same car twice = two rows): make + model, year, category badge, price paid, local date and time, ORDER ID
 - [x] Loading shows skeleton rows
 - [x] No purchases: `///GARAGE.EMPTY` and "Your purchased vehicles will appear here."
+- [ ] An error shows its message with RETRY, which loads again
 
 **Search / filter**
 - [x] The search bar has no visible label: placeholder "Search", accessible name "Search"
