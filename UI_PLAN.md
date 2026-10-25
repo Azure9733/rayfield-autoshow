@@ -190,6 +190,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] An error shows its message with RETRY, which loads again
 - [x] Focus starts on ×; ×, Escape and a backdrop click close it
 - [x] Tapping MY GARAGE in the mobile menu closes the menu and opens the garage
+- [x] **(guard)** A car bought after the garage was opened once shows up the next time it opens (fetched on every open)
 
 **Search / filter**
 - [x] The search bar has no visible label: placeholder "Search", accessible name "Search"

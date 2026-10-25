@@ -2,7 +2,7 @@ import { screen, within } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import type { Purchase } from '../api/purchases';
-import { badge, loginAs } from '../test/fixtures';
+import { badge, inStock, loginAs, serveVehicles } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
 import { server } from '../test/server';
 
@@ -141,5 +141,33 @@ describe('my garage', () => {
 
     expect(screen.queryByRole('navigation', { name: 'Mobile' })).not.toBeInTheDocument();
     expect(screen.getByRole('dialog', { name: 'My Garage' })).toBeInTheDocument();
+  });
+
+  it('a car bought after opening the garage once shows up the next time it opens', async () => {
+    serveVehicles(inStock);
+    // A tiny fake backend: buying adds to the garage.
+    const garage: Purchase[] = [];
+    server.use(
+      http.get('/api/purchases/me', () => HttpResponse.json(garage)),
+      http.post('/api/vehicles/a1/purchase', () => {
+        garage.unshift(makePurchase({ make: inStock.make, model: inStock.model }));
+        return HttpResponse.json({ ...inStock, quantity: inStock.quantity - 1 });
+      }),
+    );
+    const { user } = renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+
+    let dialog = await openGarage(user);
+    expect(await within(dialog).findByText('///GARAGE.EMPTY')).toBeInTheDocument();
+    await user.click(within(dialog).getByRole('button', { name: 'Close' }));
+
+    await user.click(within(card).getByRole('button', { name: 'Purchase' }));
+    const purchase = screen.getByRole('dialog', { name: 'Purchase Toyota Land Cruiser' });
+    await user.click(within(purchase).getByRole('button', { name: 'Confirm purchase' }));
+    await user.click(await within(purchase).findByText('UNIT ACQUIRED'));
+
+    dialog = await openGarage(user);
+    const row = await within(dialog).findByRole('listitem');
+    expect(within(row).getByText('Toyota Land Cruiser')).toBeInTheDocument();
   });
 });
