@@ -300,7 +300,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 
 ### 4.11 Cross-cutting
 - [x] Unknown route → 404 JSON (not HTML)
-- [ ] Malformed JSON body → 400 JSON
+- [x] Malformed JSON body → 400 JSON
 - [ ] Unexpected error → 500 JSON with a generic message and no stack trace (inject a repo that throws via `createApp({ repos })`)
 - [ ] `seedAdmin` creates the admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 - [ ] Re-running `seedAdmin` resets the admin's password and role from env, including when that email already belongs to a normal user
