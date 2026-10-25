@@ -100,4 +100,12 @@ describe('PUT /api/vehicles/:id', () => {
     expect(res.status).toBe(403);
     expect(res.body.error.code).toBe('FORBIDDEN');
   });
+
+  it('returns 401 without a token', async () => {
+    const { id } = await createVehicle();
+
+    const res = await request(createApp()).put(`/api/vehicles/${id}`).send(replacement);
+
+    expect(res.status).toBe(401);
+  });
 });
