@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react';
+import { ApiError } from '../api/client';
 import { listVehicles, type Vehicle } from '../api/vehicles';
 import { SkeletonCard } from '../components/SkeletonCard';
+import { Toast } from '../components/Toast';
 import { VehicleCard } from '../components/VehicleCard';
 
 /** `/`: the vehicle inventory. */
 export function InventoryPage() {
-  // null until the first response arrives: that's the loading state.
+  // null until a response arrives; with no error, that's the loading state.
   const [vehicles, setVehicles] = useState<Vehicle[] | null>(null);
+  const [error, setError] = useState('');
+  // Bumped by Retry to run the load effect again.
+  const [attempt, setAttempt] = useState(0);
+  const loading = vehicles === null && !error;
 
   useEffect(() => {
     // Ignore a response that lands after unmount (or StrictMode's dev re-run).
@@ -15,19 +21,27 @@ export function InventoryPage() {
       .then((list) => {
         if (active) setVehicles(list);
       })
-      // Placeholder until the error state (UI_PLAN.md §10, "API error shows the red toast").
-      .catch(() => {});
+      .catch((e: unknown) => {
+        if (!(e instanceof ApiError)) throw e;
+        if (active) setError(e.message);
+      });
     return () => {
       active = false;
     };
-  }, []);
+  }, [attempt]);
+
+  function retry() {
+    setError('');
+    setVehicles(null);
+    setAttempt((n) => n + 1);
+  }
 
   return (
     <>
       <div className="module-strip">
         <h1 className="sr-only">Inventory</h1>
         <span aria-hidden="true">///INVENTORY.MODULE</span>
-        {vehicles === null && (
+        {loading && (
           <span>
             loading<span className="animate-blink">...</span>
           </span>
@@ -43,13 +57,14 @@ export function InventoryPage() {
         )}
         <div
           className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-          aria-busy={vehicles === null}
+          aria-busy={loading}
         >
-          {vehicles === null
+          {loading
             ? Array.from({ length: 4 }, (_, i) => <SkeletonCard key={i} />)
-            : vehicles.map((vehicle) => <VehicleCard key={vehicle.id} vehicle={vehicle} />)}
+            : vehicles?.map((vehicle) => <VehicleCard key={vehicle.id} vehicle={vehicle} />)}
         </div>
       </main>
+      {error && <Toast tone="error" message={error} action={{ label: 'Retry', onClick: retry }} />}
     </>
   );
 }
