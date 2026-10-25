@@ -76,4 +76,14 @@ describe('GET /api/vehicles', () => {
 
     expect(res.body).toEqual([expect.objectContaining({ id: soldOut.id, quantity: 0 })]);
   });
+
+  it('lists the newest vehicles first', async () => {
+    const oldest = await createVehicle({ createdAt: new Date('2026-01-01T00:00:00Z') });
+    const middle = await createVehicle({ createdAt: new Date('2026-02-01T00:00:00Z') });
+    const newest = await createVehicle({ createdAt: new Date('2026-03-01T00:00:00Z') });
+
+    const res = await listVehicles();
+
+    expect(res.body.map((v: { id: string }) => v.id)).toEqual([newest.id, middle.id, oldest.id]);
+  });
 });
