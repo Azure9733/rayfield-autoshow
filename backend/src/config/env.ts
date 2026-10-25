@@ -3,6 +3,8 @@ import { z } from 'zod';
 const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.url(),
+  // bcrypt's valid range is 4–31; each step doubles the hashing time.
+  BCRYPT_COST: z.coerce.number().int().min(4).max(31).default(10),
 });
 
 /**
