@@ -1,6 +1,8 @@
 import { screen } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
+import { http, HttpResponse } from 'msw';
 import { renderApp } from '../test/renderApp';
+import { server } from '../test/server';
 
 const valid = {
   name: 'Vik',
@@ -44,5 +46,23 @@ describe('register page', () => {
     await fillAndSubmit(user, values);
 
     expect(await screen.findByLabelText(field)).toHaveAccessibleDescription(message);
+  });
+
+  it('shows an error and sends nothing when the passwords do not match', async () => {
+    let sent = false;
+    server.use(
+      http.post('/api/auth/register', () => {
+        sent = true;
+        return HttpResponse.json({}, { status: 201 });
+      }),
+    );
+    const { user } = renderApp('/register');
+
+    await fillAndSubmit(user, { confirm: 'correct-horsE' });
+
+    expect(await screen.findByLabelText('Confirm password')).toHaveAccessibleDescription(
+      "Passwords don't match",
+    );
+    expect(sent).toBe(false);
   });
 });
