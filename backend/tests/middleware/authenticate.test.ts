@@ -46,4 +46,10 @@ describe('authenticate middleware (via GET /api/vehicles)', () => {
     expect(res.status).toBe(401);
     expect(res.body.error.code).toBe('UNAUTHENTICATED');
   });
+
+  it('lets a request with a valid token through to the route', async () => {
+    const res = await getProtected(authHeader());
+
+    expect(res.status).toBe(200);
+  });
 });

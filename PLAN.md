@@ -222,7 +222,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] **(guard)** `unit:` `jwt.verify` rejects tampered and expired tokens (`it.each`)
 - [x] Invalid signature → 401
 - [x] **(guard)** Expired token → 401
-- [ ] **(guard)** Valid token → request passes through (4.3's tests already send one)
+- [x] **(guard)** Valid token → request passes through (4.3's tests already send one)
 
 `requireAdmin` gets built in 4.5, driven by "Non-admin → 403".
 
