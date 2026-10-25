@@ -1,7 +1,9 @@
 import { useId, useState, type FormEvent } from 'react';
+import { ApiError } from '../api/client';
+import type { VehicleInput } from '../api/vehicles';
 import { CATEGORIES } from '../constants/categories';
 import type { FieldErrors } from '../validation/types';
-import { validateVehicle, type VehicleFormValues } from '../validation/vehicle';
+import { toVehicleInput, validateVehicle, type VehicleFormValues } from '../validation/vehicle';
 import { SelectField } from './SelectField';
 import { TextField } from './TextField';
 
@@ -19,14 +21,17 @@ interface Props {
   title: string;
   /** Quantity is only asked for when adding (initial stock); edits leave stock alone. */
   withQuantity: boolean;
+  /** Sends the vehicle; a rejected ApiError is shown in the form. */
+  onSave: (input: VehicleInput) => Promise<void>;
   onClose: () => void;
 }
 
 /** Add / edit vehicle form in a modal panel (UI_PLAN.md §6); full-screen on mobile. */
-export function VehicleFormModal({ title, withQuantity, onClose }: Props) {
+export function VehicleFormModal({ title, withQuantity, onSave, onClose }: Props) {
   const titleId = useId();
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState<FieldErrors<VehicleFormValues>>({});
+  const [formError, setFormError] = useState('');
 
   const field = (name: keyof VehicleFormValues) => ({
     value: values[name],
@@ -34,9 +39,24 @@ export function VehicleFormModal({ title, withQuantity, onClose }: Props) {
     onChange: (value: string) => setValues((v) => ({ ...v, [name]: value })),
   });
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    setErrors(validateVehicle(values, { withQuantity }));
+    const found = validateVehicle(values, { withQuantity });
+    setErrors(found);
+    setFormError('');
+    if (Object.keys(found).length > 0) return;
+
+    try {
+      await onSave(toVehicleInput(values, { withQuantity }));
+    } catch (e) {
+      if (!(e instanceof ApiError)) throw e;
+      // details[].field uses the API's names, which match the form's keys.
+      if (e.details.length > 0) {
+        setErrors(Object.fromEntries(e.details.map((d) => [d.field, d.message])));
+      } else {
+        setFormError(e.message);
+      }
+    }
   }
 
   return (
@@ -52,6 +72,11 @@ export function VehicleFormModal({ title, withQuantity, onClose }: Props) {
           <h2 id={titleId} className="text-2xl font-bold uppercase tracking-[3px]">
             {title}
           </h2>
+          {formError && (
+            <p role="alert" className="cyber-error">
+              {formError}
+            </p>
+          )}
           <div className="grid gap-4 sm:grid-cols-2">
             <TextField label="Make" {...field('make')} />
             <TextField label="Model" {...field('model')} />

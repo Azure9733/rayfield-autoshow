@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ApiError } from '../api/client';
 import {
+  createVehicle,
   EMPTY_FILTERS,
   filledFilters,
   listVehicles,
@@ -159,7 +160,14 @@ export function InventoryPage() {
         </div>
       </main>
       {adding && (
-        <VehicleFormModal title="Add vehicle" withQuantity onClose={() => setAdding(false)} />
+        <VehicleFormModal
+          title="Add vehicle"
+          withQuantity
+          onSave={async (input) => {
+            await createVehicle(input);
+          }}
+          onClose={() => setAdding(false)}
+        />
       )}
       {notice && <Toast tone={notice.tone} message={notice.message} />}
       {error && <Toast tone="error" message={error} action={{ label: 'Retry', onClick: retry }} />}

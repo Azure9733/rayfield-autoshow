@@ -159,7 +159,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 **Admin**
 - [x] Admin controls hidden for regular users
 - [x] Vehicle form shows validation errors (client-side)
-- [ ] Server validation errors show under the matching field
+- [x] Server validation errors show under the matching field
 - [ ] Adding a vehicle shows it in the grid
 - [ ] Edit opens the form prefilled
 - [ ] Saving an edit updates the card

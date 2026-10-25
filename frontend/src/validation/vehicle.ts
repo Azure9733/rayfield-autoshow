@@ -1,5 +1,6 @@
 // Client-side copies of the backend's vehicle rules and messages (backend/src/modules/vehicles/
 // vehicles.schemas.ts); the backend still validates everything.
+import type { VehicleInput } from '../api/vehicles';
 import { CATEGORIES } from '../constants/categories';
 import type { FieldErrors } from './types';
 
@@ -77,4 +78,21 @@ export function validateVehicle(
     errors.quantity = 'Quantity must be a whole number from 0 to 10,000';
   }
   return errors;
+}
+
+/** Converts valid form values to the API body; a blank image URL is left out. */
+export function toVehicleInput(
+  values: VehicleFormValues,
+  { withQuantity }: { withQuantity: boolean },
+): VehicleInput {
+  const imageUrl = values.imageUrl.trim();
+  return {
+    make: values.make.trim(),
+    model: values.model.trim(),
+    year: Number(values.year),
+    category: values.category,
+    price: Number(values.price),
+    ...(imageUrl && { imageUrl }),
+    ...(withQuantity && { quantity: Number(values.quantity) }),
+  };
 }

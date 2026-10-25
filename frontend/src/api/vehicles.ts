@@ -57,3 +57,19 @@ export function searchVehicles(filters: SearchFilters) {
   const params = new URLSearchParams(filledFilters(filters) as Record<string, string>);
   return api.get<Vehicle[]>(`/api/vehicles/search?${params}`);
 }
+
+/** Body for POST /api/vehicles (with quantity) and PUT /api/vehicles/:id (without). */
+export interface VehicleInput {
+  make: string;
+  model: string;
+  year: number;
+  category: string;
+  price: number;
+  imageUrl?: string;
+  quantity?: number;
+}
+
+/** POST /api/vehicles (admin): returns the created vehicle. */
+export function createVehicle(input: VehicleInput) {
+  return api.post<Vehicle>('/api/vehicles', input);
+}
