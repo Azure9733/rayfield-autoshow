@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { createApp } from '../../src/app';
+import { verifyToken } from '../../src/lib/jwt';
 
 const ann = { name: 'Ann Driver', email: 'ann@example.com', password: 'supersecret' };
 
@@ -26,6 +27,18 @@ describe('POST /api/auth/login', () => {
     expect(res.body).toEqual({
       token: expect.any(String),
       user: { id, name: ann.name, email: ann.email, role: 'user' },
+    });
+  });
+
+  it('returns a valid JWT whose sub is the user id, with role and exp', async () => {
+    const { id } = await registerAnn();
+
+    const res = await login();
+
+    expect(verifyToken(res.body.token)).toMatchObject({
+      sub: id,
+      role: 'user',
+      exp: expect.any(Number),
     });
   });
 });
