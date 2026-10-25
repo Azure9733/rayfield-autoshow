@@ -64,4 +64,27 @@ describe('admin card actions', () => {
     expect(body).toEqual({ quantity: 5 });
     expect(within(card).queryByLabelText('Units to add')).not.toBeInTheDocument();
   });
+
+  it.each(['0', '10001', '2.5'])(
+    'restock rejects %s with the message under the field, sending nothing',
+    async (units) => {
+      let sent = false;
+      server.use(
+        http.post('/api/vehicles/a1/restock', () => {
+          sent = true;
+          return HttpResponse.json(inStock);
+        }),
+      );
+      const { user, card } = await renderAsAdmin();
+
+      await user.click(within(card).getByRole('button', { name: 'Restock' }));
+      await user.type(within(card).getByLabelText('Units to add'), units);
+      await user.click(within(card).getByRole('button', { name: 'Add stock' }));
+
+      expect(within(card).getByLabelText('Units to add')).toHaveAccessibleDescription(
+        'Restock quantity must be a whole number from 1 to 10,000',
+      );
+      expect(sent).toBe(false);
+    },
+  );
 });

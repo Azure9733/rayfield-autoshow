@@ -167,3 +167,4 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Delete asks for in-page confirmation
 - [x] Confirming delete removes the card
 - [x] Restock updates the stock shown
+- [ ] Restock rejects a quantity outside 1–10,000 with the message under the field, sending nothing
