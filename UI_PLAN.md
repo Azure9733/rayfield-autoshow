@@ -139,7 +139,8 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] A logged-in user visiting `/login` or `/register` goes to `/`
 
 **Header**
-- [x] Below lg, the Menu button opens and closes the nav; choosing a link closes it
+- [x] Below lg, the Menu button opens and closes the nav
+- [ ] No INVENTORY link in the header (nav or menu); the logo links to `/`
 
 **Not found**
 - [x] Unknown routes show `///SIGNAL.LOST` with a link home

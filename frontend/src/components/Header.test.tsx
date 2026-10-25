@@ -15,7 +15,7 @@ describe('header', () => {
     expect(loadSession()).toBeNull();
   });
 
-  it('the Menu button opens and closes the mobile nav; choosing a link closes it', async () => {
+  it('the Menu button opens and closes the mobile nav', async () => {
     saveSession({ token: 'some.jwt.token', user: account });
     const { user } = renderApp('/');
     const menu = screen.getByRole('button', { name: 'Menu' });
@@ -29,13 +29,15 @@ describe('header', () => {
 
     await user.click(menu);
     expect(screen.queryByRole('navigation', { name: 'Mobile' })).not.toBeInTheDocument();
+  });
 
-    await user.click(menu);
-    await user.click(
-      within(screen.getByRole('navigation', { name: 'Mobile' })).getByRole('link', {
-        name: 'Inventory',
-      }),
-    );
-    expect(screen.queryByRole('navigation', { name: 'Mobile' })).not.toBeInTheDocument();
+  it('has no Inventory link, in the nav or the menu; the logo links to /', async () => {
+    saveSession({ token: 'some.jwt.token', user: account });
+    const { user } = renderApp('/');
+
+    expect(screen.queryByRole('link', { name: 'Inventory' })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Menu' }));
+    expect(screen.queryByRole('link', { name: 'Inventory' })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /rayfield/i })).toHaveAttribute('href', '/');
   });
 });
