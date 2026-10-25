@@ -178,3 +178,4 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Confirming delete removes the card
 - [x] Restock updates the stock shown
 - [x] Restock rejects a quantity outside 1–10,000 with the message under the field, sending nothing
+- [ ] A failed delete or restock shows the API error as a red toast and keeps its panel open

@@ -87,4 +87,33 @@ describe('admin card actions', () => {
       expect(sent).toBe(false);
     },
   );
+
+  const notFound = () =>
+    HttpResponse.json(
+      { error: { code: 'NOT_FOUND', message: 'Vehicle not found' } },
+      { status: 404 },
+    );
+
+  it('a failed delete shows the API error as a red toast and keeps the confirmation open', async () => {
+    server.use(http.delete('/api/vehicles/a1', notFound));
+    const { user, card } = await renderAsAdmin();
+
+    await user.click(within(card).getByRole('button', { name: 'Delete' }));
+    await user.click(within(card).getByRole('button', { name: 'Confirm' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Vehicle not found');
+    expect(within(card).getByRole('alertdialog')).toBeInTheDocument();
+  });
+
+  it('a failed restock shows the API error as a red toast and keeps the popover open', async () => {
+    server.use(http.post('/api/vehicles/a1/restock', notFound));
+    const { user, card } = await renderAsAdmin();
+
+    await user.click(within(card).getByRole('button', { name: 'Restock' }));
+    await user.type(within(card).getByLabelText('Units to add'), '5');
+    await user.click(within(card).getByRole('button', { name: 'Add stock' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Vehicle not found');
+    expect(within(card).getByLabelText('Units to add')).toHaveValue(5);
+  });
 });
