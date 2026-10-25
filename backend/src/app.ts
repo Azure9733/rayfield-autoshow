@@ -53,3 +53,4 @@ export function createApp({ repos }: AppDeps = defaultDeps()): Express {
 
   return app;
 }
+export default createApp();
