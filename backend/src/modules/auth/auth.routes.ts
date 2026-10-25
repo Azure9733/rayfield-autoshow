@@ -9,5 +9,6 @@ export function createAuthRouter(service: AuthService): Router {
   const controller = createAuthController(service);
   const router = Router();
   router.post('/register', validateBody(registerSchema), controller.register);
+  router.post('/login', controller.login);
   return router;
 }

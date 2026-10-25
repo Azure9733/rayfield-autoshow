@@ -198,7 +198,7 @@ How to read this list:
 
 ### 4.2 `POST /api/auth/login`
 - [x] `unit:` `jwt.sign` then `jwt.verify` keeps `sub` and `role`; the token has an `exp`
-- [ ] Correct credentials → 200 with `{ token, user }`
+- [x] Correct credentials → 200 with `{ token, user }`
 - [ ] **(guard)** Token is a valid JWT containing `sub` (user id), `role` and `exp`
 - [ ] **(guard)** `user` in the response never contains the password hash
 - [ ] Wrong password → 401 (generic message)
