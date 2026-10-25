@@ -9,12 +9,12 @@ Product/data decisions that affect the backend live in `PLAN.md` → "Product Sp
 
 - **Palette:** signature yellow `#f5d800` page background with black text; only the header is black; dark panels (`#080808`) for cards, forms and modals; red `#fd3649` actions/danger, cyan `#00e6f6` accents/focus.
 - **Fonts:** Rajdhani (headings, buttons, labels), Share Tech Mono (prices, stock, IDs).
-- **Motifs:** chamfered corners, `///MODULE` strips, glitch headings (effects adapted from CodePen — credited in README), scanline "screens", label│value badges.
+- **Motifs:** chamfered corners, glitch headings (effects adapted from CodePen — credited in README), scanline "screens", label│value badges.
 - **Rules:** neon for accents only; body text ≥ 4.5:1 contrast; black text on red and yellow fills (black on `#fd3649` is 5.8:1, white only 3.6:1); disabled states obvious; animations off under `prefers-reduced-motion`.
 - **App name:** Rayfield Autoshow. Prices in USD.
 
 ### Header & Logo
-- Black header bar, full width, sticky. The yellow module strip directly below doubles as its divider.
+- Black header bar, full width, sticky.
 - **Left:** brand lockup `[logo] | RAYFIELD AUTOSHOW`: Rayfield logo (white PNG, used as-is), thin vertical divider, name in white Rajdhani with wide tracking. Below `sm` the text shortens to `AUTOSHOW` (the logo already says RAYFIELD). Links to `/`.
 - **Right:** nav links (INVENTORY · LOGOUT) + signed-in user's name (from `xl`); hamburger below `lg`, since the longer name needs the room. On `/login` and `/register` only the brand shows.
 - Logo file: `Thumbnails-144.png` → `frontend/src/assets/rayfield-logo.png` (resized from 2314×611 to 424×112, 2x the largest display size), `alt="Rayfield"`, ~36px tall on mobile, ~56px on desktop.
@@ -37,7 +37,6 @@ Guests are redirected to `/login`. There is no `/admin` route: admin controls re
 ```
 ┌───────────────────────────────────────────────┐
 │ [R] | RAYFIELD AUTOSHOW       INVENTORY LOGOUT│  ← black header, [R] = logo (hamburger < lg)
-│ ///INVENTORY.MODULE  loading... ▮▮▮▮▮▮▮▮▮▮▮▮▮│  ← yellow module strip (header divider)
 ├───────────────────────────────────────────────┤
 │ [ make or model…            ] [FILTERS] [CLEAR]│  ← search bar: results update as you type
 │  category ▾ │ min price │ max price │ [x] in stock  ← shown by FILTERS
@@ -90,7 +89,7 @@ Admin controls appear on `/` for admins only (no separate admin page).
 
 | State | UI |
 |---|---|
-| Loading | module strip `loading...` + skeleton cards |
+| Loading | skeleton cards |
 | Empty inventory | `///NO.UNITS.IN.STOCK` (+ "Add vehicle" for admin) |
 | No search results | `///NO.MATCH` + clear filters button |
 | API error | red toast + retry |
@@ -107,7 +106,6 @@ Grid: 1 col (< 640px) → 2 (sm) → 3 (lg) → 4 (xl). Header → hamburger bel
 | Component | Classes |
 |---|---|
 | `Header` | `cyber-header`, `cyber-nav-link`, `brand`, `brand-logo`, `brand-name` |
-| `ModuleStrip` | `module-strip` |
 | `VehicleCard` | `cyber-panel`, `cyber-screen`, `cyber-badge`, `btn-cyber` |
 | `SearchPanel` | `cyber-input`, `cyber-label`, `btn-cyber`, `btn-ghost` |
 | `VehicleFormModal` | `cyber-panel`, `cyber-input`, `cyber-error` |
@@ -149,7 +147,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 **Inventory**
 - [x] Cards show make, model, year, category, USD price and stock
 - [x] Loading shows skeleton cards
-- [ ] The `///INVENTORY.MODULE` strip is gone: skeletons alone show loading
+- [x] The `///INVENTORY.MODULE` strip is gone: skeletons alone show loading
 - [x] Empty inventory shows `///NO.UNITS.IN.STOCK`
 - [x] API error shows the red toast with retry
 - [x] Purchase button disabled when quantity is 0 (required)

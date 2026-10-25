@@ -178,16 +178,8 @@ export function InventoryPage() {
 
   return (
     <>
-      <div className="module-strip">
-        <h1 className="sr-only">Inventory</h1>
-        <span aria-hidden="true">///INVENTORY.MODULE</span>
-        {loading && (
-          <span>
-            loading<span className="animate-blink">...</span>
-          </span>
-        )}
-      </div>
       <main className="flex-1 space-y-6 px-4 py-8 md:px-8">
+        <h1 className="sr-only">Inventory</h1>
         <SearchPanel
           values={form}
           onChange={setForm}

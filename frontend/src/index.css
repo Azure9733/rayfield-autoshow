@@ -242,29 +242,6 @@
     @apply bg-cp-cyan text-black;
   }
 
-  /* ── MODULE STRIP (section header / loading bar) ──
-     <div class="module-strip"><span>///INVENTORY.MODULE</span><span>loading<span class="animate-blink">...</span></span></div> */
-  .module-strip {
-    @apply flex items-center gap-4 h-9 px-3 bg-cp-yellow text-black/85 text-[11px]
-           tracking-[1.5px] uppercase whitespace-nowrap overflow-hidden;
-  }
-  .module-strip::after {
-    /* fake barcode filling the rest of the strip */
-    content: '';
-    @apply flex-1 self-end h-3.5;
-    background: repeating-linear-gradient(
-      90deg,
-      #000 0 1px,
-      transparent 1px 3px,
-      #000 3px 5px,
-      transparent 5px 6px,
-      #000 6px 9px,
-      transparent 9px 12px,
-      #000 12px 13px,
-      transparent 13px 17px
-    );
-  }
-
   /* ── FORM INPUTS ── */
   .cyber-label {
     @apply block mb-1.5 text-xs tracking-[3px] uppercase text-cp-yellow/70;
