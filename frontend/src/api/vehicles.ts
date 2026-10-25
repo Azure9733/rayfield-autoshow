@@ -83,3 +83,8 @@ export function updateVehicle(id: string, input: VehicleInput) {
 export function deleteVehicle(id: string) {
   return api.delete(`/api/vehicles/${id}`);
 }
+
+/** POST /api/vehicles/:id/restock (admin): adds 1–10,000 units; returns the updated vehicle. */
+export function restockVehicle(id: string, quantity: number) {
+  return api.post<Vehicle>(`/api/vehicles/${id}/restock`, { quantity });
+}
