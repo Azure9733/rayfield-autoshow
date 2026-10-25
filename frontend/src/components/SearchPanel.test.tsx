@@ -187,13 +187,13 @@ describe('search panel', () => {
     ['a negative min', { min: '-5', max: '' }, 'Min price', 'Price filters must be 0 or more'],
     ['a negative max', { min: '', max: '-5' }, 'Max price', 'Price filters must be 0 or more'],
   ])(
-    '%s shows the message under the field and sends nothing',
+    '%s shows the message under the field and is never sent',
     async (_case, prices, field, message) => {
       serveVehicles(inStock);
-      let searched = false;
+      const requests: Record<string, string>[] = [];
       server.use(
-        http.get('/api/vehicles/search', () => {
-          searched = true;
+        http.get('/api/vehicles/search', ({ request }) => {
+          requests.push(Object.fromEntries(new URL(request.url).searchParams));
           return HttpResponse.json([]);
         }),
       );
@@ -207,9 +207,16 @@ describe('search panel', () => {
       await waitFor(() =>
         expect(screen.getByLabelText(field)).toHaveAccessibleDescription(message),
       );
-      // Give the debounce time to fire, then check nothing went out and no error toast showed.
+      // Give the debounce time to fire, then check the invalid filter never went out (a valid
+      // halfway state, like min=50000 before max is typed, may) and no error toast showed.
       await new Promise((resolve) => setTimeout(resolve, 400));
-      expect(searched).toBe(false);
+      const sentInvalid = requests.some(
+        (r) =>
+          Number(r.minPrice) < 0 ||
+          Number(r.maxPrice) < 0 ||
+          Number(r.minPrice) > Number(r.maxPrice),
+      );
+      expect(sentInvalid).toBe(false);
       expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     },
   );
