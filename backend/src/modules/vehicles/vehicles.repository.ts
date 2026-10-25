@@ -38,7 +38,8 @@ export interface VehiclesRepository {
   /** Vehicles matching the filters, newest first; `{}` returns every vehicle. */
   search(filters: VehicleFilters): Promise<Vehicle[]>;
   create(input: NewVehicle): Promise<Vehicle>;
-  update(id: string, input: VehicleUpdate): Promise<Vehicle>;
+  /** The updated vehicle, or undefined if no vehicle has that id. */
+  update(id: string, input: VehicleUpdate): Promise<Vehicle | undefined>;
 }
 
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
@@ -82,7 +83,7 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
         })
         .where(eq(vehicles.id, id))
         .returning();
-      return toVehicle(row);
+      return row && toVehicle(row);
     },
   };
 }

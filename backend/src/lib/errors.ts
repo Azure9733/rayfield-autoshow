@@ -32,6 +32,12 @@ export class ForbiddenError extends AppError {
   }
 }
 
+export class NotFoundError extends AppError {
+  constructor(code: string, message: string) {
+    super(404, code, message);
+  }
+}
+
 export class ConflictError extends AppError {
   constructor(code: string, message: string) {
     super(409, code, message);

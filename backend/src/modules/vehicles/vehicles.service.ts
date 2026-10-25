@@ -1,3 +1,4 @@
+import { NotFoundError } from '../../lib/errors';
 import type {
   NewVehicle,
   Vehicle,
@@ -28,8 +29,14 @@ export function createVehiclesService(vehicles: VehiclesRepository): VehiclesSer
       return vehicles.create(input);
     },
 
-    update(id, input) {
-      return vehicles.update(id, input);
+    async update(id, input) {
+      const updated = await vehicles.update(id, input);
+      if (!updated) throw vehicleNotFound();
+      return updated;
     },
   };
+}
+
+function vehicleNotFound(): NotFoundError {
+  return new NotFoundError('NOT_FOUND', 'Vehicle not found');
 }
