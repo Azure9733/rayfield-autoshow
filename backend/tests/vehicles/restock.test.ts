@@ -79,4 +79,14 @@ describe('POST /api/vehicles/:id/restock', () => {
     expect(res.status).toBe(400);
     expect(res.body.error.details).toEqual([{ field: 'id', message: expect.any(String) }]);
   });
+
+  it('returns 403 for a logged-in user who is not an admin, and leaves stock alone', async () => {
+    const { id } = await createVehicle({ quantity: 2 });
+
+    const res = await restock(id, { quantity: 5 }, 'user');
+
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('FORBIDDEN');
+    expect(await stockOf(id)).toBe(2);
+  });
 });
