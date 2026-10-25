@@ -176,4 +176,41 @@ describe('search panel', () => {
       expect(screen.getByTestId('location')).toHaveTextContent('/?q=toy&inStock=1'),
     );
   });
+
+  it.each([
+    [
+      'min above max',
+      { min: '50000', max: '1000' },
+      'Min price',
+      "Min price can't be more than max price",
+    ],
+    ['a negative min', { min: '-5', max: '' }, 'Min price', 'Price filters must be 0 or more'],
+    ['a negative max', { min: '', max: '-5' }, 'Max price', 'Price filters must be 0 or more'],
+  ])(
+    '%s shows the message under the field and sends nothing',
+    async (_case, prices, field, message) => {
+      serveVehicles(inStock);
+      let searched = false;
+      server.use(
+        http.get('/api/vehicles/search', () => {
+          searched = true;
+          return HttpResponse.json([]);
+        }),
+      );
+      const { user } = renderApp('/');
+      await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+      await openFilters(user);
+
+      if (prices.min) await user.type(screen.getByLabelText('Min price'), prices.min);
+      if (prices.max) await user.type(screen.getByLabelText('Max price'), prices.max);
+
+      await waitFor(() =>
+        expect(screen.getByLabelText(field)).toHaveAccessibleDescription(message),
+      );
+      // Give the debounce time to fire, then check nothing went out and no error toast showed.
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      expect(searched).toBe(false);
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    },
+  );
 });
