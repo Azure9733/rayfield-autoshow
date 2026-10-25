@@ -145,7 +145,7 @@ frontend/
 - API fields are camelCase; DB columns are snake_case (Drizzle maps them).
 - Unknown fields in a request body are ignored (Zod strips them).
 - Register → 201 `{ id, name, email, role }`; login → 200 `{ token, user }`. The frontend logs in right after a successful register.
-- Purchase = always 1 unit; any request body is ignored. Purchase and restock return 200 with the updated vehicle.
+- Purchase = always 1 unit; any request body is ignored. Purchase and restock return 200 with the updated vehicle. Stock changes count as updates: purchase and restock move `updatedAt` forward too.
 - `PUT /api/vehicles/:id` replaces make, model, year, category, price and imageUrl (same validation as create); `quantity` is ignored; an omitted `imageUrl` clears the image (stored as `null`).
 - `GET /api/vehicles` returns all vehicles, newest first, including sold-out ones.
 - Search params: `make`, `model` (case-insensitive partial; `%` and `_` match literally), `category` (case-insensitive exact; unknown → 400), `minPrice`, `maxPrice` (inclusive). Empty params (`?make=`) count as absent; filters combine with AND. "In stock only" is a frontend filter.
@@ -287,9 +287,11 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] **(guard)** **Concurrency**: 10 parallel purchases at quantity 5 → five 200s, five 409s, final quantity 0
   - Implementation: single atomic `UPDATE vehicles SET quantity = quantity - 1 WHERE id = $id AND quantity > 0 RETURNING *`. A guard if you write it this way from the first test; two requests alone might not overlap, hence 10.
 - [x] **(guard)** No token → 401
+- [ ] A purchase moves `updatedAt` forward (stock changes count as updates)
 
 ### 4.10 `POST /api/vehicles/:id/restock` (admin)
 - [ ] Admin, `{ quantity: 5 }` → 200 with the updated vehicle, quantity increased by 5
+- [ ] A restock moves `updatedAt` forward
 - [ ] Quantity rule (`it.each`): missing, 0, −1, 1.5, 10,001 → 400; 1 and 10,000 accepted
 - [ ] Unknown id → 404
 - [ ] **(guard)** Malformed id → 400
