@@ -231,7 +231,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Persists in DB (follow-up `GET /api/vehicles` finds it)
 - [x] Non-admin → 403 (builds `requireAdmin`; the admin 201 above already shows admins pass)
 - [x] **(guard)** No token → 401 (if `authenticate` covers the whole vehicles router)
-- [ ] Required fields (`it.each`): missing make / model / year / category / price → 400
+- [x] Required fields (`it.each`): missing make / model / year / category / price → 400
 - [ ] Make/model rule (`it.each`): whitespace-only, 51 chars → 400; 50 chars accepted; surrounding spaces trimmed
 - [ ] Category rule (`it.each`): `BOAT` → 400; `suv` → 201, stored as `SUV`
 - [ ] Year rule (`it.each`): 1899, current year + 2 → 400; 1900, current year + 1 accepted (compute the year in the test, never hard-code it)

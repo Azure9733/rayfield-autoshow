@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express';
+import type { NewVehicle } from './vehicles.repository';
 import type { VehiclesService } from './vehicles.service';
 
 /** Translates HTTP requests into vehicles service calls and back; no business rules here. */
@@ -8,9 +9,8 @@ export function createVehiclesController(service: VehiclesService) {
       res.json(await service.list());
     },
 
-    async create(req: Request, res: Response) {
-      const { make, model, year, category, price, quantity } = req.body;
-      res.status(201).json(await service.create({ make, model, year, category, price, quantity }));
+    async create(_req: Request, res: Response) {
+      res.status(201).json(await service.create(res.locals.body as NewVehicle));
     },
   };
 }
