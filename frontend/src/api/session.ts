@@ -25,7 +25,21 @@ export function clearSession() {
   localStorage.removeItem(KEY);
 }
 
-/** The stored session, or null when logged out. */
+/**
+ * The stored session, or null when logged out. Anything unreadable (bad JSON, wrong shape,
+ * e.g. edited by hand or left by an older version) counts as logged out and is removed.
+ */
 export function loadSession(): Session | null {
-  return JSON.parse(localStorage.getItem(KEY) ?? 'null') as Session | null;
+  const raw = localStorage.getItem(KEY);
+  if (raw === null) return null;
+  try {
+    const session = JSON.parse(raw) as Partial<Session> | null;
+    if (typeof session?.token === 'string' && typeof session.user?.role === 'string') {
+      return session as Session;
+    }
+  } catch {
+    // fall through: unreadable
+  }
+  clearSession();
+  return null;
 }
