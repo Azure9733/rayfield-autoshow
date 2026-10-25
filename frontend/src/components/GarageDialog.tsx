@@ -1,4 +1,5 @@
 import { useEffect, useId, useState } from 'react';
+import { ApiError } from '../api/client';
 import { listMyPurchases, type Purchase } from '../api/purchases';
 import { formatDateTime, formatPrice } from '../lib/format';
 import { Modal } from './Modal';
@@ -6,17 +7,34 @@ import { Modal } from './Modal';
 /** "My Garage" (UI_PLAN.md §1): the caller's purchase history, fetched fresh on every open. */
 export function GarageDialog({ onClose }: { onClose: () => void }) {
   const titleId = useId();
+  // null until the list arrives; with no error, that's the loading state.
   const [purchases, setPurchases] = useState<Purchase[] | null>(null);
+  const [error, setError] = useState('');
+  // Bumped by Retry to load again.
+  const [attempt, setAttempt] = useState(0);
+  const loading = purchases === null && !error;
 
   useEffect(() => {
+    // Ignore a response that lands after the dialog closed.
     let active = true;
-    listMyPurchases().then((list) => {
-      if (active) setPurchases(list);
-    });
+    listMyPurchases()
+      .then((list) => {
+        if (active) setPurchases(list);
+      })
+      .catch((e: unknown) => {
+        if (!(e instanceof ApiError)) throw e;
+        if (active) setError(e.message);
+      });
     return () => {
       active = false;
     };
-  }, []);
+  }, [attempt]);
+
+  function retry() {
+    setError('');
+    setPurchases(null);
+    setAttempt((n) => n + 1);
+  }
 
   return (
     <Modal labelledBy={titleId} onRequestClose={onClose} className="max-w-2xl">
@@ -24,7 +42,17 @@ export function GarageDialog({ onClose }: { onClose: () => void }) {
         <h2 id={titleId} className="p-6 pb-4 text-2xl font-bold uppercase tracking-[3px]">
           My Garage
         </h2>
-        {purchases === null && (
+        {error && (
+          <div className="flex flex-col items-center gap-4 px-6 pt-4 pb-10 text-center">
+            <p role="alert" className="font-bold text-cp-red">
+              {error}
+            </p>
+            <button type="button" className="btn-ghost" onClick={retry}>
+              Retry
+            </button>
+          </div>
+        )}
+        {loading && (
           <div className="space-y-3 px-6 pb-6" aria-busy="true">
             {Array.from({ length: 3 }, (_, i) => (
               <div
