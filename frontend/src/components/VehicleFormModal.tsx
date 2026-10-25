@@ -34,6 +34,8 @@ export function VehicleFormModal({ title, initial = EMPTY, withQuantity, onSave,
   const [values, setValues] = useState(initial);
   const [errors, setErrors] = useState<FieldErrors<VehicleFormValues>>({});
   const [formError, setFormError] = useState('');
+  // Disables Save while the request runs, so a double-click can't create two vehicles.
+  const [saving, setSaving] = useState(false);
 
   const field = (name: keyof VehicleFormValues) => ({
     name,
@@ -49,6 +51,7 @@ export function VehicleFormModal({ title, initial = EMPTY, withQuantity, onSave,
     setFormError('');
     if (Object.keys(found).length > 0) return;
 
+    setSaving(true);
     try {
       await onSave(toVehicleInput(values, { withQuantity }));
     } catch (e) {
@@ -59,6 +62,8 @@ export function VehicleFormModal({ title, initial = EMPTY, withQuantity, onSave,
       } else {
         setFormError(e.message);
       }
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -100,7 +105,7 @@ export function VehicleFormModal({ title, initial = EMPTY, withQuantity, onSave,
             <button type="button" className="btn-ghost" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="btn-cyber" data-text="Save">
+            <button type="submit" className="btn-cyber" data-text="Save" disabled={saving}>
               Save
             </button>
           </div>

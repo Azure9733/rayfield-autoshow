@@ -10,6 +10,8 @@ interface Props {
 export function RestockPopover({ onRestock, onCancel }: Props) {
   const [quantity, setQuantity] = useState('');
   const [error, setError] = useState('');
+  // Disables Add stock while the request runs, so a double-click can't restock twice.
+  const [busy, setBusy] = useState(false);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -19,7 +21,12 @@ export function RestockPopover({ onRestock, onCancel }: Props) {
       setError('Restock quantity must be a whole number from 1 to 10,000');
       return;
     }
-    await onRestock(units);
+    setBusy(true);
+    try {
+      await onRestock(units);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -35,7 +42,7 @@ export function RestockPopover({ onRestock, onCancel }: Props) {
         autoFocus
       />
       <div className="flex gap-2">
-        <button type="submit" className="btn-ghost">
+        <button type="submit" className="btn-ghost" disabled={busy}>
           Add stock
         </button>
         <button type="button" className="btn-ghost" onClick={onCancel}>

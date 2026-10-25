@@ -20,7 +20,7 @@ export function VehicleCard({
   /** Admin actions; when absent (regular users) the admin buttons aren't rendered. */
   admin?: {
     onEdit: (vehicle: Vehicle) => void;
-    onDelete: (vehicle: Vehicle) => void;
+    onDelete: (vehicle: Vehicle) => Promise<void>;
     /** Resolves true when restocked; false keeps the popover open. */
     onRestock: (vehicle: Vehicle, quantity: number) => Promise<boolean>;
   };
