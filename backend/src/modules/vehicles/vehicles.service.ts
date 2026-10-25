@@ -14,6 +14,7 @@ export interface VehiclesService {
   update(id: string, input: VehicleUpdate): Promise<Vehicle>;
   remove(id: string): Promise<void>;
   purchase(id: string): Promise<Vehicle>;
+  restock(id: string, quantity: number): Promise<Vehicle>;
 }
 
 /** Vehicle and inventory rules; knows nothing about HTTP. */
@@ -48,6 +49,10 @@ export function createVehiclesService(vehicles: VehiclesRepository): VehiclesSer
       // "no such vehicle" (404) from "none left" (409).
       if (!(await vehicles.exists(id))) throw vehicleNotFound();
       throw new ConflictError('OUT_OF_STOCK', 'Out of stock');
+    },
+
+    async restock(id, quantity) {
+      return (await vehicles.restock(id, quantity))!;
     },
   };
 }

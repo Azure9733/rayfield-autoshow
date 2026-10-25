@@ -18,5 +18,6 @@ export function createVehiclesRouter(service: VehiclesService): Router {
   router.put('/:id', requireAdmin, validateBody(updateVehicleSchema), controller.update);
   router.delete('/:id', requireAdmin, controller.remove);
   router.post('/:id/purchase', controller.purchase);
+  router.post('/:id/restock', controller.restock);
   return router;
 }

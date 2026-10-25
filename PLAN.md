@@ -290,7 +290,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] A purchase moves `updatedAt` forward (stock changes count as updates)
 
 ### 4.10 `POST /api/vehicles/:id/restock` (admin)
-- [ ] Admin, `{ quantity: 5 }` → 200 with the updated vehicle, quantity increased by 5
+- [x] Admin, `{ quantity: 5 }` → 200 with the updated vehicle, quantity increased by 5
 - [ ] A restock moves `updatedAt` forward
 - [ ] Quantity rule (`it.each`): missing, 0, −1, 1.5, 10,001 → 400; 1 and 10,000 accepted
 - [ ] Unknown id → 404

@@ -29,5 +29,9 @@ export function createVehiclesController(service: VehiclesService) {
     async purchase(req: Request<{ id: string }>, res: Response) {
       res.json(await service.purchase(req.params.id));
     },
+
+    async restock(req: Request<{ id: string }>, res: Response) {
+      res.json(await service.restock(req.params.id, req.body.quantity));
+    },
   };
 }

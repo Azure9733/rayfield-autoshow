@@ -48,6 +48,8 @@ export interface VehiclesRepository {
    */
   purchaseOne(id: string): Promise<Vehicle | undefined>;
   exists(id: string): Promise<boolean>;
+  /** Adds `quantity` units to stock; the updated vehicle, or undefined for an unknown id. */
+  restock(id: string, quantity: number): Promise<Vehicle | undefined>;
 }
 
 /** Postgres-backed implementation of {@link VehiclesRepository}. */
@@ -116,6 +118,15 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
     async exists(id) {
       const rows = await db.select({ id: vehicles.id }).from(vehicles).where(eq(vehicles.id, id));
       return rows.length > 0;
+    },
+
+    async restock(id, quantity) {
+      const [row] = await db
+        .update(vehicles)
+        .set({ quantity: sql`${vehicles.quantity} + ${quantity}` })
+        .where(eq(vehicles.id, id))
+        .returning();
+      return row && toVehicle(row);
     },
   };
 }
