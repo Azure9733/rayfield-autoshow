@@ -20,4 +20,23 @@ describe('api client', () => {
 
     expect(authorization).toBe('Bearer abc.def.ghi');
   });
+
+  it('turns the error format into { code, message, details }', async () => {
+    const details = [{ field: 'price', message: 'Price must be between $0.01 and $100,000,000' }];
+    server.use(
+      http.get('/api/vehicles', () =>
+        HttpResponse.json(
+          { error: { code: 'VALIDATION_ERROR', message: 'Validation failed', details } },
+          { status: 400 },
+        ),
+      ),
+    );
+
+    await expect(api.get('/api/vehicles')).rejects.toMatchObject({
+      status: 400,
+      code: 'VALIDATION_ERROR',
+      message: 'Validation failed',
+      details,
+    });
+  });
 });
