@@ -25,4 +25,12 @@ describe('GET /api/vehicles/search', () => {
     expect(res.status).toBe(200);
     expect(idsOf(res)).toEqual([toyota.id]);
   });
+
+  it('matches make case-insensitively', async () => {
+    const toyota = await createVehicle({ make: 'Toyota' });
+
+    const res = await search({ make: 'tOYOTA' });
+
+    expect(idsOf(res)).toEqual([toyota.id]);
+  });
 });
