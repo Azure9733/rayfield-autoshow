@@ -16,7 +16,10 @@ export interface VehiclesRepository {
 export function createVehiclesRepository(db: Database): VehiclesRepository {
   return {
     async list() {
-      const rows = await db.select().from(vehicles).orderBy(desc(vehicles.createdAt));
+      const rows = await db
+        .select()
+        .from(vehicles)
+        .orderBy(desc(vehicles.createdAt), desc(vehicles.id));
       return rows.map(toVehicle);
     },
   };
