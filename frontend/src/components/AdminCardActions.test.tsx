@@ -1,4 +1,5 @@
 import { screen, waitFor, within } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { badge, inStock, loginAs, serveVehicles } from '../test/fixtures';
 import { renderApp } from '../test/renderApp';
@@ -116,4 +117,68 @@ describe('admin card actions', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Vehicle not found');
     expect(within(card).getByLabelText('Units to add')).toHaveValue(5);
   });
+
+  it.each([
+    [
+      'Save (add vehicle)',
+      'post',
+      '/api/vehicles',
+      async (user: UserEvent) => {
+        await user.click(screen.getByRole('button', { name: 'Add vehicle' }));
+        const dialog = screen.getByRole('dialog', { name: 'Add vehicle' });
+        const field = (label: string) => within(dialog).getByLabelText(label);
+        await user.type(field('Make'), 'Toyota');
+        await user.type(field('Model'), 'Supra');
+        await user.type(field('Year'), '2024');
+        await user.selectOptions(field('Category'), 'COUPE');
+        await user.type(field('Price'), '55000');
+        return within(dialog).getByRole('button', { name: 'Save' });
+      },
+    ],
+    [
+      'Add stock',
+      'post',
+      '/api/vehicles/a1/restock',
+      async (user: UserEvent, card: HTMLElement) => {
+        await user.click(within(card).getByRole('button', { name: 'Restock' }));
+        await user.type(within(card).getByLabelText('Units to add'), '5');
+        return within(card).getByRole('button', { name: 'Add stock' });
+      },
+    ],
+    [
+      'Confirm delete',
+      'delete',
+      '/api/vehicles/a1',
+      async (user: UserEvent, card: HTMLElement) => {
+        await user.click(within(card).getByRole('button', { name: 'Delete' }));
+        return within(card).getByRole('button', { name: 'Confirm' });
+      },
+    ],
+  ] as const)(
+    '%s ignores a second click while its request is in flight',
+    async (_case, method, path, open) => {
+      let calls = 0;
+      let respond = () => {};
+      const responded = new Promise<void>((resolve) => (respond = resolve));
+      server.use(
+        http[method](path, async () => {
+          calls++;
+          await responded;
+          return method === 'delete'
+            ? new HttpResponse(null, { status: 204 })
+            : HttpResponse.json({ ...inStock, id: 'c3', model: 'Supra' }, { status: 201 });
+        }),
+      );
+      const { user, card } = await renderAsAdmin();
+      const button = await open(user, card);
+
+      await user.dblClick(button);
+
+      expect(button).toBeDisabled();
+      respond();
+      await waitFor(() => expect(calls).toBe(1));
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(calls).toBe(1);
+    },
+  );
 });
