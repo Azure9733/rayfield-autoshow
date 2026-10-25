@@ -165,5 +165,5 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Edit opens the form prefilled
 - [x] Saving an edit updates the card
 - [x] Delete asks for in-page confirmation
-- [ ] Confirming delete removes the card
+- [x] Confirming delete removes the card
 - [ ] Restock updates the stock shown

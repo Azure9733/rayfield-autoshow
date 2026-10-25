@@ -44,7 +44,8 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
       headers,
       body: body === undefined ? undefined : JSON.stringify(body),
     });
-    data = await response.json();
+    // 204 No Content (delete) has no body to parse.
+    data = response.status === 204 ? undefined : await response.json();
   } catch {
     // The backend always answers JSON, so no answer or a non-JSON one (e.g. the proxy's HTML
     // 502 when the backend is down) means it wasn't reached.
@@ -67,4 +68,5 @@ export const api = {
   get: <T>(path: string) => request<T>('GET', path),
   post: <T>(path: string, body?: unknown) => request<T>('POST', path, body),
   put: <T>(path: string, body: unknown) => request<T>('PUT', path, body),
+  delete: (path: string) => request<void>('DELETE', path),
 };

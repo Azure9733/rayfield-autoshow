@@ -12,7 +12,7 @@ export function VehicleCard({
   vehicle: Vehicle;
   onPurchase: (vehicle: Vehicle) => void;
   /** Admin actions; when absent (regular users) the admin buttons aren't rendered. */
-  admin?: { onEdit: (vehicle: Vehicle) => void };
+  admin?: { onEdit: (vehicle: Vehicle) => void; onDelete: (vehicle: Vehicle) => void };
 }) {
   const { make, model, year, category, price, quantity, imageUrl } = vehicle;
   const id = useId();
@@ -64,7 +64,7 @@ export function VehicleCard({
           <div className="border-t border-cp-yellow/15 pt-3">
             <ConfirmDialog
               message={`Delete ${model}?`}
-              onConfirm={() => setConfirmingDelete(false)}
+              onConfirm={() => admin.onDelete(vehicle)}
               onCancel={() => setConfirmingDelete(false)}
             />
           </div>

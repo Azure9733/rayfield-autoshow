@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ApiError } from '../api/client';
 import {
   createVehicle,
+  deleteVehicle,
   EMPTY_FILTERS,
   filledFilters,
   listVehicles,
@@ -65,6 +66,11 @@ export function InventoryPage() {
   /** Swaps an updated vehicle (from purchase, edit, restock) into the list in place. */
   function replaceVehicle(updated: Vehicle) {
     setVehicles((list) => list?.map((v) => (v.id === updated.id ? updated : v)) ?? null);
+  }
+
+  async function remove(vehicle: Vehicle) {
+    await deleteVehicle(vehicle.id);
+    setVehicles((list) => list?.filter((v) => v.id !== vehicle.id) ?? null);
   }
 
   async function purchase(vehicle: Vehicle) {
@@ -161,7 +167,7 @@ export function InventoryPage() {
                     key={vehicle.id}
                     vehicle={vehicle}
                     onPurchase={purchase}
-                    admin={isAdmin ? { onEdit: setEditing } : undefined}
+                    admin={isAdmin ? { onEdit: setEditing, onDelete: remove } : undefined}
                   />
                 ))}
           </div>

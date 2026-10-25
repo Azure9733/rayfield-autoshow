@@ -78,3 +78,8 @@ export function createVehicle(input: VehicleInput) {
 export function updateVehicle(id: string, input: VehicleInput) {
   return api.put<Vehicle>(`/api/vehicles/${id}`, input);
 }
+
+/** DELETE /api/vehicles/:id (admin). */
+export function deleteVehicle(id: string) {
+  return api.delete(`/api/vehicles/${id}`);
+}
