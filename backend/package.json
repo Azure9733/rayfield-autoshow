@@ -16,7 +16,8 @@
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx --env-file=.env src/db/migrate.ts"
+    "db:migrate": "tsx --env-file=.env src/db/migrate.ts",
+    "db:seed:admin": "tsx --env-file=.env src/scripts/seedAdmin.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

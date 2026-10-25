@@ -7,6 +7,7 @@ function emptyUsersRepository(): UsersRepository {
   return {
     create: jest.fn(),
     findByEmail: jest.fn().mockResolvedValue(undefined),
+    saveAdmin: jest.fn(),
   };
 }
 

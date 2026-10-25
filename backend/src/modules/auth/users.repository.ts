@@ -28,6 +28,8 @@ export interface UsersRepository {
   create(input: NewUser): Promise<PublicUser>;
   /** Exact match on the stored (lowercased) email; undefined if there's no such user. */
   findByEmail(email: string): Promise<UserWithHash | undefined>;
+  /** Stores a user with role admin (used by the seed script, never by the API). */
+  saveAdmin(input: NewUser): Promise<PublicUser>;
 }
 
 const publicColumns = { id: users.id, name: users.name, email: users.email, role: users.role };
@@ -35,6 +37,14 @@ const publicColumns = { id: users.id, name: users.name, email: users.email, role
 /** Postgres-backed implementation of {@link UsersRepository}. */
 export function createUsersRepository(db: Database): UsersRepository {
   return {
+    async saveAdmin(input) {
+      const [admin] = await db
+        .insert(users)
+        .values({ ...input, role: 'admin' })
+        .returning(publicColumns);
+      return admin;
+    },
+
     async findByEmail(email) {
       const [user] = await db
         .select({ ...publicColumns, passwordHash: users.passwordHash })

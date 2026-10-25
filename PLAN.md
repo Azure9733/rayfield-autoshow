@@ -302,7 +302,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Unknown route → 404 JSON (not HTML)
 - [x] Malformed JSON body → 400 JSON
 - [x] Unexpected error → 500 JSON with a generic message and no stack trace (inject a repo that throws via `createApp({ repos })`)
-- [ ] `seedAdmin` creates the admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD`
+- [x] `seedAdmin` creates the admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 - [ ] Re-running `seedAdmin` resets the admin's password and role from env, including when that email already belongs to a normal user
 - [ ] `seedDemo` replaces all vehicles with the sample set (safe to re-run)
 - [ ] Optional, only if time allows: `helmet` (responses carry its security headers). No rate limiting: it would 429 the auth tests, and an in-memory limit doesn't hold across Vercel instances.
