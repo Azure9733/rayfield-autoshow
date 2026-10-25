@@ -229,4 +229,18 @@ describe('inventory page', () => {
       expect(toast).toBeInTheDocument();
     });
   });
+
+  it.each([
+    [1, 'Only 1 left'],
+    [3, 'Only 3 left'],
+    [4, null],
+    [0, null],
+  ])('a stock of %i shows the low-stock badge: %s', async (quantity, label) => {
+    serveVehicles({ ...inStock, quantity });
+    renderApp('/');
+    const card = await screen.findByRole('article', { name: 'Toyota Land Cruiser' });
+
+    if (label) expect(within(card).getByText(label)).toBeInTheDocument();
+    else expect(within(card).queryByText(/only \d+ left/i)).not.toBeInTheDocument();
+  });
 });
