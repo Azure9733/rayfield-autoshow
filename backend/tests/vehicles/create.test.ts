@@ -110,4 +110,30 @@ describe('POST /api/vehicles', () => {
       expect(res.body.category).toBe(stored);
     });
   });
+
+  describe('year rule: integer from 1900 to next year', () => {
+    // Computed, never hard-coded, so these tests don't break on 1 January.
+    const nextYear = new Date().getFullYear() + 1;
+
+    it.each([
+      ['1899', 1899],
+      ['the year after next', nextYear + 1],
+      ['a non-integer', 2024.5],
+    ])('rejects %s with 400', async (_case, year) => {
+      const res = await postVehicle({ year });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.details).toEqual([{ field: 'year', message: expect.any(String) }]);
+    });
+
+    it.each([
+      ['1900', 1900],
+      ['next year', nextYear],
+    ])('accepts %s', async (_case, year) => {
+      const res = await postVehicle({ year });
+
+      expect(res.status).toBe(201);
+      expect(res.body.year).toBe(year);
+    });
+  });
 });
