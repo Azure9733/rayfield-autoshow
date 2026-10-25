@@ -1,6 +1,7 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import type { Vehicle } from '../api/vehicles';
 import { formatPrice } from '../lib/format';
+import { ConfirmDialog } from './ConfirmDialog';
 
 /** One vehicle in the inventory grid (UI_PLAN.md §4). */
 export function VehicleCard({
@@ -15,6 +16,7 @@ export function VehicleCard({
 }) {
   const { make, model, year, category, price, quantity, imageUrl } = vehicle;
   const id = useId();
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   return (
     // Named "<make> <model>" so tests and screen readers can tell cards apart.
@@ -58,7 +60,16 @@ export function VehicleCard({
         >
           Purchase
         </button>
-        {admin && (
+        {admin && confirmingDelete && (
+          <div className="border-t border-cp-yellow/15 pt-3">
+            <ConfirmDialog
+              message={`Delete ${model}?`}
+              onConfirm={() => setConfirmingDelete(false)}
+              onCancel={() => setConfirmingDelete(false)}
+            />
+          </div>
+        )}
+        {admin && !confirmingDelete && (
           <div className="flex flex-wrap gap-2 border-t border-cp-yellow/15 pt-3">
             <button type="button" className="btn-ghost" onClick={() => admin.onEdit(vehicle)}>
               Edit
@@ -66,7 +77,7 @@ export function VehicleCard({
             <button type="button" className="btn-ghost">
               Restock
             </button>
-            <button type="button" className="btn-danger">
+            <button type="button" className="btn-danger" onClick={() => setConfirmingDelete(true)}>
               Delete
             </button>
           </div>
