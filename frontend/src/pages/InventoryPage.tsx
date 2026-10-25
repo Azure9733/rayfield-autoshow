@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ApiError } from '../api/client';
 import {
   createVehicle,
@@ -18,10 +18,13 @@ import { SkeletonCard } from '../components/SkeletonCard';
 import { Toast } from '../components/Toast';
 import { VehicleCard } from '../components/VehicleCard';
 import { VehicleFormModal } from '../components/VehicleFormModal';
+import { useDebouncedValue } from '../lib/useDebouncedValue';
 import { toFormValues } from '../validation/vehicle';
 import { useAuth } from '../context/AuthContext';
 
 const SUCCESS_TOAST_MS = 4000;
+// Long enough to wait out a burst of keystrokes, short enough to feel live.
+const SEARCH_DEBOUNCE_MS = 300;
 
 /** All vehicles, or the search results when any filter is filled. */
 function fetchVehicles(query: SearchFilters) {
@@ -35,10 +38,11 @@ export function InventoryPage() {
   const [error, setError] = useState('');
   // Feedback for the last purchase; the load error above has its own toast with Retry.
   const [notice, setNotice] = useState<{ tone: 'success' | 'error'; message: string } | null>(null);
-  // What's typed in the search panel, and the submitted search (filled filters only);
-  // changing the query reloads the list.
+  // What's typed in the search panel. The list follows it live: once typing pauses, the filled
+  // filters become the query, and a new query reloads the list.
   const [form, setForm] = useState(EMPTY_FILTERS);
-  const [query, setQuery] = useState<SearchFilters>({});
+  const debouncedForm = useDebouncedValue(form, SEARCH_DEBOUNCE_MS);
+  const query = useMemo(() => filledFilters(debouncedForm), [debouncedForm]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const isAdmin = useAuth().user?.role === 'admin';
   const [adding, setAdding] = useState(false);
@@ -55,7 +59,10 @@ export function InventoryPage() {
     let active = true;
     fetchVehicles(query)
       .then((list) => {
-        if (active) setVehicles(list);
+        if (!active) return;
+        setVehicles(list);
+        // A live search can succeed after an earlier load failed; drop that stale error.
+        setError('');
       })
       .catch((e: unknown) => {
         if (!(e instanceof ApiError)) throw e;
@@ -106,16 +113,9 @@ export function InventoryPage() {
     setNotice({ tone: 'success', message: 'UNIT ACQUIRED' });
   }
 
-  function search(filters: SearchFilters) {
-    setError('');
-    setVehicles(null);
-    setQuery(filledFilters(filters));
-  }
-
   function clearFilters() {
     setForm(EMPTY_FILTERS);
     setInStockOnly(false);
-    search({});
   }
 
   function retry() {
@@ -139,7 +139,7 @@ export function InventoryPage() {
         <SearchPanel
           values={form}
           onChange={setForm}
-          onSearch={() => search(form)}
+          onSearch={() => {}}
           onClear={clearFilters}
           inStockOnly={inStockOnly}
           onInStockOnlyChange={setInStockOnly}

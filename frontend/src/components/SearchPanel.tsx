@@ -42,6 +42,13 @@ export function SearchPanel({
       className="cyber-panel space-y-4 self-start p-5"
     >
       <h2 className="text-xl font-bold uppercase tracking-[3px]">Search</h2>
+      <TextField
+        label="Make or model"
+        type="search"
+        placeholder="e.g. Land Cruiser"
+        value={values.q}
+        onChange={set('q')}
+      />
       <TextField label="Make" value={values.make} onChange={set('make')} />
       <TextField label="Model" value={values.model} onChange={set('model')} />
       <SelectField
