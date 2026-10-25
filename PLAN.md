@@ -331,7 +331,7 @@ Lighter TDD: write component tests first for **behaviour** (not styling). The fr
 - [x] Inventory page (`/`): vehicle grid, loading / empty / error states, purchase (1 unit)
 - [x] Search / filter panel, incl. the client-side "in stock only" filter
 - [x] Admin controls on the same page, rendered by role (no `/admin` route): add / edit modal, delete confirmation, restock popover
-- [ ] Optional: debounce, sync filters to URL query string
+- [x] Optional: debounce, sync filters to URL query string
 
 ### Design / UX (details in UI_PLAN.md)
 - [x] Responsive: mobile (1 col) → tablet (2) → desktop (3–4)
