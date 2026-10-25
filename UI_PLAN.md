@@ -183,7 +183,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Errors show in the dialog in red with CLOSE: OUT OF STOCK for a 409, otherwise the API message (replaces the OUT OF STOCK and purchase-error toasts)
 
 **My Garage**
-- [ ] MY GARAGE comes first in the desktop nav (`cyber-nav-link`, LOGOUT stays right-most) and sits above LOGOUT in the menu (`cyber-list-item`)
+- [x] MY GARAGE comes first in the desktop nav (`cyber-nav-link`, LOGOUT stays right-most) and sits above LOGOUT in the menu (`cyber-list-item`)
 
 **Search / filter**
 - [x] The search bar has no visible label: placeholder "Search", accessible name "Search"

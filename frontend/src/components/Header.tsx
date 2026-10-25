@@ -73,6 +73,9 @@ export function Header() {
       {user && (
         <>
           <nav className="hidden h-full items-center gap-2 lg:flex" aria-label="Main">
+            <button type="button" className="cyber-nav-link cursor-pointer">
+              My Garage
+            </button>
             <span className="px-4">
               <UserIdentity user={user} />
             </span>
@@ -113,6 +116,9 @@ export function Header() {
               <p className="px-5 py-3">
                 <UserIdentity user={user} />
               </p>
+              <button type="button" className="cyber-list-item cursor-pointer">
+                My Garage
+              </button>
               <button
                 type="button"
                 className="cyber-list-item cursor-pointer"
