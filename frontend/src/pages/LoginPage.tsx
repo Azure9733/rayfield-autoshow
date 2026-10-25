@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { ApiError } from '../api/client';
 import { AuthForm } from '../components/AuthForm';
 import { TextField } from '../components/TextField';
@@ -12,6 +12,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   // No client-side rules: like the backend, any wrong input just gets "Invalid email or password".
   async function handleSubmit(event: FormEvent) {
@@ -22,7 +23,9 @@ export function LoginPage() {
     } catch (error) {
       if (!(error instanceof ApiError)) throw error;
       setFormError(error.message);
+      return;
     }
+    navigate('/');
   }
 
   return (
