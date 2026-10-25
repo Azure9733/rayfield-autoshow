@@ -148,4 +148,11 @@ describe('GET /api/vehicles/search', () => {
       expect(idsOf(res)).toEqual([a.id, b.id].sort());
     },
   );
+
+  it('returns 400 when minPrice is greater than maxPrice', async () => {
+    const res = await search({ minPrice: '30000', maxPrice: '20000' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details).toEqual([{ field: 'minPrice', message: expect.any(String) }]);
+  });
 });
