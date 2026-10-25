@@ -133,4 +133,12 @@ describe('POST /api/auth/register', () => {
       expect(res.status).toBe(201);
     });
   });
+
+  it('returns 409 when the email is already registered', async () => {
+    await register();
+
+    const res = await register({ name: 'Another Ann' });
+
+    expect(res.status).toBe(409);
+  });
 });
