@@ -249,7 +249,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] `?model=cor` → partial, case-insensitive match
 - [x] `%` and `_` match literally (`?make=%` doesn't return everything)
 - [x] `?category=suv` → only SUVs (normalised to uppercase)
-- [ ] **(guard)** Unknown category → 400 (reuses the category rule from 4.5)
+- [x] **(guard)** Unknown category → 400 (reuses the category rule from 4.5)
 - [ ] `?minPrice=` → inclusive lower bound (a vehicle priced exactly at `minPrice` is included)
 - [ ] `?maxPrice=` → inclusive upper bound
 - [ ] **(guard)** Filters combine with AND (e.g. `make` + `maxPrice`, `minPrice` + `maxPrice`)

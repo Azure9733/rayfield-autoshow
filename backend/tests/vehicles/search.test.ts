@@ -75,4 +75,11 @@ describe('GET /api/vehicles/search', () => {
 
     expect(idsOf(res)).toEqual([suv.id]);
   });
+
+  it('returns 400 for an unknown category', async () => {
+    const res = await search({ category: 'BOAT' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details).toEqual([{ field: 'category', message: expect.any(String) }]);
+  });
 });
