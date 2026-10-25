@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import type { Vehicle } from '../api/vehicles';
 import { formatPrice } from '../lib/format';
 
@@ -13,6 +13,21 @@ interface Props {
 export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
   const kickerId = useId();
   const titleId = useId();
+  const [processing, setProcessing] = useState(false);
+
+  async function confirm() {
+    setProcessing(true);
+    try {
+      await onConfirm();
+    } finally {
+      setProcessing(false);
+    }
+  }
+
+  // While the request runs the dialog stays put: closing it wouldn't cancel the purchase.
+  function close() {
+    if (!processing) onClose();
+  }
 
   return (
     <div
@@ -20,7 +35,7 @@ export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
       // Only a click on the backdrop itself closes; clicks inside the panel bubble up too.
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) close();
       }}
     >
       <div
@@ -28,7 +43,7 @@ export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
         aria-modal="true"
         aria-labelledby={`${kickerId} ${titleId}`}
         onKeyDown={(e) => {
-          if (e.key === 'Escape') onClose();
+          if (e.key === 'Escape') close();
         }}
         className="cyber-panel relative w-full max-w-md overflow-hidden p-6 md:p-8"
       >
@@ -48,13 +63,14 @@ export function PurchaseDialog({ vehicle, onConfirm, onClose }: Props) {
           <button
             type="button"
             className="btn-cyber"
-            data-text="Confirm purchase"
+            data-text={processing ? 'Processing...' : 'Confirm purchase'}
             autoFocus
-            onClick={onConfirm}
+            disabled={processing}
+            onClick={confirm}
           >
-            Confirm purchase
+            {processing ? 'Processing...' : 'Confirm purchase'}
           </button>
-          <button type="button" className="btn-ghost h-12" onClick={onClose}>
+          <button type="button" className="btn-ghost h-12" disabled={processing} onClick={close}>
             Cancel
           </button>
         </div>

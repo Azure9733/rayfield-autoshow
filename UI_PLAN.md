@@ -167,7 +167,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 
 **Purchase dialog**
 - [x] Purchase opens a confirmation dialog (make + model, year, price; focus on CONFIRM PURCHASE); Cancel, Escape and the backdrop close it without buying
-- [ ] CONFIRM PURCHASE shows PROCESSING... and is disabled in flight: a double-click sends one request; the stock updates (replaces "Purchase is disabled while its request is in flight")
+- [x] CONFIRM PURCHASE shows PROCESSING... and is disabled in flight: a double-click sends one request; the stock updates (replaces "Purchase is disabled while its request is in flight")
 
 **Search / filter**
 - [x] Typing in the search bar loads matching vehicles live (`?q=`, make or model), debounced to one request
