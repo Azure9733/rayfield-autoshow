@@ -72,4 +72,13 @@ describe('POST /api/vehicles/:id/purchase', () => {
     expect(res.status).toBe(401);
     expect(await stockOf(id)).toBe(3);
   });
+
+  it('moves updatedAt forward: a stock change counts as an update', async () => {
+    const seededAt = new Date('2026-01-01T00:00:00Z');
+    const { id } = await createVehicle({ quantity: 3, createdAt: seededAt });
+
+    const res = await purchase(id);
+
+    expect(new Date(res.body.updatedAt).getTime()).toBeGreaterThan(seededAt.getTime());
+  });
 });
