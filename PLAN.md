@@ -296,7 +296,7 @@ Seed rows with the `createVehicle` helper, and send a valid token in every test 
 - [x] Unknown id → 404
 - [x] **(guard)** Malformed id → 400
 - [x] Non-admin → 403
-- [ ] **(guard)** No token → 401
+- [x] **(guard)** No token → 401
 
 ### 4.11 Cross-cutting
 - [ ] Unknown route → 404 JSON (not HTML)

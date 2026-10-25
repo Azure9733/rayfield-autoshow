@@ -89,4 +89,14 @@ describe('POST /api/vehicles/:id/restock', () => {
     expect(res.body.error.code).toBe('FORBIDDEN');
     expect(await stockOf(id)).toBe(2);
   });
+
+  it('returns 401 without a token', async () => {
+    const { id } = await createVehicle({ quantity: 2 });
+
+    const res = await request(createApp())
+      .post(`/api/vehicles/${id}/restock`)
+      .send({ quantity: 5 });
+
+    expect(res.status).toBe(401);
+  });
 });
