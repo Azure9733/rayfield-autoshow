@@ -6,6 +6,13 @@ const name = z.string().trim().min(1).max(50);
 /** Case-insensitive category: trimmed and uppercased, then checked against the list. */
 export const categorySchema = z.string().trim().toUpperCase().pipe(z.enum(CATEGORIES));
 
+/** Query string for GET /api/vehicles/search; every filter is optional. */
+export const searchQuerySchema = z.object({
+  make: z.string().optional(),
+  model: z.string().optional(),
+  category: categorySchema.optional(),
+});
+
 /** Request body for POST /api/vehicles. Unknown keys (e.g. a client-sent `id`) are stripped. */
 export const createVehicleSchema = z.object({
   make: name,

@@ -1,4 +1,4 @@
-import { and, desc, ilike } from 'drizzle-orm';
+import { and, desc, eq, ilike } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { vehicles } from '../../db/schema';
 import type { Category } from './categories';
@@ -23,6 +23,7 @@ export interface NewVehicle {
 export interface VehicleFilters {
   make?: string;
   model?: string;
+  category?: Category;
 }
 
 /** All SQL for the vehicles table lives behind this interface, so tests can swap in a fake. */
@@ -43,11 +44,12 @@ export function createVehiclesRepository(db: Database): VehiclesRepository {
       return rows.map(toVehicle);
     },
 
-    async search({ make, model }) {
+    async search({ make, model, category }) {
       // Each filter adds a condition; and() of the defined ones, ignoring undefined.
       const where = and(
         make === undefined ? undefined : ilike(vehicles.make, contains(make)),
         model === undefined ? undefined : ilike(vehicles.model, contains(model)),
+        category === undefined ? undefined : eq(vehicles.category, category),
       );
       const rows = await db
         .select()

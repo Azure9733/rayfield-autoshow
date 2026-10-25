@@ -2,13 +2,16 @@ import type { RequestHandler } from 'express';
 import type { ZodType } from 'zod';
 import { ValidationError } from '../lib/errors';
 
+type Source = 'body' | 'query';
+
 /**
- * Validates the request body with a Zod schema. Parsed (trimmed, defaulted, stripped) data
- * goes on `res.locals.body`; handlers read it from there rather than from `req.body`.
+ * Validates one part of the request with a Zod schema. Parsed (trimmed, coerced, stripped)
+ * data goes on `res.locals[source]`; Express 5's `req.query` is read-only, so handlers always
+ * read parsed input from `res.locals`.
  */
-export function validateBody(schema: ZodType): RequestHandler {
+function validate(source: Source, schema: ZodType): RequestHandler {
   return (req, res, next) => {
-    const result = schema.safeParse(req.body);
+    const result = schema.safeParse(req[source]);
     if (!result.success) {
       throw new ValidationError(
         result.error.issues.map((issue) => ({
@@ -17,7 +20,13 @@ export function validateBody(schema: ZodType): RequestHandler {
         })),
       );
     }
-    res.locals.body = result.data;
+    res.locals[source] = result.data;
     next();
   };
 }
+
+/** Validates `req.body`; parsed data on `res.locals.body`. */
+export const validateBody = (schema: ZodType) => validate('body', schema);
+
+/** Validates `req.query`; parsed data on `res.locals.query`. */
+export const validateQuery = (schema: ZodType) => validate('query', schema);

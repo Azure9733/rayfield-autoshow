@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import type { NewVehicle } from './vehicles.repository';
+import type { NewVehicle, VehicleFilters } from './vehicles.repository';
 import type { VehiclesService } from './vehicles.service';
 
 /** Translates HTTP requests into vehicles service calls and back; no business rules here. */
@@ -9,9 +9,8 @@ export function createVehiclesController(service: VehiclesService) {
       res.json(await service.list());
     },
 
-    async search(req: Request, res: Response) {
-      const text = (v: unknown) => (typeof v === 'string' ? v : undefined);
-      res.json(await service.search({ make: text(req.query.make), model: text(req.query.model) }));
+    async search(_req: Request, res: Response) {
+      res.json(await service.search(res.locals.query as VehicleFilters));
     },
 
     async create(_req: Request, res: Response) {
