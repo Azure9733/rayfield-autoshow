@@ -1,13 +1,11 @@
 import type { PoolConfig } from 'pg';
-import type { Env } from '../config/env';
+import type { DbEnv } from '../config/envSchema';
 
 /**
  * pg pool options from the validated env. Kept free of side effects (unlike db/client.ts,
  * which opens the pool) so it can be unit-tested.
  */
-export function poolConfig(
-  env: Pick<Env, 'DATABASE_URL' | 'DATABASE_SSL' | 'DATABASE_POOL_MAX'>,
-): PoolConfig {
+export function poolConfig(env: DbEnv): PoolConfig {
   return {
     connectionString: env.DATABASE_URL,
     max: env.DATABASE_POOL_MAX,

@@ -7,5 +7,6 @@ export default async function globalSetup(): Promise<void> {
   loadTestEnv();
   const url = process.env.DATABASE_URL as string;
   await resetTestDatabase(url);
-  await runMigrations(url);
+  // The local Docker test database: no TLS.
+  await runMigrations({ connectionString: url, max: 1 });
 }
