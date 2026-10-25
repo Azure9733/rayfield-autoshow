@@ -19,4 +19,16 @@ describe('env validation', () => {
   it.each(['yes', '1', 'TRUE', 'ture', ''])('rejects DATABASE_SSL=%j', (value) => {
     expect(() => validateEnv({ ...base, DATABASE_SSL: value })).toThrow();
   });
+
+  it.each([
+    [undefined, 10],
+    ['5', 5],
+    ['1', 1],
+  ])('DATABASE_POOL_MAX=%s gives a pool of %i', (value, expected) => {
+    expect(validateEnv({ ...base, DATABASE_POOL_MAX: value }).DATABASE_POOL_MAX).toBe(expected);
+  });
+
+  it.each(['0', '-1', '2.5', 'abc', ''])('rejects DATABASE_POOL_MAX=%j', (value) => {
+    expect(() => validateEnv({ ...base, DATABASE_POOL_MAX: value })).toThrow();
+  });
 });
