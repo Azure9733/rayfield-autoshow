@@ -154,7 +154,7 @@ The single frontend test list (PLAN.md §5 points here). One `[ ]` = one behavio
 - [x] Search submits only filled params
 - [x] "In stock only" hides sold-out vehicles (client-side)
 - [x] Clear resets the filters and the list
-- [ ] No search results show `///NO.MATCH` with a clear-filters button (§7)
+- [x] No search results show `///NO.MATCH` with a clear-filters button (§7)
 
 **Admin**
 - [ ] Admin controls hidden for regular users
